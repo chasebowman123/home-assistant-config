@@ -1,0 +1,47 @@
+# Home Assistant Configuration
+# Version: 1.0
+# Managed by Claude AI and GitHub Actions
+# Last updated: 2026-06-02
+
+# Configure the HTTP component
+http:
+  cors_allowed_origins:
+      - http://localhost:8123
+          - http://127.0.0.1:8123
+
+          # Configure the frontend
+          frontend:
+
+          # Enable logging
+          logger:
+            default: info
+              logs:
+                  homeassistant.core: debug
+
+                  # Enable the config editor
+                  config:
+
+                  # Enable system health
+                  system_health:
+
+                  # Enable automation editor
+                  automation: !include automations.yaml
+
+                  # Include scripts
+                  script: !include scripts.yaml
+
+                  # Include scenes
+                  scene: !include scenes.yaml
+
+                  # Example integration: System Monitor
+                  system_monitor:
+
+                  # Example integration: Weather
+                  weather:
+                    - platform: openweathermap
+                        api_key: !secret openweather_api_key
+                            name: Home
+
+                            # Customize entities
+                            homeassistant:
+                              customize: !include customize.yaml
