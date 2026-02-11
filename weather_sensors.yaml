@@ -1,0 +1,111 @@
+###############################################################################
+# WEATHER TEMPLATE SENSORS
+# Migrated from configuration.yaml
+###############################################################################
+
+template:
+  - sensor:
+      # Human-readable weather condition
+      - name: "Weather Condition Text"
+        unique_id: weather_condition_text
+        state: >
+          {% set condition = states('weather.forecast_home') %}
+          {% set conditions = {
+            'clear-night': 'Clear',
+            'cloudy': 'Cloudy',
+            'fog': 'Foggy',
+            'hail': 'Hail',
+            'lightning': 'Lightning',
+            'lightning-rainy': 'Thunderstorm',
+            'partlycloudy': 'Partly Cloudy',
+            'pouring': 'Heavy Rain',
+            'rainy': 'Rain',
+            'snowy': 'Snow',
+            'snowy-rainy': 'Sleet',
+            'sunny': 'Sunny',
+            'windy': 'Windy',
+            'windy-variant': 'Windy',
+            'exceptional': 'Exceptional'
+          } %}
+          {{ conditions.get(condition, condition | title) }}
+
+      # Today's high temperature
+      - name: "Weather High Temp"
+        unique_id: weather_high_temp
+        unit_of_measurement: "°C"
+        state: >
+          {% set forecast = state_attr('weather.forecast_home', 'forecast') %}
+          {% if forecast and forecast | length > 0 %}
+            {{ forecast[0].temperature }}
+          {% else %}
+            {{ state_attr('weather.forecast_home', 'temperature') }}
+          {% endif %}
+
+      # Today's low temperature
+      - name: "Weather Low Temp"
+        unique_id: weather_low_temp
+        unit_of_measurement: "°C"
+        state: >
+          {% set forecast = state_attr('weather.forecast_home', 'forecast') %}
+          {% if forecast and forecast | length > 0 %}
+            {{ forecast[0].templow | default(forecast[0].temperature | float - 5) }}
+          {% else %}
+            {{ (state_attr('weather.forecast_home', 'temperature') | float(0) | round(0)) }}
+          {% endif %}
+
+      # Feels like temperature
+      - name: "Weather Feels Like"
+        unique_id: weather_feels_like
+        unit_of_measurement: "°C"
+        state: >
+          {{ state_attr('weather.forecast_home', 'apparent_temperature') | default(state_attr('weather.forecast_home', 'temperature')) }}
+
+      # Wind direction as compass bearing
+      - name: "Wind Direction Compass"
+        unique_id: wind_direction_compass
+        state: >
+          {% set bearing = state_attr('weather.forecast_home', 'wind_bearing') | float(0) %}
+          {% set directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'] %}
+          {{ directions[(((bearing + 11.25) % 360) / 22.5) | int] }}
+
+      # Visibility in miles
+      - name: "Weather Visibility Miles"
+        unique_id: weather_visibility_miles
+        unit_of_measurement: "mi"
+        state: >
+          {% set vis_km = state_attr('weather.forecast_home', 'visibility') | float(10) %}
+          {{ (vis_km * 0.621371) | round(0) }}
+
+script:
+  show_weather_dashboard:
+    alias: "Show Weather Dashboard"
+    sequence:
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.show_weather_dashboard
+
+  hide_weather_dashboard:
+    alias: "Hide Weather Dashboard"
+    sequence:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.show_weather_dashboard
+
+input_boolean:
+  show_weather_dashboard:
+    name: "Show Weather Dashboard"
+    icon: mdi:weather-partly-cloudy
+
+automation:
+  - id: weather_dashboard_trigger
+    alias: "Weather - Dashboard Trigger"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.show_weather_dashboard
+        to: "on"
+        for:
+          minutes: 5
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.show_weather_dashboard

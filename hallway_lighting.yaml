@@ -1,0 +1,118 @@
+###############################################################################
+# HALLWAY & COMMON AREA LIGHTING
+# Motion/door triggered lighting that respects house state
+###############################################################################
+
+automation:
+  ###########################################################################
+  # CLOAKROOM DOOR LIGHTS (migrated from existing)
+  ###########################################################################
+  - id: cloakroom_door_lights
+    alias: "Hallway - Cloakroom Door Lights"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.cloakroom_door_sensor_contact
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.house_state
+            state: "Away"
+    action:
+      - service: light.turn_on
+        target:
+          entity_id: light.cloakroom_spotlights
+        data:
+          brightness_pct: 100
+
+  - id: cloakroom_door_lights_off
+    alias: "Hallway - Cloakroom Door Lights Off"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.cloakroom_door_sensor_contact
+        to: "off"
+        for:
+          minutes: 3
+    action:
+      - service: light.turn_off
+        target:
+          entity_id: light.cloakroom_spotlights
+
+  ###########################################################################
+  # LUCAS BATHROOM DOOR LIGHTS (migrated from existing)
+  ###########################################################################
+  - id: lucas_bathroom_door_lights
+    alias: "Hallway - Lucas Bathroom Door Lights"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.lucas_bathroom_door_sensor_contact
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+    action:
+      - service: light.turn_on
+        target:
+          entity_id: light.lucass_bathroom_spotlights
+        data:
+          brightness_pct: >
+            {% if states('input_boolean.quiet_mode') == 'on' %}
+              30
+            {% else %}
+              100
+            {% endif %}
+
+  - id: lucas_bathroom_door_lights_off
+    alias: "Hallway - Lucas Bathroom Lights Off"
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.lucas_bathroom_door_sensor_contact
+        to: "off"
+        for:
+          minutes: 5
+    action:
+      - service: light.turn_off
+        target:
+          entity_id: light.lucass_bathroom_spotlights
+
+  ###########################################################################
+  # HALLWAY AMBIENT LIGHTING
+  # Turns on in bad weather or after dark
+  ###########################################################################
+  - id: hallway_ambient_dark
+    alias: "Hallway - Ambient After Dark"
+    trigger:
+      - platform: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 3
+    condition:
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+    action:
+      - service: light.turn_on
+        target:
+          entity_id: light.hallway_spot_lights
+        data:
+          brightness_pct: 50
+          color_temp_kelvin: 2700
+
+  - id: hallway_lights_off_bedtime
+    alias: "Hallway - Lights Off at Bedtime"
+    trigger:
+      - platform: state
+        entity_id: input_select.house_state
+        to: "Bedtime"
+    action:
+      - service: light.turn_off
+        target:
+          entity_id: light.hallway_spot_lights

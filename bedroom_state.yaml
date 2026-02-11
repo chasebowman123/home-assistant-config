@@ -1,0 +1,90 @@
+###############################################################################
+# BEDROOM - Room State Management
+# States: Auto, Relaxing, Bedtime, Off
+###############################################################################
+
+input_select:
+  bedroom_state:
+    name: "Bedroom State"
+    options:
+      - Auto
+      - Relaxing
+      - Bedtime
+      - "Off"
+    initial: Auto
+    icon: mdi:bed-king
+
+automation:
+  ###########################################################################
+  # BEDROOM STATE: RELAXING
+  # Dim ambient lighting for winding down
+  ###########################################################################
+  - id: bedroom_state_relaxing
+    alias: "Bedroom - State Relaxing"
+    trigger:
+      - platform: state
+        entity_id: input_select.bedroom_state
+        to: "Relaxing"
+    action:
+      - service: light.turn_off
+        target:
+          entity_id: light.bedroom_spot_lights
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.bedroom_signe_light
+            - light.bedroom_tv_strip_light
+        data:
+          brightness_pct: 30
+          color_temp_kelvin: 2200
+
+  ###########################################################################
+  # BEDROOM STATE: BEDTIME
+  # Everything off except very dim nightlight
+  ###########################################################################
+  - id: bedroom_state_bedtime
+    alias: "Bedroom - State Bedtime"
+    trigger:
+      - platform: state
+        entity_id: input_select.bedroom_state
+        to: "Bedtime"
+    action:
+      - service: light.turn_off
+        target:
+          entity_id:
+            - light.bedroom_spot_lights
+            - light.bedroom_signe_light
+            - light.bedroom_tv_strip_light
+            - light.bedroom_colour_lamp
+      - service: media_player.media_pause
+        target:
+          entity_id: media_player.lg_webos_tv_oled55g54lw
+
+  ###########################################################################
+  # BEDROOM STATE: OFF
+  ###########################################################################
+  - id: bedroom_state_off
+    alias: "Bedroom - State Off"
+    trigger:
+      - platform: state
+        entity_id: input_select.bedroom_state
+        to: "Off"
+    action:
+      - service: light.turn_off
+        target:
+          entity_id:
+            - light.bedroom_spot_lights
+            - light.bedroom_signe_light
+            - light.bedroom_tv_strip_light
+            - light.bedroom_colour_lamp
+
+  ###########################################################################
+  # BEDROOM STATE: AUTO
+  ###########################################################################
+  - id: bedroom_state_auto
+    alias: "Bedroom - State Auto"
+    trigger:
+      - platform: state
+        entity_id: input_select.bedroom_state
+        to: "Auto"
+    action: []

@@ -1,0 +1,78 @@
+###############################################################################
+# SECURITY - Ring Alarm & Camera Management
+# Alarm behavior respects presence and dog state
+###############################################################################
+
+automation:
+  ###########################################################################
+  # AUTO-ARM when house is Away
+  ###########################################################################
+  - id: security_auto_arm_away
+    alias: "Security - Auto Arm Away"
+    trigger:
+      - platform: state
+        entity_id: input_select.house_state
+        to: "Away"
+        for:
+          minutes: 2
+    condition:
+      - condition: state
+        entity_id: input_boolean.dogs_are_out
+        state: "off"
+    action:
+      - service: alarm_control_panel.alarm_arm_away
+        target:
+          entity_id: alarm_control_panel.home_alarm
+
+  ###########################################################################
+  # AUTO-ARM HOME at Bedtime
+  ###########################################################################
+  - id: security_auto_arm_bedtime
+    alias: "Security - Auto Arm Bedtime"
+    trigger:
+      - platform: state
+        entity_id: input_select.house_state
+        to: "Bedtime"
+    action:
+      - service: alarm_control_panel.alarm_arm_home
+        target:
+          entity_id: alarm_control_panel.home_alarm
+
+  ###########################################################################
+  # DISARM when someone arrives home
+  ###########################################################################
+  - id: security_disarm_arrival
+    alias: "Security - Disarm on Arrival"
+    trigger:
+      - platform: state
+        entity_id:
+          - person.edward_eidam
+          - person.loretta_eidam
+        to: "home"
+    condition:
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: alarm_control_panel.home_alarm
+            state: "disarmed"
+    action:
+      - service: alarm_control_panel.alarm_disarm
+        target:
+          entity_id: alarm_control_panel.home_alarm
+
+  ###########################################################################
+  # CLOUD INTEGRATION OFFLINE (migrated from existing)
+  ###########################################################################
+  - id: alert_cloud_integration_offline
+    alias: "Alert - Cloud Integration Offline"
+    trigger:
+      - platform: state
+        entity_id: cloud.cloud
+        to: "unavailable"
+        for:
+          minutes: 10
+    action:
+      - service: notify.mobile_app_edward_s_iphone
+        data:
+          title: "⚠️ HA Alert"
+          message: "Nabu Casa cloud integration has gone offline"

@@ -1,0 +1,454 @@
+- id: '1768013544587'
+  alias: 'Alert: Cloud Integration Offline'
+  description: Monitors critical cloud-dependent integrations and sends alerts when
+    they go offline
+  triggers:
+  - entity_id: binary_sensor.alexa_devices_connected
+    to: 'off'
+    for:
+      minutes: 2
+    id: alexa_offline
+    trigger: state
+  - entity_id: binary_sensor.smartthings_connected
+    to: 'off'
+    for:
+      minutes: 2
+    id: smartthings_offline
+    trigger: state
+  - entity_id: binary_sensor.tado_connected
+    to: 'off'
+    for:
+      minutes: 2
+    id: tado_offline
+    trigger: state
+  - entity_id: binary_sensor.home_connect_connected
+    to: 'off'
+    for:
+      minutes: 2
+    id: home_connect_offline
+    trigger: state
+  - entity_id: binary_sensor.sensibo_connected
+    to: 'off'
+    for:
+      minutes: 2
+    id: sensibo_offline
+    trigger: state
+  conditions: []
+  actions:
+  - data:
+      title: ⚠️ Cloud Integration Offline
+      message: '**{{ trigger.id | replace(''_offline'', '''') | replace(''_'', ''
+        '') | title }}**  has lost cloud connection.
+
+        Check your internet connection or the vendor''s service status.
+
+        Time: {{ now().strftime(''%H:%M:%S'') }}
+
+        '
+      notification_id: cloud_{{ trigger.id }}
+    action: persistent_notification.create
+  - data:
+      title: Cloud Integration Offline
+      message: '{{ trigger.id | replace(''_offline'', '''') | title }} disconnected'
+      data:
+        priority: high
+        ttl: 0
+        importance: high
+    action: notify.edward_s_echo_show_15_announce
+  - data:
+      entity_id: media_player.lounge
+      message: 'Attention. The {{ trigger.id | replace(''_offline'', '''') | replace(''_'',
+        '' '') }}  cloud service has gone offline. Check your internet connection.
+
+        '
+    action: tts.cloud_say
+  mode: queued
+  max: 10
+- id: '1769282244125'
+  alias: Cloackroom Door Lights
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.cloakroom_sensor_contact
+    from:
+    - Closed
+    to:
+    - 'on'
+  - trigger: state
+    entity_id:
+    - binary_sensor.cloakroom_sensor_contact
+    from:
+    - 'on'
+    to:
+    - 'off'
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    target:
+      entity_id: light.bathroom_spotlights_2
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  - action: light.turn_off
+    metadata: {}
+    target:
+      entity_id: light.bathroom_spotlights_2
+    data: {}
+  mode: single
+- id: '1769734608872'
+  alias: Kitchen Spotlight Control - ON
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.hallway_kitchen_motion_sensor_occupancy
+    to:
+    - 'on'
+  conditions:
+  - condition: time
+    after: 00:00:00
+    before: 07:00:00
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    target:
+      entity_id: light.kitchen_spotlights
+    data:
+      brightness_pct: 20
+  mode: single
+- id: '1769735412119'
+  alias: Kitchen Spotlights Control - Off
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.hallway_kitchen_motion_sensor_occupancy
+    to:
+    - 'off'
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    target:
+      entity_id: light.kitchen_spotlights
+    data: {}
+  mode: single
+- id: '1769872287910'
+  alias: Lucas Bathroom Door Lights
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.lucas_bathroom_sensor_contact
+    from:
+    - Closed
+    to:
+    - 'on'
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.lucass_bathroom_spotlights
+  - delay:
+      hours: 0
+      minutes: 5
+      seconds: 0
+      milliseconds: 0
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.lucass_bathroom_spotlights
+  mode: single
+- id: '1769872914194'
+  alias: 'Nigh light '
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.lucas_room_door_contact
+    from:
+    - Open
+    to:
+    - 'off'
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.lucass_room_iris
+  mode: single
+- id: '1769902127079'
+  alias: Office Lights Control - ON
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.hue_motion_sensor_6_motion
+    to:
+    - 'on'
+  - trigger: state
+    entity_id:
+    - binary_sensor.office_hallway_door_sensor_contact
+    to:
+    - 'on'
+  conditions: []
+  actions:
+  - if:
+    - condition: time
+      after: '19:00:00'
+      before: 07:00:00
+    then:
+    - action: light.turn_on
+      metadata: {}
+      target:
+        entity_id: light.office_spotlights
+      data:
+        brightness_pct: 50
+    else:
+    - action: light.turn_on
+      metadata: {}
+      target:
+        entity_id: light.office_spotlights
+      data:
+        brightness_pct: 100
+  mode: single
+- id: '1769902491161'
+  alias: Office Lights Control - OFF
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.hue_motion_sensor_6_motion
+    to:
+    - 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  - trigger: state
+    entity_id:
+    - binary_sensor.office_hallway_door_sensor_contact
+    to:
+    - 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.hue_motion_sensor_6_motion
+    state:
+    - 'off'
+    for:
+      hours: 0
+      minutes: 4
+      seconds: 0
+  - condition: state
+    entity_id: binary_sensor.hue_motion_sensor_5_motion
+    state:
+    - 'off'
+    for:
+      hours: 0
+      minutes: 4
+      seconds: 0
+    attribute: Clear
+  - condition: time
+    after: '19:00:00'
+    before: 07:00:00
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    target:
+      entity_id: light.office_spotlights
+    data: {}
+  mode: single
+- id: '1770053788818'
+  alias: Weather Dashboard Trigger
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.show_weather_dashboard
+    to:
+    - 'on'
+  conditions: []
+  actions: []
+  mode: single
+- id: '1770081138900'
+  alias: test 1 door
+  description: ''
+  triggers:
+  - type: turned_on
+    device_id: fc15d51bcce3c7e7ebb93e7ac4d4ee8e
+    entity_id: 32e2a9cb7e58c69bf53f797c2ec8b290
+    domain: switch
+    trigger: device
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 5
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    target:
+      entity_id: light.lounge_iris
+    data:
+      brightness_pct: 100
+  mode: single
+- id: '1770179622506'
+  alias: Alert - Nanit Lost Power
+  description: Critical alert when baby monitor loses power
+  triggers:
+  - platform: numeric_state
+    entity_id: sensor.unnamed_p304m_nanit_current_consumption
+    below: 1
+    for:
+      minutes: 2
+  conditions: []
+  actions:
+  - data:
+      title: "\U0001F6A8 CRITICAL: Nanit Offline"
+      message: Baby monitor has lost power! Check Lucas's room immediately.
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+    action: notify.mobile_app_ee_iphone_16_pro_max
+  - data:
+      target:
+      - media_player.lounge_echo_hub
+      - media_player.bedroom_2
+      message: Warning! The baby monitor in Lucas's room has lost power!
+      data:
+        type: announce
+    action: notify.alexa_media
+  mode: single
+- id: '1770179754919'
+  alias: Alert - Coffee Pot Left On
+  description: Warn if coffee pot is on for over 2 hours
+  triggers:
+  - platform: numeric_state
+    entity_id: sensor.unnamed_p304m_coffee_pot_current_consumption
+    above: 5
+    for:
+      hours: 2
+  conditions: []
+  actions:
+  - data:
+      title: ☕ Coffee Pot Still On
+      message: The coffee pot has been on for over 2 hours. Tap to turn off.
+      data:
+        actions:
+        - action: TURN_OFF_COFFEE
+          title: Turn Off
+    action: notify.mobile_app_ee_iphone_16_pro_max
+  mode: single
+- id: '1770179754920'
+  alias: Daily Energy Summary
+  description: Send daily energy usage summary at 9pm
+  triggers:
+  - platform: time
+    at: '21:00:00'
+  conditions: []
+  actions:
+  - data:
+      title: "\U0001F4CA Daily Energy Report"
+      message: 'Today''s usage: {{ states(''sensor.daily_home_energy'') | round(1)
+        }} kWh
+
+        Estimated cost: £{{ (states(''sensor.daily_home_energy'') | float * 0.30)
+        | round(2) }}'
+    action: notify.mobile_app_ee_iphone_16_pro_max
+  mode: single
+- id: cloakroom_spotlights_sensor
+  alias: Cloakroom Spotlights - Sensor Activated
+  description: Turn on cloakroom spotlights when cloakroom door sensor is triggered
+    (open or closed), keep on for 10 minutes then turn off
+  triggers:
+  - platform: state
+    entity_id: binary_sensor.cloakroom_sensor_contact
+  conditions: []
+  actions:
+  - target:
+      entity_id: light.bathroom_spotlights_2
+    action: light.turn_on
+  - delay:
+      minutes: 10
+  - target:
+      entity_id: light.bathroom_spotlights_2
+    action: light.turn_off
+  mode: restart
+- id: outside_lights_night_motion
+  alias: Outside Lights - Night Motion & Door Activated
+  description: Turn on outside lights when outside door opens or garden camera detects
+    motion, only between sunset and sunrise. Lights stay on for 5 minutes then turn
+    off.
+  triggers:
+  - entity_id: binary_sensor.outside_door_contact
+    to: 'on'
+    trigger: state
+  - event_type: state_changed
+    event_data:
+      entity_id: event.garden_motion
+    trigger: event
+  conditions:
+  - condition: sun
+    after: sunset
+    before: sunrise
+  actions:
+  - target:
+      entity_id:
+      - light.garden_lights
+    action: light.turn_on
+    data: {}
+  - delay:
+      minutes: 5
+  - target:
+      entity_id:
+      - light.garden_lights
+    action: light.turn_off
+    data: {}
+  mode: restart
+- id: basement_door_lounge_iris_flash
+  alias: Basement Door Motion - Lounge Iris Flash Red
+  description: Flash the lounge Iris light red for 5 seconds when motion is detected
+    at the basement door, then restore previous state.
+  triggers:
+  - platform: state
+    entity_id: binary_sensor.office_basement_entrance_motion_sensor_occupancy
+    to: 'on'
+  conditions: []
+  actions:
+  - data:
+      scene_id: lounge_iris_before_flash
+      snapshot_entities:
+      - light.lounge_iris
+    action: scene.create
+  - target:
+      entity_id: light.lounge_iris
+    data:
+      color_name: red
+      brightness: 255
+    action: light.turn_on
+  - delay:
+      seconds: 5
+  - target:
+      entity_id: scene.lounge_iris_before_flash
+    action: scene.turn_on
+  mode: single

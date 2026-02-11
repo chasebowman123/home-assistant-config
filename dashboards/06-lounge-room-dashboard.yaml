@@ -1,0 +1,178 @@
+###############################################################################
+# LOUNGE DASHBOARD (Refactored with Decluttering Templates)
+# Complete room control - climate, lighting, media, security
+###############################################################################
+
+title: Lounge
+path: lounge
+icon: mdi:sofa
+
+type: sections
+max_columns: 3
+
+# Load decluttering templates
+decluttering_templates: !include ../decluttering_templates.yaml
+
+sections:
+  # =========================================================================
+  # STATUS OVERVIEW
+  # =========================================================================
+  - type: grid
+    title: ""
+    cards:
+      - type: custom:decluttering-card
+        template: room_status_chips_media
+        variables:
+          - temp_sensor: sensor.lounge_temp_sensor_temperature
+          - humidity_sensor: sensor.lounge_temp_sensor_humidity
+          - media_player: media_player.lounge
+
+      # Air quality chip (lounge-specific)
+      - type: custom:mushroom-chips-card
+        chips:
+          - type: template
+            icon: mdi:leaf
+            content: "PM2.5: {{ states('sensor.core_400s_pm2_5') }}"
+            icon_color: >
+              {% set pm = states('sensor.core_400s_pm2_5') | int %}
+              {% if pm < 12 %}green{% elif pm < 35 %}amber{% else %}red{% endif %}
+
+  # =========================================================================
+  # CLIMATE
+  # =========================================================================
+  - type: grid
+    title: Climate
+    cards:
+      - type: custom:decluttering-card
+        template: climate_card
+        variables:
+          - climate_entity: climate.lounge
+
+      - type: custom:decluttering-card
+        template: temperature_card
+        variables:
+          - temp_sensor: sensor.lounge_temp_sensor_temperature
+
+      - type: custom:decluttering-card
+        template: humidity_card
+        variables:
+          - humidity_sensor: sensor.lounge_temp_sensor_humidity
+
+      - type: custom:mushroom-fan-card
+        entity: fan.core_400s
+        name: Air Purifier
+        icon: mdi:air-purifier
+        show_percentage_control: true
+        collapsible_controls: true
+
+      - type: custom:mushroom-humidifier-card
+        entity: humidifier.living_room_humidifier_humidifier
+        name: Humidifier
+        show_target_humidity_control: true
+        collapsible_controls: true
+
+      - type: custom:decluttering-card
+        template: temperature_graph
+        variables:
+          - temp_sensor: sensor.lounge_temp_sensor_temperature
+          - name: Lounge
+          - color: "#ff9800"
+
+  # =========================================================================
+  # LIGHTING
+  # =========================================================================
+  - type: grid
+    title: Lighting
+    cards:
+      - type: custom:decluttering-card
+        template: light_group_card
+        variables:
+          - light_entity: light.lounge
+          - name: All Lights
+
+      - type: custom:decluttering-card
+        template: scene_row_with_off
+        variables:
+          - scene_1_name: Relax
+          - scene_1_icon: mdi:spa
+          - scene_1_color: orange
+          - scene_1_entity: scene.lounge_relax
+          - scene_2_name: TV
+          - scene_2_icon: mdi:television
+          - scene_2_color: purple
+          - scene_2_entity: scene.lounge_tv
+          - scene_3_name: Energise
+          - scene_3_icon: mdi:flash
+          - scene_3_color: yellow
+          - scene_3_entity: scene.lounge_energise
+          - light_group: light.lounge
+
+  # =========================================================================
+  # MEDIA
+  # =========================================================================
+  - type: grid
+    title: Media
+    cards:
+      - type: custom:decluttering-card
+        template: media_player_mini
+        variables:
+          - media_entity: media_player.lounge
+          - name: Sonos Arc
+
+      - type: custom:decluttering-card
+        template: media_player_mushroom
+        variables:
+          - media_entity: media_player.lounge_tv_2
+          - name: Samsung TV
+
+      - type: custom:decluttering-card
+        template: media_player_mushroom
+        variables:
+          - media_entity: media_player.stanmore_ii
+          - name: Marshall Stanmore
+
+  # =========================================================================
+  # CAMERA
+  # =========================================================================
+  - type: grid
+    title: Camera
+    cards:
+      - type: custom:decluttering-card
+        template: camera_card
+        variables:
+          - camera_entity: camera.lounge_snapshot
+          - name: Lounge Camera
+
+  # =========================================================================
+  # DEVICES & POWER
+  # =========================================================================
+  - type: grid
+    title: Devices
+    cards:
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_samsung_tv
+          - name: Samsung TV
+          - icon: mdi:television
+
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_playstation_5
+          - name: PlayStation 5
+          - icon: mdi:sony-playstation
+
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_sonos_arc
+          - name: Sonos Arc
+          - icon: mdi:speaker
+
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_hue_sync_box
+          - name: Hue Sync
+          - icon: mdi:palette

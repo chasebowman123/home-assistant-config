@@ -1,0 +1,297 @@
+###############################################################################
+# LUCAS DASHBOARD (Refactored with Decluttering Templates)
+# Child monitoring and caregiver-friendly controls
+# Large touch targets, clear status indicators, routine buttons
+###############################################################################
+
+title: Lucas
+path: lucas
+icon: mdi:baby-face
+
+type: sections
+max_columns: 2
+
+sections:
+  # =========================================================================
+  # STATUS BANNER WITH ROOM STATE
+  # =========================================================================
+  - type: grid
+    title: ""
+    cards:
+      # Room state indicator - tap to cycle through states
+      - type: custom:decluttering-card
+        template: lucas_state_chip
+
+      # Environment chips
+      - type: custom:decluttering-card
+        template: lucas_status_chips
+        variables:
+          - temp_sensor: sensor.lucas_room_temp_temperature
+          - humidity_sensor: sensor.lucas_room_temp_humidity
+          - bath_sensor: sensor.lucas_bath_temp_sensor_temperature
+          - camera: camera.lucass_room_snapshot
+
+  # =========================================================================
+  # QUICK ACTIONS - Large touch-friendly routine buttons
+  # =========================================================================
+  - type: grid
+    title: Quick Actions
+    cards:
+      - type: custom:decluttering-card
+        template: lucas_quick_action
+        variables:
+          - title: "🌅 Morning"
+          - subtitle: "Arise scene + wake music"
+          - icon: mdi:weather-sunny
+          - color: amber
+          - scene_entity: scene.lucass_room_arise
+
+      - type: custom:decluttering-card
+        template: lucas_quick_action
+        variables:
+          - title: "🛁 Bathtime"
+          - subtitle: "Bathroom lights + music"
+          - icon: mdi:bathtub
+          - color: cyan
+          - scene_entity: scene.lucass_bathroom_relax
+
+      - type: custom:decluttering-card
+        template: lucas_quick_action
+        variables:
+          - title: "🌙 Wind Down"
+          - subtitle: "Dim lights, warm colours"
+          - icon: mdi:weather-sunset
+          - color: orange
+          - scene_entity: scene.lucass_room_sleepy
+
+      - type: custom:decluttering-card
+        template: lucas_quick_action
+        variables:
+          - title: "😴 Sleep"
+          - subtitle: "All lights off"
+          - icon: mdi:moon-waning-crescent
+          - color: indigo
+          - scene_entity: scene.lucass_room_night_time
+
+  # =========================================================================
+  # CAMERA
+  # =========================================================================
+  - type: grid
+    title: Camera
+    cards:
+      - type: custom:decluttering-card
+        template: camera_card
+        variables:
+          - camera_entity: camera.lucass_room_snapshot
+          - name: Lucas's Room
+
+  # =========================================================================
+  # ENVIRONMENT - Temperature & Humidity with ideal ranges
+  # =========================================================================
+  - type: grid
+    title: Environment
+    cards:
+      - type: custom:mushroom-template-card
+        primary: Room Temperature
+        secondary: >
+          {{ states('sensor.lucas_room_temp_temperature') }}°C
+          {% set temp = states('sensor.lucas_room_temp_temperature') | float %}
+          {% if temp >= 18 and temp <= 21 %}✅ Ideal{% elif temp < 18 %}❄️ Cool{% else %}🔥 Warm{% endif %}
+        icon: mdi:thermometer
+        icon_color: >
+          {% set temp = states('sensor.lucas_room_temp_temperature') | float %}
+          {% if temp < 18 %}blue{% elif temp > 22 %}red{% else %}green{% endif %}
+
+      - type: custom:mushroom-template-card
+        primary: Room Humidity
+        secondary: >
+          {{ states('sensor.lucas_room_temp_humidity') }}%
+          {% set hum = states('sensor.lucas_room_temp_humidity') | float %}
+          {% if hum >= 40 and hum <= 60 %}✅ Ideal{% elif hum < 40 %}💨 Dry{% else %}💧 Humid{% endif %}
+        icon: mdi:water-percent
+        icon_color: >
+          {% set hum = states('sensor.lucas_room_temp_humidity') | float %}
+          {% if hum < 40 %}amber{% elif hum > 60 %}blue{% else %}green{% endif %}
+
+      - type: custom:mushroom-template-card
+        primary: Bathroom Temperature
+        secondary: "{{ states('sensor.lucas_bath_temp_sensor_temperature') }}°C"
+        icon: mdi:bathtub
+        icon_color: cyan
+
+      - type: custom:mini-graph-card
+        name: Room Temperature (24h)
+        entities:
+          - entity: sensor.lucas_room_temp_temperature
+            name: Temperature
+            color: "#ff9800"
+        hours_to_show: 24
+        points_per_hour: 4
+        line_width: 2
+        show:
+          labels: true
+          points: false
+          legend: false
+        color_thresholds:
+          - value: 16
+            color: "#2196f3"
+          - value: 18
+            color: "#4caf50"
+          - value: 22
+            color: "#ff9800"
+          - value: 24
+            color: "#f44336"
+
+      - type: custom:mini-graph-card
+        name: Room Humidity (24h)
+        entities:
+          - entity: sensor.lucas_room_temp_humidity
+            name: Humidity
+            color: "#2196f3"
+        hours_to_show: 24
+        points_per_hour: 4
+        line_width: 2
+        show:
+          labels: true
+          points: false
+          legend: false
+
+  # =========================================================================
+  # LIGHTING
+  # =========================================================================
+  - type: grid
+    title: Lighting
+    cards:
+      - type: custom:decluttering-card
+        template: light_group_card
+        variables:
+          - light_entity: light.lucass_room
+          - name: All Lights
+
+      - type: custom:decluttering-card
+        template: light_card
+        variables:
+          - light_entity: light.lucass_room_spot_lights
+          - name: Spotlights
+          - icon: mdi:spotlight-beam
+
+      - type: custom:decluttering-card
+        template: light_card
+        variables:
+          - light_entity: light.lucass_room_pendant_light
+          - name: Pendant
+          - icon: mdi:ceiling-light
+
+      - type: custom:decluttering-card
+        template: light_card
+        variables:
+          - light_entity: light.lucass_room_iris
+          - name: Iris
+          - icon: mdi:lamp
+          - show_color: true
+
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.cloud_lamp
+          - name: Cloud Lamp
+          - icon: mdi:cloud
+
+      - type: custom:decluttering-card
+        template: light_card
+        variables:
+          - light_entity: light.lucass_bathroom_spotlights
+          - name: Bathroom Lights
+          - icon: mdi:bathtub
+
+  # =========================================================================
+  # LIGHTING SCENES - Row 1
+  # =========================================================================
+  - type: grid
+    title: Light Scenes
+    cards:
+      - type: custom:decluttering-card
+        template: scene_row_4
+        variables:
+          - scene_1_name: Arise
+          - scene_1_icon: mdi:weather-sunny
+          - scene_1_color: amber
+          - scene_1_entity: scene.lucass_room_arise
+          - scene_2_name: Storybook
+          - scene_2_icon: mdi:book-open-variant
+          - scene_2_color: pink
+          - scene_2_entity: scene.lucass_room_storybook
+          - scene_3_name: Sleepy
+          - scene_3_icon: mdi:sleep
+          - scene_3_color: purple
+          - scene_3_entity: scene.lucass_room_sleepy
+          - scene_4_name: Night
+          - scene_4_icon: mdi:moon-waning-crescent
+          - scene_4_color: indigo
+          - scene_4_entity: scene.lucass_room_night_time
+
+      # Row 2 - Fun scenes
+      - type: custom:decluttering-card
+        template: scene_row_4
+        variables:
+          - scene_1_name: Blue Lagoon
+          - scene_1_icon: mdi:waves
+          - scene_1_color: blue
+          - scene_1_entity: scene.lucass_room_blue_lagoon
+          - scene_2_name: Blossom
+          - scene_2_icon: mdi:flower
+          - scene_2_color: pink
+          - scene_2_entity: scene.lucass_room_blossom
+          - scene_3_name: Starlight
+          - scene_3_icon: mdi:star
+          - scene_3_color: yellow
+          - scene_3_entity: scene.lucass_room_starlight
+          - scene_4_name: Nebula
+          - scene_4_icon: mdi:creation
+          - scene_4_color: deep-purple
+          - scene_4_entity: scene.lucass_room_nebula
+
+  # =========================================================================
+  # CLIMATE CONTROL
+  # =========================================================================
+  - type: grid
+    title: Climate Control
+    cards:
+      - type: custom:decluttering-card
+        template: climate_card
+        variables:
+          - climate_entity: climate.room_5
+
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_humidifier
+          - name: Humidifier Power
+          - icon: mdi:air-humidifier
+
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_air_filter
+          - name: Air Filter Power
+          - icon: mdi:air-filter
+
+  # =========================================================================
+  # DEVICES
+  # =========================================================================
+  - type: grid
+    title: Devices
+    cards:
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_nanit
+          - name: Nanit Monitor
+          - icon: mdi:baby-carriage
+
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_temp_and_humid_sensor
+          - name: Temp Sensor
+          - icon: mdi:thermometer

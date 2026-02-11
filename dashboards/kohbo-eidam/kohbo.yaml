@@ -1,0 +1,2486 @@
+#################################################
+#                                               #
+#            KOHBO DASHBOARD - EIDAM            #
+#            Main Entry Point                   #
+#                                               #
+#################################################
+
+button_card_templates: !include_dir_merge_named templates/button_cards
+decluttering_templates: !include_dir_merge_named templates/decluttering
+
+kiosk_mode:
+  hide_header: true
+
+views:
+
+  #################################################
+  #                   HOME                        #
+  #################################################
+
+  - title: Home
+    path: home
+    icon: mdi:home
+    type: custom:vertical-layout
+    layout:
+      padding: 16px
+      max_width: 100%
+    cards:
+
+      #
+      # Full-screen wallpaper background
+      #
+      - type: custom:mod-card
+        card_mod:
+          style: |
+            ha-card {
+              position: fixed !important;
+              top: 0;
+              left: 0;
+              width: 100vw;
+              height: 100vh;
+              z-index: -1;
+              background-image: url("https://ik.imagekit.io/wdr7kll1p/465546.jpg?updatedAt=1749726762856");
+              background-size: cover;
+              background-position: center;
+              background-attachment: fixed;
+              border: none !important;
+              box-shadow: none !important;
+              border-radius: 0 !important;
+              pointer-events: none;
+            }
+        card:
+          type: custom:button-card
+          styles:
+            card:
+              - height: 0
+              - padding: 0
+              - margin: 0
+              - overflow: hidden
+
+
+
+      #
+      # =============================================
+      # TOP STATUS BAR
+      # =============================================
+      #
+      - type: custom:mushroom-chips-card
+        card_mod:
+          style: |
+            ha-card {
+              background-color: rgba(75,75,80,0.2) !important;
+              backdrop-filter: blur(20px);
+              -webkit-backdrop-filter: blur(20px);
+              border: solid 1px rgba(150,150,150,0.1) !important;
+              border-radius: 25px !important;
+              box-shadow: none !important;
+              padding: 6px 16px;
+              margin-bottom: 8px;
+              --chip-background: rgba(75,75,80,0.4);
+              --chip-border-radius: 20px;
+              --chip-font-size: 13px;
+              --chip-padding: 0 12px;
+              --chip-height: 38px;
+              --primary-text-color: white;
+              --secondary-text-color: rgba(255,255,255,0.7);
+              font-family: 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif;
+              color: white;
+            }
+        chips:
+          - type: entity
+            entity: input_select.lucas_room_state
+            icon: mdi:baby-face-outline
+            content_info: name
+          - type: weather
+            entity: weather.forecast_home
+            show_conditions: true
+            show_temperature: true
+          - type: entity
+            entity: alarm_control_panel.home_alarm
+            icon: mdi:shield-home
+            content_info: state
+          - type: entity
+            entity: lock.lobby_lock
+            icon: mdi:lock
+            content_info: state
+          - type: template
+            entity: button.lobby_open_door
+            icon: mdi:door
+            content: Lobby
+            tap_action:
+              action: call-service
+              service: button.press
+              target:
+                entity_id: button.lobby_open_door
+              confirmation:
+                text: "Open the lobby door?"
+          - type: spacer
+          - type: template
+            entity: person.edward_eidam
+            icon: mdi:account
+            content: "{{ states('person.edward_eidam') | title }}"
+          - type: template
+            entity: person.loretta_eidam
+            icon: mdi:account
+            content: "{{ states('person.loretta_eidam') | title }}"
+
+      #
+      # =============================================
+      # CONTENT GRID - Main Content | Activity Feed
+      # =============================================
+      #
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: 1fr 260px
+          align-items: start
+          grid-gap: 12px
+        cards:
+          # Left column - Main content (spans 2 rows)
+          - type: vertical-stack
+            cards:
+            # --- State / Mood Bar ---
+            - type: custom:stack-in-card
+              mode: horizontal
+              keep:
+                margin: false
+                border_radius: true
+                background: true
+              card_mod:
+                style: |
+                  ha-card {
+                    background: rgba(40,50,75,0.4) !important;
+                    backdrop-filter: blur(20px) saturate(110%) brightness(90%) !important;
+                    -webkit-backdrop-filter: blur(20px) saturate(110%) brightness(90%) !important;
+                    border: solid 1px rgba(120,160,220,0.22) !important;
+                    border-radius: 20px !important;
+                    overflow: hidden;
+                    padding: 10px 16px !important;
+                    display: flex;
+                    justify-content: center;
+                    box-shadow: 0 0 20px rgba(60,80,120,0.12), inset 0 1px 0 rgba(255,255,255,0.06);
+                  }
+              cards:
+                - type: custom:button-card
+                  entity: input_select.dashboard_mood
+                  name: Morning
+                  show_icon: false
+                  show_state: false
+                  tap_action:
+                    action: call-service
+                    service: input_select.select_option
+                    service_data:
+                      entity_id: input_select.dashboard_mood
+                      option: Morning
+                  styles:
+                    card:
+                      - background: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Morning'
+                              ? 'linear-gradient(135deg, rgba(255,183,77,0.45), rgba(255,138,101,0.35))'
+                              : 'rgba(255,255,255,0.06)';
+                          ]]]
+                      - border: none
+                      - box-shadow: none
+                      - border-radius: 14px
+                      - padding: 10px 20px
+                      - transition: all 0.3s ease
+                      - overflow: visible
+                    name:
+                      - font-size: 13.5px
+                      - font-weight: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Morning' ? '600' : '500';
+                          ]]]
+                      - color: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Morning'
+                              ? 'white' : 'rgba(255,255,255,0.6)';
+                          ]]]
+                      - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      - letter-spacing: 0.08em
+                      - overflow: visible
+                - type: custom:button-card
+                  entity: input_select.dashboard_mood
+                  name: Daytime
+                  show_icon: false
+                  show_state: false
+                  tap_action:
+                    action: call-service
+                    service: input_select.select_option
+                    service_data:
+                      entity_id: input_select.dashboard_mood
+                      option: Daytime
+                  styles:
+                    card:
+                      - background: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Daytime'
+                              ? 'linear-gradient(135deg, rgba(79,195,247,0.4), rgba(129,199,132,0.35))'
+                              : 'rgba(255,255,255,0.06)';
+                          ]]]
+                      - border: none
+                      - box-shadow: none
+                      - border-radius: 14px
+                      - padding: 10px 20px
+                      - transition: all 0.3s ease
+                      - overflow: visible
+                    name:
+                      - font-size: 13.5px
+                      - font-weight: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Daytime' ? '600' : '500';
+                          ]]]
+                      - color: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Daytime'
+                              ? 'white' : 'rgba(255,255,255,0.6)';
+                          ]]]
+                      - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      - letter-spacing: 0.08em
+                      - overflow: visible
+                - type: custom:button-card
+                  entity: input_select.dashboard_mood
+                  name: Evening
+                  show_icon: false
+                  show_state: false
+                  tap_action:
+                    action: call-service
+                    service: input_select.select_option
+                    service_data:
+                      entity_id: input_select.dashboard_mood
+                      option: Evening
+                  styles:
+                    card:
+                      - background: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Evening'
+                              ? 'linear-gradient(135deg, rgba(255,138,101,0.4), rgba(206,147,216,0.35))'
+                              : 'rgba(255,255,255,0.06)';
+                          ]]]
+                      - border: none
+                      - box-shadow: none
+                      - border-radius: 14px
+                      - padding: 10px 20px
+                      - transition: all 0.3s ease
+                      - overflow: visible
+                    name:
+                      - font-size: 13.5px
+                      - font-weight: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Evening' ? '600' : '500';
+                          ]]]
+                      - color: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Evening'
+                              ? 'white' : 'rgba(255,255,255,0.6)';
+                          ]]]
+                      - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      - letter-spacing: 0.08em
+                      - overflow: visible
+                - type: custom:button-card
+                  entity: input_select.dashboard_mood
+                  name: Relax
+                  show_icon: false
+                  show_state: false
+                  tap_action:
+                    action: call-service
+                    service: input_select.select_option
+                    service_data:
+                      entity_id: input_select.dashboard_mood
+                      option: Relax
+                  styles:
+                    card:
+                      - background: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Relax'
+                              ? 'linear-gradient(135deg, rgba(149,117,205,0.4), rgba(121,134,203,0.35))'
+                              : 'rgba(255,255,255,0.06)';
+                          ]]]
+                      - border: none
+                      - box-shadow: none
+                      - border-radius: 14px
+                      - padding: 10px 20px
+                      - transition: all 0.3s ease
+                      - overflow: visible
+                    name:
+                      - font-size: 13.5px
+                      - font-weight: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Relax' ? '600' : '500';
+                          ]]]
+                      - color: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Relax'
+                              ? 'white' : 'rgba(255,255,255,0.6)';
+                          ]]]
+                      - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      - letter-spacing: 0.08em
+                      - overflow: visible
+                - type: custom:button-card
+                  entity: input_select.dashboard_mood
+                  name: Chill
+                  show_icon: false
+                  show_state: false
+                  tap_action:
+                    action: call-service
+                    service: input_select.select_option
+                    service_data:
+                      entity_id: input_select.dashboard_mood
+                      option: Chill
+                  styles:
+                    card:
+                      - background: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Chill'
+                              ? 'linear-gradient(135deg, rgba(79,195,247,0.4), rgba(128,222,234,0.35))'
+                              : 'rgba(255,255,255,0.06)';
+                          ]]]
+                      - border: none
+                      - box-shadow: none
+                      - border-radius: 14px
+                      - padding: 10px 20px
+                      - transition: all 0.3s ease
+                      - overflow: visible
+                    name:
+                      - font-size: 13.5px
+                      - font-weight: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Chill' ? '600' : '500';
+                          ]]]
+                      - color: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state === 'Chill'
+                              ? 'white' : 'rgba(255,255,255,0.6)';
+                          ]]]
+                      - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      - letter-spacing: 0.08em
+                      - overflow: visible
+                - type: custom:button-card
+                  entity: input_select.dashboard_mood
+                  name: Disco
+                  show_icon: false
+                  show_state: false
+                  tap_action:
+                    action: call-service
+                    service: input_select.select_option
+                    service_data:
+                      entity_id: input_select.dashboard_mood
+                      option: Disco Disco
+                  styles:
+                    card:
+                      - background: |
+                          [[[
+                            var s = states['input_select.dashboard_mood'].state;
+                            return s.includes('Disco')
+                              ? 'linear-gradient(135deg, rgba(233,30,99,0.45), rgba(156,39,176,0.4), rgba(63,81,181,0.35))'
+                              : 'rgba(255,255,255,0.06)';
+                          ]]]
+                      - border: none
+                      - box-shadow: none
+                      - border-radius: 14px
+                      - padding: 10px 20px
+                      - transition: all 0.3s ease
+                      - overflow: visible
+                    name:
+                      - font-size: 13.5px
+                      - font-weight: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state.includes('Disco') ? '600' : '500';
+                          ]]]
+                      - color: |
+                          [[[
+                            return states['input_select.dashboard_mood'].state.includes('Disco')
+                              ? 'white' : 'rgba(255,255,255,0.6)';
+                          ]]]
+                      - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      - letter-spacing: 0.08em
+                      - overflow: visible
+            #
+            # --- Quick Settings ---
+            - type: entities
+              card_mod:
+                style: |
+                  ha-card {
+                    background: rgba(40,50,75,0.4) !important;
+                    backdrop-filter: blur(20px) saturate(110%) brightness(90%) !important;
+                    -webkit-backdrop-filter: blur(20px) saturate(110%) brightness(90%) !important;
+                    border: solid 1px rgba(120,160,220,0.22) !important;
+                    border-radius: 20px !important;
+                    overflow: hidden;
+                    padding: 4px 16px !important;
+                    box-shadow: 0 0 20px rgba(60,80,120,0.12), inset 0 1px 0 rgba(255,255,255,0.05);
+                    --primary-text-color: white;
+                    --secondary-text-color: rgba(255,255,255,0.5);
+                    font-family: 'SF Pro Rounded', -apple-system, sans-serif;
+                    color: white;
+                    font-size: 12px;
+                    --paper-item-min-height: 36px;
+                  }
+                  #states {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    gap: 8px;
+                    justify-content: center;
+                  }
+                  #states > * {
+                    flex: 1;
+                  }
+              entities:
+                - entity: input_boolean.quiet_mode
+                  name: Quiet Mode
+                  icon: mdi:volume-off
+                - entity: input_boolean.guest_mode
+                  name: Guest Mode
+                  icon: mdi:account-group
+                - entity: input_boolean.lucas_napping
+                  name: Lucas Napping
+                  icon: mdi:sleep
+            # =============================================
+            # MAIN ROW - Camera | Weather | Climate
+            # =============================================
+            #
+            - type: custom:layout-card
+              layout_type: custom:grid-layout
+              layout:
+                grid-template-columns: 1fr 1fr 1fr
+                align-items: stretch
+                grid-gap: 10px
+              cards:
+                #
+                # LEFT - Camera Feed with Selector Buttons
+                #
+                - type: custom:stack-in-card
+                  mode: vertical
+                  keep:
+                    margin: false
+                    border_radius: true
+                    background: true
+                    outer_padding: false
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: linear-gradient(135deg, rgba(60,90,140,0.3), rgba(75,75,80,0.15), rgba(100,70,130,0.2)) !important;
+                        backdrop-filter: blur(20px) saturate(110%) brightness(90%) !important;
+                        -webkit-backdrop-filter: blur(20px) saturate(110%) brightness(90%) !important;
+                        border: solid 1px rgba(100,160,220,0.25) !important;
+                        border-radius: 20px !important;
+                        overflow: hidden;
+                        box-shadow: 0 0 20px rgba(80,130,200,0.1), inset 0 0 30px rgba(80,130,200,0.05) !important;
+                        padding: 10px !important;
+                        flex: 1;
+                                            --vertical-stack-card-gap: 8px;
+                      }
+                  cards:
+                    - type: custom:button-card
+                      name: Eidam
+                      show_icon: false
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 4px 2px 0px 2px
+                        name:
+                          - font-size: 18px
+                          - font-weight: 600
+                          - color: white
+                          - justify-self: start
+                          - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                          - letter-spacing: 0.01em
+                          - -webkit-font-smoothing: antialiased
+                    - type: custom:layout-card
+                      layout_type: custom:grid-layout
+                      layout:
+                        grid-template-columns: 2.5fr 1fr
+                        grid-gap: 10px
+                        align-items: stretch
+                      cards:
+                        # Camera feed (left)
+                        - type: custom:stack-in-card
+                          mode: vertical
+                          keep:
+                            margin: false
+                            border_radius: true
+                            background: true
+                          card_mod:
+                            style: |
+                              ha-card {
+                                background: transparent !important;
+                                box-shadow: none !important;
+                                border: none !important;
+                                border-radius: 14px !important;
+                                overflow: hidden;
+                                min-height: 200px;
+                              }
+                          cards:
+                            - type: conditional
+                              conditions:
+                                - entity: input_select.dashboard_camera
+                                  state: "Lucas's Room"
+                              card:
+                                type: picture-entity
+                                camera_view: auto
+                                entity: camera.lucass_room_live_view_2
+                                aspect_ratio: 2:1
+                                show_name: false
+                                show_state: false
+                                card_mod:
+                                  style: |
+                                    ha-card {
+                                      background: transparent !important;
+                                      box-shadow: none !important;
+                                      border: none !important;
+                                      border-radius: 14px !important;
+                                      overflow: hidden;
+                                    }
+                                    img {
+                                      border-radius: 14px !important;
+                                      object-fit: cover;
+                                      width: 100%;
+                                      min-height: 200px;
+                                    }
+                                    img { border-radius: 14px !important; }
+                            - type: conditional
+                              conditions:
+                                - entity: input_select.dashboard_camera
+                                  state: Garden
+                              card:
+                                type: picture-entity
+                                camera_view: auto
+                                entity: camera.garden_live_view
+                                aspect_ratio: 2:1
+                                show_name: false
+                                show_state: false
+                                card_mod:
+                                  style: |
+                                    ha-card {
+                                      background: transparent !important;
+                                      box-shadow: none !important;
+                                      border: none !important;
+                                      border-radius: 14px !important;
+                                      overflow: hidden;
+                                    }
+                                    img {
+                                      border-radius: 14px !important;
+                                      object-fit: cover;
+                                      width: 100%;
+                                      min-height: 200px;
+                                    }
+                                    img { border-radius: 14px !important; }
+                            - type: conditional
+                              conditions:
+                                - entity: input_select.dashboard_camera
+                                  state: Basement Door
+                              card:
+                                type: picture-entity
+                                camera_view: auto
+                                entity: camera.basement_door_live_view
+                                aspect_ratio: 2:1
+                                show_name: false
+                                show_state: false
+                                card_mod:
+                                  style: |
+                                    ha-card { background: transparent !important; box-shadow: none !important; border: none !important; border-radius: 14px !important; overflow: hidden; min-height: 200px; } img { border-radius: 14px !important; object-fit: cover; width: 100%; height: 100%; min-height: 200px; }
+                                    img { border-radius: 14px !important; }
+                            - type: conditional
+                              conditions:
+                                - entity: input_select.dashboard_camera
+                                  state: Upstairs
+                              card:
+                                type: picture-entity
+                                camera_view: auto
+                                entity: camera.upstairs_live_view
+                                aspect_ratio: 2:1
+                                show_name: false
+                                show_state: false
+                                card_mod:
+                                  style: |
+                                    ha-card { background: transparent !important; box-shadow: none !important; border: none !important; border-radius: 14px !important; overflow: hidden; min-height: 200px; } img { border-radius: 14px !important; object-fit: cover; width: 100%; height: 100%; min-height: 200px; }
+                                    img { border-radius: 14px !important; }
+                        # Camera selector buttons (right)
+                        - type: vertical-stack
+                          cards:
+                            - type: custom:button-card
+                              name: Lucas
+                              tap_action:
+                                action: call-service
+                                service: input_select.select_option
+                                service_data:
+                                  entity_id: input_select.dashboard_camera
+                                  option: "Lucas's Room"
+                              styles:
+                                card:
+                                  - background: "[[[if (states['input_select.dashboard_camera'].state.includes('Lucas')) return 'rgba(100,130,180,0.45)'; return 'rgba(255,255,255,0.08)';]]]"
+                                  - box-shadow: none
+                                  - border: none
+                                  - border-radius: 14px
+                                  - padding: 8px 14px
+                                  - min-width: 82px
+                                name:
+                                  - font-size: 12px
+                                  - color: "[[[if (states['input_select.dashboard_camera'].state.includes('Lucas')) return 'white'; return 'rgba(255,255,255,0.7)';]]]"
+                                  - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                                  - font-weight: 500
+                                  - letter-spacing: 0.02em
+                            - type: custom:button-card
+                              name: Garden
+                              tap_action:
+                                action: call-service
+                                service: input_select.select_option
+                                service_data:
+                                  entity_id: input_select.dashboard_camera
+                                  option: Garden
+                              styles:
+                                card:
+                                  - background: "[[[if (states['input_select.dashboard_camera'].state === 'Garden') return 'rgba(100,130,180,0.45)'; return 'rgba(255,255,255,0.08)';]]]"
+                                  - box-shadow: none
+                                  - border: none
+                                  - border-radius: 14px
+                                  - padding: 8px 14px
+                                  - min-width: 82px
+                                name:
+                                  - font-size: 12px
+                                  - color: "[[[if (states['input_select.dashboard_camera'].state === 'Garden') return 'white'; return 'rgba(255,255,255,0.7)';]]]"
+                                  - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                                  - font-weight: 500
+                                  - letter-spacing: 0.02em
+                            - type: custom:button-card
+                              name: Door
+                              tap_action:
+                                action: call-service
+                                service: input_select.select_option
+                                service_data:
+                                  entity_id: input_select.dashboard_camera
+                                  option: Basement Door
+                              styles:
+                                card:
+                                  - background: "[[[if (states['input_select.dashboard_camera'].state === 'Basement Door') return 'rgba(100,130,180,0.45)'; return 'rgba(255,255,255,0.08)';]]]"
+                                  - box-shadow: none
+                                  - border: none
+                                  - border-radius: 14px
+                                  - padding: 8px 14px
+                                  - min-width: 82px
+                                name:
+                                  - font-size: 12px
+                                  - color: "[[[if (states['input_select.dashboard_camera'].state === 'Basement Door') return 'white'; return 'rgba(255,255,255,0.7)';]]]"
+                                  - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                                  - font-weight: 500
+                                  - letter-spacing: 0.02em
+                            - type: custom:button-card
+                              name: Upstairs
+                              tap_action:
+                                action: call-service
+                                service: input_select.select_option
+                                service_data:
+                                  entity_id: input_select.dashboard_camera
+                                  option: Upstairs
+                              styles:
+                                card:
+                                  - background: "[[[if (states['input_select.dashboard_camera'].state === 'Upstairs') return 'rgba(100,130,180,0.45)'; return 'rgba(255,255,255,0.08)';]]]"
+                                  - box-shadow: none
+                                  - border: none
+                                  - border-radius: 14px
+                                  - padding: 8px 14px
+                                  - min-width: 82px
+                                name:
+                                  - font-size: 12px
+                                  - color: "[[[if (states['input_select.dashboard_camera'].state === 'Upstairs') return 'white'; return 'rgba(255,255,255,0.7)';]]]"
+                                  - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                                  - font-weight: 500
+                                  - letter-spacing: 0.02em
+                #
+                # CENTER - Weather
+                #
+                - type: custom:stack-in-card
+                  mode: vertical
+                  keep:
+                    margin: true
+                    border_radius: true
+                    background: true
+                    outer_padding: false
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: linear-gradient(145deg, rgba(20,40,80,0.35), rgba(40,50,85,0.25), rgba(75,30,40,0.12)) !important;
+                        backdrop-filter: blur(20px) saturate(110%) brightness(90%) !important;
+                        -webkit-backdrop-filter: blur(20px) saturate(110%) brightness(90%) !important;
+                        border: solid 1px rgba(80,120,180,0.2) !important;
+                        border-radius: 20px !important;
+                        overflow: hidden;
+                        border-top: 2px solid rgba(180,50,50,0.25) !important;
+                        box-shadow: 0 0 25px rgba(30,60,120,0.15), inset 0 0 40px rgba(30,60,120,0.08), inset 0 1px 0 rgba(180,50,50,0.15);
+                        color: white;
+                        font-family: "SF Pro Rounded", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+                        -webkit-font-smoothing: antialiased;
+                        -moz-osx-font-smoothing: grayscale;
+                      }
+                  cards:
+                    - type: custom:button-card
+                      name: London
+                      show_icon: false
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 12px 14px 4px 14px
+                        name:
+                          - font-size: 18px
+                          - font-weight: 600
+                          - color: white
+                          - justify-self: start
+                          - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                          - letter-spacing: 0.01em
+                          - -webkit-font-smoothing: antialiased
+                    - type: custom:clock-weather-card
+                      entity: weather.forecast_home
+                      forecast_rows: 5
+                      locale: en-GB
+                      time_format: 24
+                      hide_clock: false
+                      hide_date: false
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: none !important;
+                            border: none !important;
+                            box-shadow: none !important;
+                            color: white !important;
+                            --primary-text-color: white;
+                            --secondary-text-color: rgba(255,255,255,0.7);
+                            font-family: "SF Pro Rounded", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif !important;
+                            -webkit-font-smoothing: antialiased !important;
+                            -moz-osx-font-smoothing: grayscale !important;
+                          }
+                          ha-card * {
+                            font-family: "SF Pro Rounded", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif !important;
+                            -webkit-font-smoothing: antialiased !important;
+                            -moz-osx-font-smoothing: grayscale !important;
+                          }
+                          clock-weather-card-today-right-wrap-center {
+                            font-size: 54px !important;
+                            font-weight: 300 !important;
+                            letter-spacing: -1px !important;
+                          }
+                          clock-weather-card-today-right-wrap-top {
+                            font-size: 13px !important;
+                            font-weight: 400 !important;
+                            opacity: 0.85;
+                            letter-spacing: 0.02em !important;
+                          }
+                          clock-weather-card-today-right-wrap-bottom {
+                            font-size: 12px !important;
+                            font-weight: 400 !important;
+                            opacity: 0.6;
+                            letter-spacing: 0.02em !important;
+                          }
+                          clock-weather-card-forecast {
+                            margin-top: 8px !important;
+                          }
+                          clock-weather-card-forecast-row {
+                            font-size: 13px !important;
+                            font-weight: 400 !important;
+                            opacity: 0.9;
+                          }
+                          forecast-text {
+                            font-weight: 500 !important;
+                            font-size: 13px !important;
+                          }
+                          forecast-temperature-bar-background {
+                            background: rgba(255,255,255,0.08) !important;
+                            border-radius: 4px !important;
+                          }
+                          forecast-temperature-bar-range {
+                            border-radius: 4px !important;
+                          }
+                          forecast-temperature-bar-current-indicator-dot {
+                            background: white !important;
+                          }
+                    - type: custom:button-card
+                      entity: sun.sun
+                      show_icon: false
+                      show_name: false
+                      show_state: false
+                      custom_fields:
+                        info: |
+                          [[[
+                            var rise = states['sun.sun'].attributes.next_rising;
+                            var set = states['sun.sun'].attributes.next_setting;
+                            var riseTime = rise ? new Date(rise).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}) : '--:--';
+                            var setTime = set ? new Date(set).toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}) : '--:--';
+                            var cond = states['weather.forecast_home'].state;
+                            var rainText = 'No rain expected';
+                            if (cond.includes('rain') || cond.includes('shower')) {
+                              rainText = 'Rain now';
+                            }
+                            var html = '<div style="display:flex;justify-content:space-between;align-items:center;width:100%;gap:12px">';
+                            html += '<div style="display:flex;align-items:center;gap:5px"><ha-icon icon="mdi:weather-sunset-up" style="--mdi-icon-size:14px;color:#ffb74d"></ha-icon><span style="font-size:12px;color:rgba(255,255,255,0.75)">' + riseTime + '</span></div>';
+                            html += '<div style="display:flex;align-items:center;gap:5px"><ha-icon icon="mdi:weather-sunset-down" style="--mdi-icon-size:14px;color:#ff8a65"></ha-icon><span style="font-size:12px;color:rgba(255,255,255,0.75)">' + setTime + '</span></div>';
+                            html += '<div style="display:flex;align-items:center;gap:5px"><ha-icon icon="mdi:weather-rainy" style="--mdi-icon-size:14px;color:#4fc3f7"></ha-icon><span style="font-size:12px;color:rgba(255,255,255,0.6)">' + rainText + '</span></div>';
+                            html += '</div>';
+                            return html;
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 4px 10px 8px 10px
+                        grid:
+                          - grid-template-areas: '"info"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          info:
+                            - width: 100%
+                            - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                            - -webkit-font-smoothing: antialiased
+                      tap_action:
+                        action: none
+                #
+                #
+                # RIGHT - Room Temperatures
+                #
+                - type: custom:stack-in-card
+                  mode: vertical
+                  keep:
+                    margin: true
+                    border_radius: true
+                    background: true
+                    outer_padding: false
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: rgba(75,75,80,0.2) !important;
+                        backdrop-filter: blur(30px) saturate(110%) brightness(90%) !important;
+                        -webkit-backdrop-filter: blur(30px) saturate(110%) brightness(90%) !important;
+                        border: solid 1px rgba(150,150,150,0.1) !important;
+                        border-radius: 20px !important;
+                        overflow: hidden;
+                        color: white;
+                        font-family: "SF Pro Rounded", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+                        -webkit-font-smoothing: antialiased;
+                        -moz-osx-font-smoothing: grayscale;
+                      }
+                  cards:
+                    - type: custom:button-card
+                      name: Climate
+                      show_icon: false
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 12px 14px 4px 14px
+                        name:
+                          - font-size: 18px
+                          - font-weight: 600
+                          - color: white
+                          - justify-self: start
+                          - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                          - letter-spacing: 0.01em
+                          - -webkit-font-smoothing: antialiased
+                    - type: custom:button-card
+                      entity: sensor.hallway_temp_temperature
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        content: |
+                          [[[
+                            var t=parseFloat(states['sensor.hallway_temp_temperature'].state);
+                            var hum=Math.round(parseFloat(states['sensor.hallway_temp_humidity'].state));
+                            var humC=hum>65?'#5b9bd5':(hum<35?'#d4a04a':'rgba(255,255,255,0.35)');
+                            var cs=states['climate.hallway'].state;var h=cs==='heat'||cs==='auto';var dc=cs==='unavailable'?'rgba(255,255,255,0.12)':(h?'#ff6b35':'rgba(255,255,255,0.2)');var gw=h?'0 0 6px #ff6b35':'none';
+                            var cs2=states['climate.hallway'].state;var tgt=cs2==='unavailable'?'<span style="color:rgba(255,255,255,0.18);font-size:9px">OFFLINE</span>':(cs2==='off'?'<span style="color:rgba(255,255,255,0.25);font-size:9px">OFF</span>':'<span style="color:rgba(255,255,255,0.35);font-size:10px">→'+states['climate.hallway'].attributes.temperature+'°</span>');
+                            var aqTag='';
+                            var mn=14,mx=26;
+                            var pct=Math.min(100,Math.max(0,((t-mn)/(mx-mn))*100));
+                            var bc=t<17?'#5b9bd5':(t>23?'#ef4444':'#4ade80');
+                            return '<div style="display:flex;flex-direction:column;gap:4px;width:100%">'
+                              +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;flex-shrink:0;line-height:1">🚪</span>'
+                              +'<div style="width:7px;height:7px;border-radius:50%;background:'+dc+';box-shadow:'+gw+';flex-shrink:0"></div>'
+                              +'<span style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.88);flex:1">Hallway</span>'
+                              +'<span style="font-size:14px;font-weight:600;color:white">'+t.toFixed(1)+'°</span>'
+                              +'<span style="min-width:32px;text-align:right">'+tgt+'</span>'
+                              +'</div>'
+                              +'<div style="display:flex;align-items:center;gap:0;padding-left:13px">'
+                              +'<span style="font-size:9px;color:'+humC+'">💧 '+hum+'%</span>'
+                              +aqTag
+                              +'<div style="flex:1;margin-left:8px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;position:relative">'
+                              +'<div style="position:absolute;left:0;top:0;width:'+pct+'%;height:100%;background:linear-gradient(90deg,rgba(90,155,213,0.5),'+bc+');border-radius:2px"></div>'
+                              +'<div style="position:absolute;left:calc('+pct+'% - 2px);top:-1.5px;width:5px;height:6px;background:white;border-radius:3px;box-shadow:0 0 2px rgba(0,0,0,0.3)"></div>'
+                              +'</div>'
+                              +'</div>'
+                              +'</div>';
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 7px 14px
+                          - border-bottom: 1px solid rgba(255,255,255,0.05)
+                        grid:
+                          - grid-template-areas: '"content"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          content:
+                            - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                            - -webkit-font-smoothing: antialiased
+                            - width: 100%
+                    - type: custom:button-card
+                      entity: sensor.office_temp_temperature
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        content: |
+                          [[[
+                            var t=parseFloat(states['sensor.office_temp_temperature'].state);
+                            var hum=Math.round(parseFloat(states['sensor.office_temp_humidity'].state));
+                            var humC=hum>65?'#5b9bd5':(hum<35?'#d4a04a':'rgba(255,255,255,0.35)');
+                            var cs=states['climate.office'].state;var h=cs==='heat'||cs==='auto';var dc=cs==='unavailable'?'rgba(255,255,255,0.12)':(h?'#ff6b35':'rgba(255,255,255,0.2)');var gw=h?'0 0 6px #ff6b35':'none';
+                            var cs2=states['climate.office'].state;var tgt=cs2==='unavailable'?'<span style="color:rgba(255,255,255,0.18);font-size:9px">OFFLINE</span>':(cs2==='off'?'<span style="color:rgba(255,255,255,0.25);font-size:9px">OFF</span>':'<span style="color:rgba(255,255,255,0.35);font-size:10px">→'+states['climate.office'].attributes.temperature+'°</span>');
+                            var aqv=parseFloat(states['sensor.office_air_quality_monitor_indoor_air_quality'].state);var aql=aqv>=80?'Good':(aqv>=50?'Fair':'Poor');var aqc=aqv>=80?'#4ade80':(aqv>=50?'#fbbf24':'#ef4444');var aqTag='<span style="font-size:8px;padding:1px 4px;border-radius:6px;background:'+aqc+'18;color:'+aqc+';font-weight:600;margin-left:6px">'+aql+'</span>';
+                            var mn=14,mx=26;
+                            var pct=Math.min(100,Math.max(0,((t-mn)/(mx-mn))*100));
+                            var bc=t<17?'#5b9bd5':(t>23?'#ef4444':'#4ade80');
+                            return '<div style="display:flex;flex-direction:column;gap:4px;width:100%">'
+                              +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;flex-shrink:0;line-height:1">💻</span>'
+                              +'<div style="width:7px;height:7px;border-radius:50%;background:'+dc+';box-shadow:'+gw+';flex-shrink:0"></div>'
+                              +'<span style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.88);flex:1">Office</span>'
+                              +'<span style="font-size:14px;font-weight:600;color:white">'+t.toFixed(1)+'°</span>'
+                              +'<span style="min-width:32px;text-align:right">'+tgt+'</span>'
+                              +'</div>'
+                              +'<div style="display:flex;align-items:center;gap:0;padding-left:13px">'
+                              +'<span style="font-size:9px;color:'+humC+'">💧 '+hum+'%</span>'
+                              +aqTag
+                              +'<div style="flex:1;margin-left:8px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;position:relative">'
+                              +'<div style="position:absolute;left:0;top:0;width:'+pct+'%;height:100%;background:linear-gradient(90deg,rgba(90,155,213,0.5),'+bc+');border-radius:2px"></div>'
+                              +'<div style="position:absolute;left:calc('+pct+'% - 2px);top:-1.5px;width:5px;height:6px;background:white;border-radius:3px;box-shadow:0 0 2px rgba(0,0,0,0.3)"></div>'
+                              +'</div>'
+                              +'</div>'
+                              +'</div>';
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 7px 14px
+                          - border-bottom: 1px solid rgba(255,255,255,0.05)
+                        grid:
+                          - grid-template-areas: '"content"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          content:
+                            - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                            - -webkit-font-smoothing: antialiased
+                            - width: 100%
+                    - type: custom:button-card
+                      entity: sensor.lounge_temp_sensor_temperature
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        content: |
+                          [[[
+                            var t=parseFloat(states['sensor.lounge_temp_sensor_temperature'].state);
+                            var hum=Math.round(parseFloat(states['sensor.lounge_temperature_and_humidity_sensor_humidity'].state));
+                            var humC=hum>65?'#5b9bd5':(hum<35?'#d4a04a':'rgba(255,255,255,0.35)');
+                            var cs=states['climate.lounge'].state;var h=cs==='heat'||cs==='auto';var dc=cs==='unavailable'?'rgba(255,255,255,0.12)':(h?'#ff6b35':'rgba(255,255,255,0.2)');var gw=h?'0 0 6px #ff6b35':'none';
+                            var cs2=states['climate.lounge'].state;var tgt=cs2==='unavailable'?'<span style="color:rgba(255,255,255,0.18);font-size:9px">OFFLINE</span>':(cs2==='off'?'<span style="color:rgba(255,255,255,0.25);font-size:9px">OFF</span>':'<span style="color:rgba(255,255,255,0.35);font-size:10px">→'+states['climate.lounge'].attributes.temperature+'°</span>');
+                            var aqTag='';
+                            var mn=14,mx=26;
+                            var pct=Math.min(100,Math.max(0,((t-mn)/(mx-mn))*100));
+                            var bc=t<17?'#5b9bd5':(t>23?'#ef4444':'#4ade80');
+                            return '<div style="display:flex;flex-direction:column;gap:4px;width:100%">'
+                              +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;flex-shrink:0;line-height:1">🛋️</span>'
+                              +'<div style="width:7px;height:7px;border-radius:50%;background:'+dc+';box-shadow:'+gw+';flex-shrink:0"></div>'
+                              +'<span style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.88);flex:1">Lounge</span>'
+                              +'<span style="font-size:14px;font-weight:600;color:white">'+t.toFixed(1)+'°</span>'
+                              +'<span style="min-width:32px;text-align:right">'+tgt+'</span>'
+                              +'</div>'
+                              +'<div style="display:flex;align-items:center;gap:0;padding-left:13px">'
+                              +'<span style="font-size:9px;color:'+humC+'">💧 '+hum+'%</span>'
+                              +aqTag
+                              +'<div style="flex:1;margin-left:8px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;position:relative">'
+                              +'<div style="position:absolute;left:0;top:0;width:'+pct+'%;height:100%;background:linear-gradient(90deg,rgba(90,155,213,0.5),'+bc+');border-radius:2px"></div>'
+                              +'<div style="position:absolute;left:calc('+pct+'% - 2px);top:-1.5px;width:5px;height:6px;background:white;border-radius:3px;box-shadow:0 0 2px rgba(0,0,0,0.3)"></div>'
+                              +'</div>'
+                              +'</div>'
+                              +'</div>';
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 7px 14px
+                          - border-bottom: 1px solid rgba(255,255,255,0.05)
+                        grid:
+                          - grid-template-areas: '"content"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          content:
+                            - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                            - -webkit-font-smoothing: antialiased
+                            - width: 100%
+                    - type: custom:button-card
+                      entity: sensor.lucas_room_temp_temperature
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        content: |
+                          [[[
+                            var t=parseFloat(states['sensor.lucas_room_temp_temperature'].state);
+                            var hum=Math.round(parseFloat(states['sensor.bedroom_humidifier_humidity'].state));
+                            var humC=hum>65?'#5b9bd5':(hum<35?'#d4a04a':'rgba(255,255,255,0.35)');
+                            var dc='rgba(255,255,255,0.12)';var gw='none';
+                            var tgt='';
+                            var aqv=parseFloat(states['sensor.lucass_room_air_quality_monitor_indoor_air_quality'].state);var aql=aqv>=80?'Good':(aqv>=50?'Fair':'Poor');var aqc=aqv>=80?'#4ade80':(aqv>=50?'#fbbf24':'#ef4444');var aqTag='<span style="font-size:8px;padding:1px 4px;border-radius:6px;background:'+aqc+'18;color:'+aqc+';font-weight:600;margin-left:6px">'+aql+'</span>';
+                            var mn=14,mx=26;
+                            var pct=Math.min(100,Math.max(0,((t-mn)/(mx-mn))*100));
+                            var bc=t<17?'#5b9bd5':(t>23?'#ef4444':'#4ade80');
+                            return '<div style="display:flex;flex-direction:column;gap:4px;width:100%">'
+                              +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;flex-shrink:0;line-height:1">🧸</span>'
+                              +'<div style="width:7px;height:7px;border-radius:50%;background:'+dc+';box-shadow:'+gw+';flex-shrink:0"></div>'
+                              +'<span style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.88);flex:1">Lucas\'s Room</span>'
+                              +'<span style="font-size:14px;font-weight:600;color:white">'+t.toFixed(1)+'°</span>'
+                              +'<span style="min-width:32px;text-align:right">'+tgt+'</span>'
+                              +'</div>'
+                              +'<div style="display:flex;align-items:center;gap:0;padding-left:13px">'
+                              +'<span style="font-size:9px;color:'+humC+'">💧 '+hum+'%</span>'
+                              +aqTag
+                              +'<div style="flex:1;margin-left:8px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;position:relative">'
+                              +'<div style="position:absolute;left:0;top:0;width:'+pct+'%;height:100%;background:linear-gradient(90deg,rgba(90,155,213,0.5),'+bc+');border-radius:2px"></div>'
+                              +'<div style="position:absolute;left:calc('+pct+'% - 2px);top:-1.5px;width:5px;height:6px;background:white;border-radius:3px;box-shadow:0 0 2px rgba(0,0,0,0.3)"></div>'
+                              +'</div>'
+                              +'</div>'
+                              +'</div>';
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 7px 14px
+                          - border-bottom: 1px solid rgba(255,255,255,0.05)
+                        grid:
+                          - grid-template-areas: '"content"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          content:
+                            - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                            - -webkit-font-smoothing: antialiased
+                            - width: 100%
+                    - type: custom:button-card
+                      entity: sensor.edward_bedside_sensor_temperature
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        content: |
+                          [[[
+                            var t=parseFloat(states['sensor.edward_bedside_sensor_temperature'].state);
+                            var hum=Math.round(parseFloat(states['sensor.edward_t_and_humidity_sensor_humidity'].state));
+                            var humC=hum>65?'#5b9bd5':(hum<35?'#d4a04a':'rgba(255,255,255,0.35)');
+                            var cs=states['climate.edward_s_device'].state;var h=cs==='heat'||cs==='auto';var dc=cs==='unavailable'?'rgba(255,255,255,0.12)':(h?'#ff6b35':'rgba(255,255,255,0.2)');var gw=h?'0 0 6px #ff6b35':'none';
+                            var cs2=states['climate.edward_s_device'].state;var tgt=cs2==='unavailable'?'<span style="color:rgba(255,255,255,0.18);font-size:9px">OFFLINE</span>':(cs2==='off'?'<span style="color:rgba(255,255,255,0.25);font-size:9px">OFF</span>':'<span style="color:rgba(255,255,255,0.35);font-size:10px">→'+states['climate.edward_s_device'].attributes.temperature+'°</span>');
+                            var aqTag='';
+                            var mn=14,mx=26;
+                            var pct=Math.min(100,Math.max(0,((t-mn)/(mx-mn))*100));
+                            var bc=t<17?'#5b9bd5':(t>23?'#ef4444':'#4ade80');
+                            return '<div style="display:flex;flex-direction:column;gap:4px;width:100%">'
+                              +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;flex-shrink:0;line-height:1">🛏️</span>'
+                              +'<div style="width:7px;height:7px;border-radius:50%;background:'+dc+';box-shadow:'+gw+';flex-shrink:0"></div>'
+                              +'<span style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.88);flex:1">Bedroom</span>'
+                              +'<span style="font-size:14px;font-weight:600;color:white">'+t.toFixed(1)+'°</span>'
+                              +'<span style="min-width:32px;text-align:right">'+tgt+'</span>'
+                              +'</div>'
+                              +'<div style="display:flex;align-items:center;gap:0;padding-left:13px">'
+                              +'<span style="font-size:9px;color:'+humC+'">💧 '+hum+'%</span>'
+                              +aqTag
+                              +'<div style="flex:1;margin-left:8px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;position:relative">'
+                              +'<div style="position:absolute;left:0;top:0;width:'+pct+'%;height:100%;background:linear-gradient(90deg,rgba(90,155,213,0.5),'+bc+');border-radius:2px"></div>'
+                              +'<div style="position:absolute;left:calc('+pct+'% - 2px);top:-1.5px;width:5px;height:6px;background:white;border-radius:3px;box-shadow:0 0 2px rgba(0,0,0,0.3)"></div>'
+                              +'</div>'
+                              +'</div>'
+                              +'</div>';
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 7px 14px
+                          - border-bottom: 1px solid rgba(255,255,255,0.05)
+                        grid:
+                          - grid-template-areas: '"content"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          content:
+                            - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                            - -webkit-font-smoothing: antialiased
+                            - width: 100%
+                    - type: custom:button-card
+                      entity: sensor.bathroom_th_temperature
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        content: |
+                          [[[
+                            var t=parseFloat(states['sensor.bathroom_th_temperature'].state);
+                            var hum=Math.round(parseFloat(states['sensor.bathroom_th_humidity'].state));
+                            var humC=hum>65?'#5b9bd5':(hum<35?'#d4a04a':'rgba(255,255,255,0.35)');
+                            var dc='rgba(255,255,255,0.12)';var gw='none';
+                            var tgt='';
+                            var aqTag='';
+                            var mn=14,mx=26;
+                            var pct=Math.min(100,Math.max(0,((t-mn)/(mx-mn))*100));
+                            var bc=t<17?'#5b9bd5':(t>23?'#ef4444':'#4ade80');
+                            return '<div style="display:flex;flex-direction:column;gap:4px;width:100%">'
+                              +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;flex-shrink:0;line-height:1">🚿</span>'
+                              +'<div style="width:7px;height:7px;border-radius:50%;background:'+dc+';box-shadow:'+gw+';flex-shrink:0"></div>'
+                              +'<span style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.88);flex:1">Bathroom</span>'
+                              +'<span style="font-size:14px;font-weight:600;color:white">'+t.toFixed(1)+'°</span>'
+                              +'<span style="min-width:32px;text-align:right">'+tgt+'</span>'
+                              +'</div>'
+                              +'<div style="display:flex;align-items:center;gap:0;padding-left:13px">'
+                              +'<span style="font-size:9px;color:'+humC+'">💧 '+hum+'%</span>'
+                              +aqTag
+                              +'<div style="flex:1;margin-left:8px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;position:relative">'
+                              +'<div style="position:absolute;left:0;top:0;width:'+pct+'%;height:100%;background:linear-gradient(90deg,rgba(90,155,213,0.5),'+bc+');border-radius:2px"></div>'
+                              +'<div style="position:absolute;left:calc('+pct+'% - 2px);top:-1.5px;width:5px;height:6px;background:white;border-radius:3px;box-shadow:0 0 2px rgba(0,0,0,0.3)"></div>'
+                              +'</div>'
+                              +'</div>'
+                              +'</div>';
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 7px 14px
+                          - border-bottom: none
+                        grid:
+                          - grid-template-areas: '"content"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          content:
+                            - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                            - -webkit-font-smoothing: antialiased
+                            - width: 100%
+            - type: custom:layout-card
+              layout_type: custom:grid-layout
+              layout:
+                grid-template-columns: 1fr 1fr
+                grid-gap: 10px
+                align-items: stretch
+              cards:
+                #
+                # LEFT - Rooms
+                #
+                - type: custom:stack-in-card
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: linear-gradient(145deg, rgba(35,50,70,0.38), rgba(50,60,80,0.22)) !important;
+                        backdrop-filter: blur(28px) saturate(130%) brightness(85%);
+                        -webkit-backdrop-filter: blur(28px) saturate(130%) brightness(85%);
+                        border: solid 1px rgba(140,170,220,0.12) !important;
+                        border-radius: 20px !important;
+                        box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+                        padding: 15px;
+                        font-family: 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif;
+                        color: white;
+                        --vertical-stack-card-gap: 6px;
+                      }
+                  cards:
+                    - type: custom:button-card
+                      name: Lighting
+                      show_icon: false
+                      styles:
+                        card:
+                          - background: transparent
+                          - box-shadow: none
+                          - border: none
+                          - padding: 0 0 4px 0
+                        name:
+                          - font-size: 18px
+                          - font-weight: 600
+                          - color: white
+                          - justify-self: start
+                          - font-family: "'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif"
+                    - type: custom:mushroom-light-card
+                      entity: light.hallway
+                      name: Hallway
+                      icon: mdi:ceiling-light
+                      use_light_color: true
+                      show_brightness_control: true
+                      show_color_temp_control: false
+                      layout: horizontal
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: rgba(255,255,255,0.06) !important;
+                            border: 1px solid rgba(255,255,255,0.08) !important;
+                            border-radius: 14px !important;
+                            --primary-text-color: white;
+                            --secondary-text-color: rgba(255,255,255,0.5);
+                          }
+                    - type: custom:mushroom-light-card
+                      entity: light.lounge
+                      name: Lounge
+                      icon: mdi:sofa
+                      use_light_color: true
+                      show_brightness_control: true
+                      show_color_temp_control: false
+                      layout: horizontal
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: rgba(255,255,255,0.06) !important;
+                            border: 1px solid rgba(255,255,255,0.08) !important;
+                            border-radius: 14px !important;
+                            --primary-text-color: white;
+                            --secondary-text-color: rgba(255,255,255,0.5);
+                          }
+                    - type: custom:mushroom-light-card
+                      entity: light.kitchen
+                      name: Kitchen
+                      icon: mdi:countertop-outline
+                      use_light_color: true
+                      show_brightness_control: true
+                      show_color_temp_control: false
+                      layout: horizontal
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: rgba(255,255,255,0.06) !important;
+                            border: 1px solid rgba(255,255,255,0.08) !important;
+                            border-radius: 14px !important;
+                            --primary-text-color: white;
+                            --secondary-text-color: rgba(255,255,255,0.5);
+                          }
+                    - type: custom:mushroom-light-card
+                      entity: light.office
+                      name: Office
+                      icon: mdi:desk-lamp
+                      use_light_color: true
+                      show_brightness_control: true
+                      show_color_temp_control: false
+                      layout: horizontal
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: rgba(255,255,255,0.06) !important;
+                            border: 1px solid rgba(255,255,255,0.08) !important;
+                            border-radius: 14px !important;
+                            --primary-text-color: white;
+                            --secondary-text-color: rgba(255,255,255,0.5);
+                          }
+                    - type: custom:mushroom-light-card
+                      entity: light.bedroom
+                      name: Bedroom
+                      icon: mdi:bed
+                      use_light_color: true
+                      show_brightness_control: true
+                      show_color_temp_control: false
+                      layout: horizontal
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: rgba(255,255,255,0.06) !important;
+                            border: 1px solid rgba(255,255,255,0.08) !important;
+                            border-radius: 14px !important;
+                            --primary-text-color: white;
+                            --secondary-text-color: rgba(255,255,255,0.5);
+                          }
+                    - type: custom:mushroom-light-card
+                      entity: light.bathroom
+                      name: Bathroom
+                      icon: mdi:shower-head
+                      use_light_color: true
+                      show_brightness_control: true
+                      show_color_temp_control: false
+                      layout: horizontal
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: rgba(255,255,255,0.06) !important;
+                            border: 1px solid rgba(255,255,255,0.08) !important;
+                            border-radius: 14px !important;
+                            --primary-text-color: white;
+                            --secondary-text-color: rgba(255,255,255,0.5);
+                          }
+                # RIGHT-2 - Calendar
+                #
+                - type: custom:stack-in-card
+                  mode: vertical
+                  keep:
+                    margin: true
+                    border_radius: true
+                    background: true
+                    outer_padding: false
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: linear-gradient(145deg, rgba(30,45,70,0.38), rgba(50,60,80,0.22)) !important;
+                        backdrop-filter: blur(28px) saturate(130%) brightness(85%) !important;
+                        -webkit-backdrop-filter: blur(28px) saturate(130%) brightness(85%) !important;
+                        border: solid 1px rgba(140,170,220,0.12) !important;
+                        border-radius: 20px !important;
+                        font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif !important;
+                        -webkit-font-smoothing: antialiased;
+                        overflow: hidden;
+                        box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+                        color: white;
+                      }
+                  cards:
+                    - type: horizontal-stack
+                      cards:
+                        - type: calendar
+                          entities:
+                            - calendar.eidam
+                            - calendar.edward
+                            - calendar.lucas
+                            - calendar.birthdays
+                            - calendar.bills
+                            - calendar.deliveries
+                          initial_view: listWeek
+                          card_mod:
+                            style:
+                              ha-full-calendar$: |
+                                * {
+                                  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif !important;
+                                  -webkit-font-smoothing: antialiased !important;
+                                }
+                                .header {
+                                  padding: 14px 16px 6px 16px !important;
+                                }
+                                .header .controls {
+                                  gap: 4px !important;
+                                }
+                                .header .controls h1 {
+                                  font-size: 16px !important;
+                                  font-weight: 600 !important;
+                                  color: white !important;
+                                  white-space: nowrap !important;
+                                }
+                                .header .controls ha-icon-button-prev,
+                                .header .controls ha-icon-button-next {
+                                  --mdc-icon-button-size: 28px !important;
+                                  --mdc-icon-size: 16px !important;
+                                  color: rgba(255,255,255,0.5) !important;
+                                }
+                                .header .controls.buttons {
+                                  display: none !important;
+                                }
+                                ha-fab {
+                                  display: none !important;
+                                }
+                                #calendar {
+                                  --fc-list-event-hover-bg-color: rgba(255,255,255,0.05);
+                                  --fc-neutral-bg-color: transparent;
+                                  --fc-page-bg-color: transparent;
+                                  --fc-border-color: rgba(255,255,255,0.06);
+                                  --fc-neutral-text-color: white;
+                                  --fc-today-bg-color: transparent;
+                                }
+                                .fc-list-day-cushion {
+                                  background: transparent !important;
+                                  padding: 10px 12px 2px 12px !important;
+                                }
+                                .fc-list-day-text {
+                                  font-size: 11px !important;
+                                  font-weight: 600 !important;
+                                  text-transform: uppercase !important;
+                                  color: rgba(255,255,255,0.45) !important;
+                                  letter-spacing: 0.05em !important;
+                                }
+                                .fc-list-day-side-text {
+                                  display: none !important;
+                                }
+                                .fc-list-event {
+                                  display: flex !important;
+                                  flex-direction: column !important;
+                                  padding: 6px 12px !important;
+                                  border-bottom: 1px solid rgba(255,255,255,0.04) !important;
+                                }
+                                .fc-list-event td {
+                                  display: block !important;
+                                  padding: 0 !important;
+                                  border: none !important;
+                                }
+                                .fc-list-event-graphic {
+                                  display: none !important;
+                                }
+                                .fc-list-event-title {
+                                  order: 1 !important;
+                                }
+                                .fc-list-event-title a {
+                                  font-size: 13px !important;
+                                  font-weight: 600 !important;
+                                  color: white !important;
+                                  text-decoration: none !important;
+                                }
+                                .fc-list-event-time {
+                                  order: 2 !important;
+                                  font-size: 11px !important;
+                                  color: rgba(255,255,255,0.45) !important;
+                                  white-space: nowrap !important;
+                                  margin-top: 1px !important;
+                                }
+                                .fc-list-event-dot {
+                                  border-color: rgba(79,140,255,0.7) !important;
+                                }
+                                .fc .fc-list-sticky .fc-list-day > * {
+                                  background: transparent !important;
+                                }
+                                .fc-list-table {
+                                  border-collapse: collapse !important;
+                                }
+                                .fc-list-table tbody {
+                                  display: block !important;
+                                }
+                                .fc-list-table tr.fc-list-day {
+                                  display: block !important;
+                                }
+                                .fc-list-table tr.fc-list-day th {
+                                  display: block !important;
+                                }
+                                .fc-list-empty {
+                                  background: transparent !important;
+                                }
+                                .fc-list-empty-cushion {
+                                  color: rgba(255,255,255,0.3) !important;
+                                  font-size: 13px !important;
+                                }
+                              .: |
+                                ha-card {
+                                  background: transparent !important;
+                                  border: none !important;
+                                  box-shadow: none !important;
+                                  color: white !important;
+                                  --primary-text-color: white;
+                                  --secondary-text-color: rgba(255,255,255,0.6);
+                                }
+                        - type: calendar
+                          entities:
+                            - calendar.eidam
+                            - calendar.edward
+                            - calendar.lucas
+                            - calendar.birthdays
+                          initial_view: dayGridMonth
+                          card_mod:
+                            style:
+                              ha-full-calendar$: |
+                                * {
+                                  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif !important;
+                                  -webkit-font-smoothing: antialiased !important;
+                                }
+                                .header {
+                                  padding: 10px 8px 4px 8px !important;
+                                }
+                                .header .controls {
+                                  gap: 2px !important;
+                                }
+                                .header .controls h1 {
+                                  font-size: 13px !important;
+                                  font-weight: 600 !important;
+                                  color: white !important;
+                                  white-space: nowrap !important;
+                                }
+                                .header .controls ha-icon-button-prev,
+                                .header .controls ha-icon-button-next {
+                                  --mdc-icon-button-size: 24px !important;
+                                  --mdc-icon-size: 14px !important;
+                                  color: rgba(255,255,255,0.5) !important;
+                                }
+                                .header .controls.buttons {
+                                  display: none !important;
+                                }
+                                ha-fab {
+                                  display: none !important;
+                                }
+                                #calendar {
+                                  --fc-small-font-size: 9px;
+                                  --fc-neutral-bg-color: transparent;
+                                  --fc-page-bg-color: transparent;
+                                  --fc-border-color: rgba(255,255,255,0.05);
+                                  --fc-neutral-text-color: white;
+                                  --fc-today-bg-color: rgba(79,140,255,0.15);
+                                  --fc-daygrid-event-dot-width: 5px;
+                                  font-size: 11px !important;
+                                }
+                                .fc-col-header-cell {
+                                  padding: 3px 0 !important;
+                                }
+                                .fc-col-header-cell-cushion {
+                                  font-size: 9px !important;
+                                  font-weight: 600 !important;
+                                  color: rgba(255,255,255,0.4) !important;
+                                  text-transform: uppercase !important;
+                                  letter-spacing: 0.02em !important;
+                                }
+                                .fc-daygrid-day-number {
+                                  font-size: 11px !important;
+                                  color: rgba(255,255,255,0.7) !important;
+                                  padding: 2px 4px !important;
+                                }
+                                .fc-day-today .fc-daygrid-day-number {
+                                  background: rgba(79,140,255,0.6) !important;
+                                  border-radius: 50% !important;
+                                  color: white !important;
+                                  font-weight: 600 !important;
+                                  width: 20px !important;
+                                  height: 20px !important;
+                                  display: flex !important;
+                                  align-items: center !important;
+                                  justify-content: center !important;
+                                }
+                                .fc-daygrid-event {
+                                  font-size: 0px !important;
+                                  margin: 1px 2px !important;
+                                  padding: 0 !important;
+                                  min-height: 4px !important;
+                                  border-radius: 2px !important;
+                                }
+                                .fc-daygrid-event .fc-event-title {
+                                  display: none !important;
+                                }
+                                .fc-daygrid-event .fc-event-time {
+                                  display: none !important;
+                                }
+                                .fc-daygrid-dot-event .fc-event-title {
+                                  display: none !important;
+                                }
+                                .fc-daygrid-more-link {
+                                  font-size: 8px !important;
+                                  color: rgba(255,255,255,0.4) !important;
+                                }
+                                .fc-daygrid-day-events {
+                                  min-height: 0 !important;
+                                }
+                                .fc-daygrid-day-frame {
+                                  min-height: 32px !important;
+                                }
+                                .fc-scrollgrid {
+                                  border: none !important;
+                                }
+                                .fc-scrollgrid td,
+                                .fc-scrollgrid th {
+                                  border-color: rgba(255,255,255,0.04) !important;
+                                }
+                                .fc-daygrid-day-bottom {
+                                  font-size: 8px !important;
+                                }
+                                .fc-event-main {
+                                  padding: 0 !important;
+                                }
+                              .: |
+                                ha-card {
+                                  background: transparent !important;
+                                  border: none !important;
+                                  box-shadow: none !important;
+                                  color: white !important;
+                                  --primary-text-color: white;
+                                  --secondary-text-color: rgba(255,255,255,0.6);
+                                }
+            # --- Energy & Appliances ---
+            - type: custom:layout-card
+              layout_type: custom:grid-layout
+              layout:
+                grid-template-columns: 2fr 1fr
+                align-items: stretch
+                grid-gap: 10px
+              cards:
+                - type: custom:stack-in-card
+                  mode: vertical
+                  keep:
+                    margin: false
+                    border_radius: true
+                    background: true
+                    outer_padding: false
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: rgba(75,75,80,0.2) !important;
+                        backdrop-filter: blur(30px) saturate(110%) brightness(90%) !important;
+                        -webkit-backdrop-filter: blur(30px) saturate(110%) brightness(90%) !important;
+                        border: solid 1px rgba(150,150,150,0.1) !important;
+                        border-radius: 20px !important;
+                        overflow: hidden;
+                        color: white;
+                        font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+                        -webkit-font-smoothing: antialiased;
+                      }
+                  cards:
+                    # Title
+                    - type: custom:button-card
+                      name: Energy
+                      show_icon: false
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 12px 14px 4px 14px
+                        name:
+                          - font-size: 18px
+                          - font-weight: 600
+                          - color: white
+                          - justify-self: start
+                          - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                          - letter-spacing: 0.01em
+                          - -webkit-font-smoothing: antialiased
+                    # 24h Total Energy Line Graph
+                    - type: custom:mini-graph-card
+                      entities:
+                        - entity: sensor.launge_usage
+                          name: Total
+                          color: "#4fc3f7"
+                      hours_to_show: 24
+                      points_per_hour: 4
+                      line_width: 2.5
+                      height: 90
+                      show:
+                        name: false
+                        icon: false
+                        state: true
+                        legend: false
+                        fill: fade
+                        labels: false
+                        points: false
+                      card_mod:
+                        style: |
+                          ha-card {
+                            background: transparent !important;
+                            box-shadow: none !important;
+                            border: none !important;
+                            font-family: "SF Pro Rounded", -apple-system, sans-serif !important;
+                            --primary-text-color: rgba(255,255,255,0.9);
+                            padding: 0 8px !important;
+                          }
+                          .states { font-size: 12px !important; }
+                    # 24h Usage by Area Header
+                    - type: custom:button-card
+                      name: 24h Usage by Area
+                      show_icon: false
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 8px 14px 4px 14px
+                        name:
+                          - font-size: 11px
+                          - font-weight: 500
+                          - color: rgba(255,255,255,0.5)
+                          - text-transform: uppercase
+                          - letter-spacing: 0.08em
+                          - justify-self: start
+                          - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                    # Bar chart - all areas in one card
+                    - type: custom:button-card
+                      entity: sensor.launge_usage
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        bars: |
+                          [[[
+                            var areas = [
+                              {name: 'Lounge', val: parseFloat(states['sensor.launge_usage'].state) || 0, color: '#4fc3f7'},
+                              {name: 'Bedroom', val: parseFloat(states['sensor.bedroom_usage'].state) || 0, color: '#81c784'},
+                              {name: 'Kitchen', val: parseFloat(states['sensor.kitchen_appliances_current_consumption'].state) || 0, color: '#ffb74d'}
+                            ];
+                            var max = Math.max(...areas.map(a => a.val), 1);
+                            var html = '';
+                            areas.forEach(function(a) {
+                              var pct = (a.val / max) * 100;
+                              html += '<div style="display:flex;align-items:center;gap:10px;margin:4px 0">';
+                              html += '<div style="width:65px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.8);flex-shrink:0">' + a.name + '</div>';
+                              html += '<div style="flex:1;height:18px;background:rgba(255,255,255,0.06);border-radius:9px;overflow:hidden">';
+                              html += '<div style="width:' + pct + '%;height:100%;background:' + a.color + ';border-radius:9px;transition:width 0.5s"></div>';
+                              html += '</div>';
+                              html += '<div style="width:45px;text-align:right;font-size:12px;font-weight:600;color:white;flex-shrink:0">' + a.val.toFixed(0) + '<span style="font-size:9px;color:rgba(255,255,255,0.5);margin-left:1px">W</span></div>';
+                              html += '</div>';
+                            });
+                            return html;
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 0 14px 6px 14px
+                        grid:
+                          - grid-template-areas: '"bars"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          bars:
+                            - width: 100%
+                            - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      tap_action:
+                        action: none
+                    # Live Consumption Header
+                    - type: custom:button-card
+                      name: Live Consumption
+                      show_icon: false
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 8px 14px 4px 14px
+                        name:
+                          - font-size: 11px
+                          - font-weight: 500
+                          - color: rgba(255,255,255,0.5)
+                          - text-transform: uppercase
+                          - letter-spacing: 0.08em
+                          - justify-self: start
+                          - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                    # Sorted device list in one card
+                    - type: custom:button-card
+                      entity: sensor.launge_usage
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        list: |
+                          [[[
+                            var devices = [
+                              {name: 'Samsung TV', entity: 'sensor.unnamed_p304m_samsung_tv_current_consumption'},
+                              {name: 'USB-C Charger', entity: 'sensor.unnamed_p304m_multi_usb_c_charger_current_consumption'},
+                              {name: 'Fire Cube', entity: 'sensor.unnamed_p304m_amazon_fire_cube_current_consumption'},
+                              {name: 'Sonos Arc', entity: 'sensor.unnamed_p304m_sonos_arc_current_consumption'},
+                              {name: 'Coffee Pot', entity: 'sensor.unnamed_p304m_coffee_pot_current_consumption'},
+                              {name: 'Nanit', entity: 'sensor.unnamed_p304m_nanit_current_consumption'},
+                              {name: 'Espresso', entity: 'sensor.unnamed_p304m_espresso_machine_current_consumption'},
+                              {name: 'Hue Sync Box', entity: 'sensor.unnamed_p304m_hue_sync_box_current_consumption'},
+                              {name: 'Sonos Sub', entity: 'sensor.unnamed_p304m_sonos_sub_mini_current_consumption'},
+                              {name: 'TV Lights', entity: 'sensor.unnamed_p304m_hue_tv_lights_current_consumption'},
+                              {name: 'Air Purifier', entity: 'sensor.unnamed_p304m_levoit_air_purifier_current_consumption'},
+                              {name: 'Tumble Dryer', entity: 'sensor.tumble_dryer_power'},
+                              {name: 'Washing Machine', entity: 'sensor.washing_machine_power'}
+                            ];
+                            devices.forEach(function(d) {
+                              d.val = parseFloat(states[d.entity].state) || 0;
+                            });
+                            devices.sort(function(a, b) { return b.val - a.val; });
+                            var html = '';
+                            devices.forEach(function(d) {
+                              var color = d.val > 50 ? '#e57373' : d.val > 10 ? '#ffb74d' : d.val > 0.5 ? '#81c784' : 'rgba(255,255,255,0.25)';
+                              html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05)">';
+                              html += '<div style="display:flex;align-items:center;gap:8px">';
+                              html += '<div style="width:6px;height:6px;border-radius:50%;background:' + color + ';flex-shrink:0"></div>';
+                              html += '<span style="font-size:13px;font-weight:500;color:white">' + d.name + '</span>';
+                              html += '</div>';
+                              html += '<span style="font-size:13px;font-weight:600;color:white">' + d.val.toFixed(1) + ' <span style="font-size:10px;font-weight:400;color:rgba(255,255,255,0.5)">W</span></span>';
+                              html += '</div>';
+                            });
+                            return html;
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 0 14px 12px 14px
+                        grid:
+                          - grid-template-areas: '"list"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          list:
+                            - width: 100%
+                            - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      tap_action:
+                        action: none
+                # --- Appliances ---
+                - type: custom:stack-in-card
+                  mode: vertical
+                  keep:
+                    margin: false
+                    border_radius: true
+                    background: true
+                    outer_padding: false
+                  card_mod:
+                    style: |
+                      ha-card {
+                        background: rgba(75,75,80,0.2) !important;
+                        backdrop-filter: blur(30px) saturate(110%) brightness(90%) !important;
+                        -webkit-backdrop-filter: blur(30px) saturate(110%) brightness(90%) !important;
+                        border: solid 1px rgba(150,150,150,0.1) !important;
+                        border-radius: 20px !important;
+                        overflow: hidden;
+                        color: white;
+                        font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+                        -webkit-font-smoothing: antialiased;
+                      }
+                  cards:
+                    # Title
+                    - type: custom:button-card
+                      name: Appliances
+                      show_icon: false
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 12px 14px 4px 14px
+                        name:
+                          - font-size: 18px
+                          - font-weight: 600
+                          - color: white
+                          - justify-self: start
+                          - font-family: '"SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif'
+                          - letter-spacing: 0.01em
+                          - -webkit-font-smoothing: antialiased
+                    # Washing Machine
+                    - type: custom:button-card
+                      entity: sensor.washing_machine_machine_state
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        row: |
+                          [[[
+                            var st = states['sensor.washing_machine_machine_state'].state;
+                            var pwr = states['binary_sensor.washing_machine_power'].state;
+                            var isOn = pwr === 'on' || st === 'run';
+                            var label = st === 'run' ? 'Running' : st === 'pause' ? 'Paused' : pwr === 'on' ? 'Idle' : 'Off';
+                            var color = isOn ? '#81c784' : 'rgba(255,255,255,0.25)';
+                            var html = '<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
+                            html += '<div style="display:flex;align-items:center;gap:10px">';
+                            html += '<span style="font-size:18px">🫧</span>';
+                            html += '<span style="font-size:13px;font-weight:500;color:white">Washer</span>';
+                            html += '</div>';
+                            html += '<div style="display:flex;align-items:center;gap:6px">';
+                            html += '<div style="width:7px;height:7px;border-radius:50%;background:' + color + '"></div>';
+                            html += '<span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.7)">' + label + '</span>';
+                            html += '</div></div>';
+                            return html;
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 8px 14px
+                          - border-bottom: 1px solid rgba(255,255,255,0.05)
+                        grid:
+                          - grid-template-areas: '"row"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          row:
+                            - width: 100%
+                            - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      tap_action:
+                        action: none
+                    # Tumble Dryer
+                    - type: custom:button-card
+                      entity: sensor.tumble_dryer_machine_state
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        row: |
+                          [[[
+                            var st = states['sensor.tumble_dryer_machine_state'].state;
+                            var pwr = states['binary_sensor.tumble_dryer_power'].state;
+                            var isOn = pwr === 'on' || st === 'run';
+                            var label = st === 'run' ? 'Running' : st === 'pause' ? 'Paused' : pwr === 'on' ? 'Idle' : 'Off';
+                            var color = isOn ? '#81c784' : 'rgba(255,255,255,0.25)';
+                            var html = '<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
+                            html += '<div style="display:flex;align-items:center;gap:10px">';
+                            html += '<span style="font-size:18px">🌀</span>';
+                            html += '<span style="font-size:13px;font-weight:500;color:white">Dryer</span>';
+                            html += '</div>';
+                            html += '<div style="display:flex;align-items:center;gap:6px">';
+                            html += '<div style="width:7px;height:7px;border-radius:50%;background:' + color + '"></div>';
+                            html += '<span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.7)">' + label + '</span>';
+                            html += '</div></div>';
+                            return html;
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 8px 14px
+                          - border-bottom: 1px solid rgba(255,255,255,0.05)
+                        grid:
+                          - grid-template-areas: '"row"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          row:
+                            - width: 100%
+                            - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      tap_action:
+                        action: none
+                    # Dishwasher
+                    - type: custom:button-card
+                      entity: sensor.dishwasher_operation_state
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        row: |
+                          [[[
+                            var st = states['sensor.dishwasher_operation_state'].state;
+                            var door = states['sensor.dishwasher_door'].state;
+                            var isOn = st === 'run' || st === 'active';
+                            var label = st === 'run' ? 'Running' : st === 'ready' ? 'Ready' : st === 'inactive' ? 'Off' : st;
+                            if (door === 'open') label = 'Door Open';
+                            var color = isOn ? '#81c784' : st === 'ready' ? '#4fc3f7' : 'rgba(255,255,255,0.25)';
+                            var html = '<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
+                            html += '<div style="display:flex;align-items:center;gap:10px">';
+                            html += '<span style="font-size:18px">🍽️</span>';
+                            html += '<span style="font-size:13px;font-weight:500;color:white">Dishwasher</span>';
+                            html += '</div>';
+                            html += '<div style="display:flex;align-items:center;gap:6px">';
+                            html += '<div style="width:7px;height:7px;border-radius:50%;background:' + color + '"></div>';
+                            html += '<span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.7)">' + label + '</span>';
+                            html += '</div></div>';
+                            return html;
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 8px 14px
+                          - border-bottom: 1px solid rgba(255,255,255,0.05)
+                        grid:
+                          - grid-template-areas: '"row"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          row:
+                            - width: 100%
+                            - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      tap_action:
+                        action: none
+                    # Fridge / Freezer
+                    - type: custom:button-card
+                      entity: binary_sensor.refrigerator_door
+                      show_icon: false
+                      show_state: false
+                      show_name: false
+                      custom_fields:
+                        row: |
+                          [[[
+                            var door = states['binary_sensor.refrigerator_door'].state;
+                            var fridgeT = states['number.refrigerator_fridge_temperature'].state;
+                            var freezerT = states['number.refrigerator_freezer_temperature'].state;
+                            var isOpen = door === 'on';
+                            var color = isOpen ? '#ffb74d' : '#4fc3f7';
+                            var label = fridgeT + '° / ' + freezerT + '°';
+                            if (isOpen) label = 'Door Open';
+                            var html = '<div style="display:flex;align-items:center;justify-content:space-between;width:100%">';
+                            html += '<div style="display:flex;align-items:center;gap:10px">';
+                            html += '<span style="font-size:18px">🧊</span>';
+                            html += '<span style="font-size:13px;font-weight:500;color:white">Fridge</span>';
+                            html += '</div>';
+                            html += '<div style="display:flex;align-items:center;gap:6px">';
+                            html += '<div style="width:7px;height:7px;border-radius:50%;background:' + color + '"></div>';
+                            html += '<span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.7)">' + label + '</span>';
+                            html += '</div></div>';
+                            return html;
+                          ]]]
+                      styles:
+                        card:
+                          - background: none
+                          - border: none
+                          - box-shadow: none
+                          - padding: 8px 14px 12px 14px
+                        grid:
+                          - grid-template-areas: '"row"'
+                          - grid-template-columns: 1fr
+                        custom_fields:
+                          row:
+                            - width: 100%
+                            - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                      tap_action:
+                        action: none
+          # Right column - Activity Feed
+          - type: custom:stack-in-card
+            mode: vertical
+            keep:
+              margin: false
+              border_radius: true
+              background: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: rgba(75,75,80,0.2) !important;
+                  backdrop-filter: blur(20px) saturate(110%) brightness(90%) !important;
+                  -webkit-backdrop-filter: blur(20px) saturate(110%) brightness(90%) !important;
+                  border: solid 1px rgba(150,150,150,0.1) !important;
+                  border-radius: 20px !important;
+                  overflow: hidden;
+                  font-family: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, sans-serif;
+                  -webkit-font-smoothing: antialiased;
+                }
+            cards:
+              - type: custom:button-card
+                name: Activity
+                icon: mdi:bell-outline
+                show_icon: true
+                show_name: true
+                show_state: false
+                styles:
+                  card:
+                    - background: transparent
+                    - box-shadow: none
+                    - border: none
+                    - padding: "12px 16px 4px 16px"
+                  grid:
+                    - grid-template-areas: '"i n"'
+                    - grid-template-columns: 22px 1fr
+                    - grid-gap: 8px
+                  icon:
+                    - width: 18px
+                    - color: rgba(255,255,255,0.85)
+                  name:
+                    - font-size: 15px
+                    - font-weight: 600
+                    - color: rgba(255,255,255,0.95)
+                    - justify-self: start
+                    - font-family: '"SF Pro Rounded", -apple-system, sans-serif'
+                    - letter-spacing: 0.02em
+              - type: logbook
+                entities:
+                  # People
+                  - person.edward_eidam
+                  - person.loretta_eidam
+                  # Security
+                  - lock.lobby_lock
+                  - alarm_control_panel.home_alarm
+                  - event.lobby_ding
+                  - event.upstairs_ding
+                  - event.lobby_intercom_unlock
+                  # Appliances
+                  - switch.oven_power
+                  - switch.unnamed_p304m_espresso_machine
+                  - switch.unnamed_p304m_coffee_grinder
+                  - switch.unnamed_p304m_coffee_pot
+                  - switch.unnamed_p304m_samsung_tv
+                  # Climate
+                  - climate.edward_s_device
+                  # Media
+                  - media_player.lounge
+                  - media_player.55_oled
+                  - media_player.stanmore_ii
+                  - media_player.bedroom
+                  # Modes & States
+                  - input_boolean.lucas_napping
+                  - input_boolean.quiet_mode
+                  - input_boolean.guest_mode
+                  - input_select.house_state
+                  - input_select.lucas_room_state
+                  # Key Lights
+                  - light.all_lights
+                hours_to_show: 24
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        background: transparent !important;
+                        box-shadow: none !important;
+                        border: none !important;
+                        font-family: "SF Pro Rounded", -apple-system, sans-serif !important;
+                        --primary-text-color: rgba(255,255,255,0.9);
+                        --secondary-text-color: rgba(255,255,255,0.4);
+                        padding: 0 !important;
+                      }
+                      .header { display: none !important; }
+                    ha-logbook$ha-logbook-renderer$: |
+                      .container {
+                        padding: 0 12px !important;
+                      }
+                      .date {
+                        font-size: 10px !important;
+                        font-weight: 600 !important;
+                        color: rgba(255,255,255,0.5) !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.06em !important;
+                        padding: 8px 0 4px 0 !important;
+                        margin: 0 !important;
+                        border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+                        font-family: "SF Pro Rounded", -apple-system, sans-serif !important;
+                      }
+                      .entry-container {
+                        min-height: auto !important;
+                      }
+                      .entry {
+                        padding: 6px 0 !important;
+                        border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+                        font-size: 11px !important;
+                        line-height: 1.3 !important;
+                      }
+                      .icon-message {
+                        align-items: flex-start !important;
+                        gap: 6px !important;
+                      }
+                      state-badge {
+                      --mdc-icon-size: 16px !important;
+                      width: 22px !important;
+                      height: 22px !important;
+                        flex-shrink: 0 !important;
+                        margin-top: 1px !important;
+                      opacity: 0.65;
+                      color: rgba(140,180,220,0.9) !important;
+                      --state-icon-color: rgba(140,180,220,0.8) !important;
+                      }
+                      .message {
+                        font-size: 11px !important;
+                        color: rgba(255,255,255,0.75) !important;
+                        font-weight: 400 !important;
+                        line-height: 1.3 !important;
+                        font-family: "SF Pro Rounded", -apple-system, sans-serif !important;
+                      }
+                      .message .link, .message button.link {
+                        font-weight: 500 !important;
+                        color: rgba(255,255,255,0.95) !important;
+                        font-size: 11px !important;
+                      }
+                      .secondary {
+                        font-size: 9.5px !important;
+                        color: rgba(255,255,255,0.3) !important;
+                        margin-top: 1px !important;
+                        font-family: "SF Pro Rounded", -apple-system, sans-serif !important;
+                      }
+                      lit-virtualizer {
+                        max-height: 520px !important;
+                        overflow-y: auto !important;
+                      }
+                      lit-virtualizer::-webkit-scrollbar { width: 3px; }
+                      lit-virtualizer::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+              # --- Tasks ---
+              - type: todo-list
+                entity: todo.shopping_list
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: rgba(30,40,60,0.4) !important;
+                      backdrop-filter: blur(20px) !important;
+                      border: solid 1px rgba(100,140,200,0.12) !important;
+                      border-radius: 16px !important;
+                      --primary-text-color: white;
+                      --secondary-text-color: rgba(255,255,255,0.5);
+                      font-family: 'SF Pro Rounded', -apple-system, sans-serif;
+                      color: white;
+                      font-size: 12px;
+                      margin-top: 10px;
+                      --mdc-theme-primary: rgba(100,160,255,0.8);
+                      --mdc-checkbox-unchecked-color: rgba(255,255,255,0.3);
+                    }
+      #
+      # =============================================
+      # BOTTOM STATUS BAR
+      # =============================================
+      #
+      - type: custom:mushroom-chips-card
+        card_mod:
+          style: |
+            ha-card {
+              background-color: rgba(40,50,70,0.3) !important;
+              backdrop-filter: blur(25px) saturate(120%);
+              -webkit-backdrop-filter: blur(25px) saturate(120%);
+              border: solid 1px rgba(140,170,220,0.1) !important;
+              border-radius: 25px !important;
+              box-shadow: 0 4px 20px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+              padding: 8px 16px;
+              margin-top: 12px;
+              --chip-background: rgba(60,70,90,0.4);
+              --chip-border-radius: 20px;
+              --chip-font-size: 13px;
+              --chip-padding: 0 12px;
+              --chip-height: 40px;
+              --primary-text-color: white;
+              --secondary-text-color: rgba(255,255,255,0.7);
+              font-family: 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, sans-serif;
+              color: white;
+            }
+        chips:
+          - type: entity
+            entity: light.all_lights
+            icon: mdi:lightbulb
+            content_info: name
+          - type: entity
+            entity: climate.hallway
+            icon: mdi:thermometer
+            content_info: state
+          - type: entity
+            entity: person.edward_eidam
+            content_info: state
+          - type: entity
+            entity: person.loretta_eidam
+            content_info: state
+          - type: entity
+            entity: lock.lobby_lock
+            icon: mdi:lock
+            content_info: state
+
+
+  #                   ROOMS                       #
+  #################################################
+
+  - title: Rooms
+    path: rooms
+    icon: mdi:floor-plan
+    type: custom:vertical-layout
+    theme: kohbo
+    layout:
+      padding: 60px 15px 15px 15px
+    cards:
+
+      #
+      # Page Header
+      #
+      - type: custom:mod-card
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background: var(--app-header-background-color) !important;
+                position: fixed !important;
+                top: 0px !important;
+                z-index: 2 !important;
+                height: 65px !important;
+                left: 0 !important;
+                right: 0 !important;
+                width: 100% !important;
+                padding: 5px 19px !important;
+                border-radius: 0 !important;
+              }
+            hui-horizontal-stack-card$: |
+              #root {
+                align-items: center;
+                justify-content: space-between;
+              }
+        card:
+          type: horizontal-stack
+          cards:
+            - type: custom:button-card
+              template: empty_column
+            - type: custom:button-card
+              template: kohbo_header_page_title
+              name: Rooms
+            - type: custom:button-card
+              template: kohbo_header_chip_card
+              icon: mdi:dots-horizontal
+              icon_color: var(--secondary-text-color)
+
+      #
+      # Rooms Grid
+      #
+      - type: custom:button-card
+        template: section_title
+        name: Rooms
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:button-card
+            entity: light.lounge_spotlights
+            name: Lounge
+            template: kohbo_device_entity
+            icon: mdi:sofa
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-kohbo/lounge
+              haptic: light
+          - type: custom:button-card
+            entity: light.bedroom
+            name: Bedroom
+            template: kohbo_device_entity
+            icon: mdi:bed
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-kohbo/bedroom
+              haptic: light
+          - type: custom:button-card
+            entity: light.lucass_room
+            name: "Lucas's Room"
+            template: kohbo_device_entity
+            icon: mdi:baby-face-outline
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-kohbo/lucas-room
+              haptic: light
+          - type: custom:button-card
+            entity: light.kitchen_spotlights
+            name: Kitchen
+            template: kohbo_device_entity
+            icon: mdi:silverware-fork-knife
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-kohbo/kitchen
+              haptic: light
+          - type: custom:button-card
+            entity: light.office_spotlights
+            name: Office
+            template: kohbo_device_entity
+            icon: mdi:desk
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-kohbo/office
+              haptic: light
+          - type: custom:button-card
+            entity: light.hallway
+            name: Hallway
+            template: kohbo_device_entity
+            icon: mdi:door-open
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-kohbo/hallway
+              haptic: light
+
+      #
+      # Climate Section
+      #
+      - type: custom:button-card
+        template: section_title
+        name: Climate
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:button-card
+            entity: climate.hallway
+            name: Hallway
+            template: kohbo_thermostat_entity
+            tap_action:
+              action: more-info
+              haptic: light
+          - type: custom:button-card
+            entity: climate.office
+            name: Office
+            template: kohbo_thermostat_entity
+            tap_action:
+              action: more-info
+              haptic: light
+          - type: custom:button-card
+            entity: climate.room_5
+            name: "Lucas's Room"
+            template: kohbo_thermostat_entity
+            tap_action:
+              action: more-info
+              haptic: light
+          - type: custom:button-card
+            entity: climate.room_6
+            name: Bedroom
+            template: kohbo_thermostat_entity
+            tap_action:
+              action: more-info
+              haptic: light
+
+      #
+      # Quick Actions
+      #
+      - type: custom:button-card
+        template: section_title
+        name: Quick Actions
+
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+          - type: custom:button-card
+            template: kohbo_scene_button
+            name: All Off
+            icon: mdi:power
+            tap_action:
+              action: call-service
+              service: light.turn_off
+              service_data:
+                entity_id: all
+              haptic: light
+          - type: custom:button-card
+            template: kohbo_scene_button
+            name: Quiet
+            icon: mdi:volume-off
+            entity: input_boolean.quiet_mode
+            tap_action:
+              action: toggle
+              haptic: light
+          - type: custom:button-card
+            template: kohbo_scene_button
+            name: Guest
+            icon: mdi:account-group
+            entity: input_boolean.guest_mode
+            tap_action:
+              action: toggle
+              haptic: light
+          - type: custom:button-card
+            template: kohbo_scene_button
+            name: Night
+            icon: mdi:weather-night
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.house_state
+                option: Night
+              haptic: light
+
+      #
+      # Navbar
+      #
+      - type: custom:navbar-card
+        routes:
+          - url: /dashboard-kohbo/home
+            icon: mdi:home
+            label: Home
+          - url: /dashboard-kohbo/rooms
+            icon: mdi:floor-plan
+            label: Rooms
+          - url: /dashboard-kohbo/climate
+            icon: mdi:thermometer
+            label: Climate
+          - url: /dashboard-kohbo/security
+            icon: mdi:shield
+            label: Security
+          - icon: mdi:dots-horizontal
+            label: More
+            tap_action:
+              action: navigate
+              navigation_path: /dashboard-kohbo/more
+        haptic:
+          url: true
+          tap_action: true
+          hold_action: true
+          double_tap_action: true
+        mobile:
+          show_labels: true
+        styles: |
+          .navbar-card {
+            border: none;
+            background: rgb(33, 37, 41, .90);
+            backdrop-filter: blur(4px);
+            width: 100%;
+            max-width: 500px;
+            bottom: -1px;
+            padding-bottom: 40px;
+          }
+          .button.active {
+            background: transparent;
+          }
+          .icon {
+            fill: #AAAAAA !important;
+          }
+          .icon.active {
+            fill: white !important;
+          }
+          ha-ripple {
+            display: none !important;
+          }

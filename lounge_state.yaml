@@ -1,0 +1,170 @@
+###############################################################################
+# LOUNGE - Room State Management
+# States: Auto, Movie, Music, Off
+###############################################################################
+
+input_select:
+  lounge_state:
+    name: "Lounge State"
+    options:
+      - Auto
+      - Movie
+      - Music
+      - "Off"
+    initial: Auto
+    icon: mdi:sofa
+
+automation:
+  ###########################################################################
+  # LOUNGE STATE: AUTO
+  # Normal mode - motion lighting, ambient scenes
+  ###########################################################################
+  - id: lounge_state_auto
+    alias: "Lounge - State Auto"
+    trigger:
+      - platform: state
+        entity_id: input_select.lounge_state
+        to: "Auto"
+    action: []  # Restore to default auto behavior
+
+  ###########################################################################
+  # LOUNGE STATE: MOVIE
+  # Dims lights, sets TV ambiance
+  ###########################################################################
+  - id: lounge_state_movie
+    alias: "Lounge - State Movie"
+    trigger:
+      - platform: state
+        entity_id: input_select.lounge_state
+        to: "Movie"
+    action:
+      - service: light.turn_off
+        target:
+          entity_id:
+            - light.lounge_spotlights
+            - light.lounge_pendant_lights
+      - service: light.turn_on
+        target:
+          entity_id: light.lounge_strip_light
+        data:
+          brightness_pct: 30
+      - service: light.turn_on
+        target:
+          entity_id: light.hue_play_2
+        data:
+          brightness_pct: 20
+
+  ###########################################################################
+  # LOUNGE STATE: MUSIC
+  # Good lighting, Sonos Arc playing
+  ###########################################################################
+  - id: lounge_state_music
+    alias: "Lounge - State Music"
+    trigger:
+      - platform: state
+        entity_id: input_select.lounge_state
+        to: "Music"
+    action:
+      - service: light.turn_on
+        target:
+          entity_id:
+            - light.lounge_piano_lamp
+            - light.lounge_strip_light
+        data:
+          brightness_pct: 60
+
+  ###########################################################################
+  # LOUNGE STATE: OFF
+  # Everything off - away or bedtime
+  ###########################################################################
+  - id: lounge_state_off
+    alias: "Lounge - State Off"
+    trigger:
+      - platform: state
+        entity_id: input_select.lounge_state
+        to: "Off"
+    action:
+      - service: light.turn_off
+        target:
+          entity_id:
+            - light.lounge_spotlights
+            - light.lounge_pendant_lights
+            - light.lounge_piano_lamp
+            - light.lounge_strip_light
+            - light.hue_play_2
+      - service: media_player.media_pause
+        target:
+          entity_id:
+            - media_player.lounge
+            - media_player.55_oled
+
+  ###########################################################################
+  # AUTO MOVIE DETECTION
+  # When the TV starts playing, switch to Movie mode
+  ###########################################################################
+  - id: lounge_auto_movie_on
+    alias: "Lounge - Auto Movie Detection On"
+    trigger:
+      - platform: state
+        entity_id: media_player.55_oled
+        to: "playing"
+    condition:
+      - condition: state
+        entity_id: input_select.lounge_state
+        state: "Auto"
+      - condition: state
+        entity_id: input_boolean.lighting_automations
+        state: "on"
+      - condition: numeric_state
+        entity_id: sun.sun
+        attribute: elevation
+        below: 5
+    action:
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.lounge_state
+        data:
+          option: Movie
+
+  - id: lounge_auto_movie_off
+    alias: "Lounge - Auto Movie Detection Off"
+    trigger:
+      - platform: state
+        entity_id: media_player.55_oled
+        from: "playing"
+        for:
+          minutes: 5
+    condition:
+      - condition: state
+        entity_id: input_select.lounge_state
+        state: "Movie"
+    action:
+      - service: input_select.select_option
+        target:
+          entity_id: input_select.lounge_state
+        data:
+          option: Auto
+
+  ###########################################################################
+  # BAD WEATHER RESPONSE
+  ###########################################################################
+  - id: lounge_bad_weather
+    alias: "Lounge - Bad Weather Ambient"
+    trigger:
+      - platform: state
+        entity_id: input_boolean.bad_weather
+        to: "on"
+    condition:
+      - condition: state
+        entity_id: input_select.lounge_state
+        state: "Auto"
+      - condition: state
+        entity_id: input_boolean.house_occupied
+        state: "on"
+    action:
+      - service: light.turn_on
+        target:
+          entity_id: light.lounge_piano_lamp
+        data:
+          brightness_pct: 50
+          color_temp_kelvin: 2700

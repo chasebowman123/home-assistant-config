@@ -1,0 +1,151 @@
+###############################################################################
+# BEDROOM DASHBOARD (Refactored with Decluttering Templates)
+###############################################################################
+
+title: Bedroom
+path: bedroom
+icon: mdi:bed
+
+type: sections
+max_columns: 3
+
+sections:
+  # =========================================================================
+  # STATUS OVERVIEW
+  # =========================================================================
+  - type: grid
+    title: ""
+    cards:
+      - type: custom:decluttering-card
+        template: room_status_chips_media
+        variables:
+          - temp_sensor: sensor.edward_bedside_sensor_temperature
+          - humidity_sensor: sensor.edward_bedside_sensor_humidity
+          - media_player: media_player.bedroom
+
+  # =========================================================================
+  # CLIMATE
+  # =========================================================================
+  - type: grid
+    title: Climate
+    cards:
+      - type: custom:decluttering-card
+        template: climate_card
+        variables:
+          - climate_entity: climate.room_6
+
+      - type: custom:decluttering-card
+        template: temperature_card
+        variables:
+          - temp_sensor: sensor.edward_bedside_sensor_temperature
+
+      - type: custom:decluttering-card
+        template: humidity_card
+        variables:
+          - humidity_sensor: sensor.edward_bedside_sensor_humidity
+
+      - type: custom:mushroom-humidifier-card
+        entity: humidifier.bedroom_humidifier_humidifier
+        name: Humidifier
+        show_target_humidity_control: true
+        collapsible_controls: true
+
+      - type: custom:decluttering-card
+        template: temperature_graph
+        variables:
+          - temp_sensor: sensor.edward_bedside_sensor_temperature
+          - name: Bedroom
+          - color: "#2196f3"
+
+  # =========================================================================
+  # LIGHTING
+  # =========================================================================
+  - type: grid
+    title: Lighting
+    cards:
+      - type: custom:decluttering-card
+        template: light_group_card
+        variables:
+          - light_entity: light.bedroom
+          - name: All Lights
+
+      - type: custom:decluttering-card
+        template: scene_row_with_off
+        variables:
+          - scene_1_name: Relax
+          - scene_1_icon: mdi:spa
+          - scene_1_color: orange
+          - scene_1_entity: scene.bedroom_relax
+          - scene_2_name: Sleepy
+          - scene_2_icon: mdi:sleep
+          - scene_2_color: indigo
+          - scene_2_entity: scene.bedroom_sleepy
+          - scene_3_name: Arise
+          - scene_3_icon: mdi:weather-sunny
+          - scene_3_color: amber
+          - scene_3_entity: scene.bedroom_arise
+          - light_group: light.bedroom
+
+  # =========================================================================
+  # MEDIA
+  # =========================================================================
+  - type: grid
+    title: Media
+    cards:
+      - type: custom:decluttering-card
+        template: media_player_mini
+        variables:
+          - media_entity: media_player.bedroom
+          - name: Sonos Beam
+
+      - type: custom:decluttering-card
+        template: media_player_mushroom
+        variables:
+          - media_entity: media_player.lg_webos_tv_oled55g54lw
+          - name: LG TV
+
+  # =========================================================================
+  # CAMERA
+  # =========================================================================
+  - type: grid
+    title: Camera
+    cards:
+      - type: custom:decluttering-card
+        template: camera_card
+        variables:
+          - camera_entity: camera.bedroom_snapshot
+          - name: Bedroom Camera
+
+  # =========================================================================
+  # DEVICES
+  # =========================================================================
+  - type: grid
+    title: Devices
+    cards:
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_tv
+          - name: TV Power
+          - icon: mdi:television
+
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_fire_cube
+          - name: Fire Cube
+          - icon: mdi:fire
+
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_sonos
+          - name: Sonos Beam
+          - icon: mdi:speaker
+
+      - type: custom:decluttering-card
+        template: device_switch
+        variables:
+          - switch_entity: switch.unnamed_p304m_bedroom_marshall_speaker
+          - name: Marshall Speaker
+          - icon: mdi:speaker-bluetooth

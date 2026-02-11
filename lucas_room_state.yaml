@@ -1,0 +1,131 @@
+###############################################################################
+# LUCAS'S ROOM - Room State Management
+# States: Awake, Napping, Bedtime, Away
+###############################################################################
+
+input_select:
+  lucas_room_state:
+    name: "Lucas Room State"
+    options:
+      - Awake
+      - Napping
+      - Bedtime
+      - Away
+    initial: Awake
+    icon: mdi:baby-face-outline
+
+automation:
+  ###########################################################################
+  # LUCAS ROOM STATE: NAPPING
+  # Enable quiet mode, dim lights, run humidifier
+  ###########################################################################
+  - id: lucas_room_napping
+    alias: "Lucas Room - State Napping"
+    trigger:
+      - platform: state
+        entity_id: input_select.lucas_room_state
+        to: "Napping"
+    action:
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.lucas_napping
+      # Turn off room lights
+      - service: light.turn_off
+        target:
+          entity_id:
+            - light.lucass_room_spotlights
+            - light.lucas_s_room_go
+      # Set a nightlight if needed
+      - service: light.turn_on
+        target:
+          entity_id: light.lucas_s_room_go
+        data:
+          brightness_pct: 5
+          color_temp_kelvin: 2200
+
+  ###########################################################################
+  # LUCAS ROOM STATE: BEDTIME
+  # Similar to napping but for overnight
+  ###########################################################################
+  - id: lucas_room_bedtime
+    alias: "Lucas Room - State Bedtime"
+    trigger:
+      - platform: state
+        entity_id: input_select.lucas_room_state
+        to: "Bedtime"
+    action:
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.lucas_napping
+      - service: light.turn_off
+        target:
+          entity_id:
+            - light.lucass_room_spotlights
+      - service: light.turn_on
+        target:
+          entity_id: light.lucas_s_room_go
+        data:
+          brightness_pct: 3
+          color_temp_kelvin: 2200
+
+  ###########################################################################
+  # LUCAS ROOM STATE: AWAKE
+  ###########################################################################
+  - id: lucas_room_awake
+    alias: "Lucas Room - State Awake"
+    trigger:
+      - platform: state
+        entity_id: input_select.lucas_room_state
+        to: "Awake"
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.lucas_napping
+      - service: light.turn_on
+        target:
+          entity_id: light.lucass_room_spotlights
+        data:
+          brightness_pct: 80
+          color_temp_kelvin: 4000
+
+  ###########################################################################
+  # LUCAS ROOM STATE: AWAY
+  ###########################################################################
+  - id: lucas_room_away
+    alias: "Lucas Room - State Away"
+    trigger:
+      - platform: state
+        entity_id: input_select.lucas_room_state
+        to: "Away"
+    action:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.lucas_napping
+      - service: light.turn_off
+        target:
+          entity_id:
+            - light.lucass_room_spotlights
+            - light.lucas_s_room_go
+
+  ###########################################################################
+  # NANIT POWER ALERT (migrated from existing automation)
+  ###########################################################################
+  - id: alert_nanit_lost_power
+    alias: "Alert - Nanit Lost Power"
+    trigger:
+      - platform: state
+        entity_id: sensor.unnamed_p304m_nanit_current_consumption
+        to: "0"
+        for:
+          minutes: 5
+    condition:
+      - condition: not
+        conditions:
+          - condition: state
+            entity_id: input_select.house_state
+            state: "Away"
+    action:
+      - service: notify.mobile_app_edward_s_iphone
+        data:
+          title: "⚠️ Nanit Alert"
+          message: "Nanit camera appears to have lost power"
