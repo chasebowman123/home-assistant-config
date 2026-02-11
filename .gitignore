@@ -1,4 +1,4 @@
-# Secrets — NEVER commit these
+# Secrets - NEVER commit these
 secrets.yaml
 secrets_*.yaml
 
@@ -38,9 +38,8 @@ zigbee2mqtt/
 # TTS cache
 tts/
 
-# Custom components cache
-custom_components/*/__pycache__/
+# Custom components (managed by HACS)
+custom_components/
 
 # Temporary files
 *.tmp
-*.tempcustom_components/

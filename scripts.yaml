@@ -2,27 +2,72 @@ show_weather_dashboard:
   alias: Show Weather Dashboard on TV
   description: Opens the Weather dashboard on Fire TV Cube
   sequence:
-    - service: media_player.turn_on
-      target:
-        entity_id: media_player.lounge_fire_cube
-    - delay:
-        seconds: 3
-    - service: androidtv.adb_command
-      target:
-        entity_id: media_player.lounge_fire_cube
-      data:
-        command: 'am start -a android.intent.action.VIEW -d "https://nujraxh1k9mt9kk0ul8x56dxac9afine.ui.nabu.casa/lovelace/weather" -n com.amazon.cloud9/com.amazon.slate.fire_tv.FireTvSlateActivity'
+  - service: media_player.turn_on
+    target:
+      entity_id: media_player.lounge_fire_cube
+  - delay:
+      seconds: 3
+  - service: androidtv.adb_command
+    target:
+      entity_id: media_player.lounge_fire_cube
+    data:
+      command: am start -a android.intent.action.VIEW -d "https://nujraxh1k9mt9kk0ul8x56dxac9afine.ui.nabu.casa/lovelace/weather"
+        -n com.amazon.cloud9/com.amazon.slate.fire_tv.FireTvSlateActivity
   mode: single
   icon: mdi:weather-partly-cloudy
-
 hide_weather_dashboard:
   alias: Hide Weather Dashboard
   description: Returns Fire TV to home screen
   sequence:
-    - service: androidtv.adb_command
-      target:
-        entity_id: media_player.lounge_fire_cube
-      data:
-        command: input keyevent KEYCODE_HOME
+  - service: androidtv.adb_command
+    target:
+      entity_id: media_player.lounge_fire_cube
+    data:
+      command: input keyevent KEYCODE_HOME
   mode: single
   icon: mdi:home
+doorbell_flash_red_pulse:
+  alias: Doorbell Flash - Red Pulse
+  description: Pulses the Lounge Iris red 3 times then restores previous state
+  icon: mdi:bell-ring
+  mode: single
+  sequence:
+  - action: scene.create
+    data:
+      scene_id: iris_before_doorbell
+      snapshot_entities:
+      - light.lounge_iris
+  - repeat:
+      count: 3
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.lounge_iris
+        data:
+          rgb_color:
+          - 255
+          - 0
+          - 0
+          brightness_pct: 100
+          transition: 0.3
+      - delay:
+          seconds: 1
+      - action: light.turn_on
+        target:
+          entity_id: light.lounge_iris
+        data:
+          rgb_color:
+          - 255
+          - 0
+          - 0
+          brightness_pct: 30
+          transition: 0.3
+      - delay:
+          seconds: 1
+  - delay:
+      seconds: 1
+  - action: scene.turn_on
+    target:
+      entity_id: scene.iris_before_doorbell
+    data:
+      transition: 2

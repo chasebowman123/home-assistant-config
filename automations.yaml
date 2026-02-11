@@ -427,28 +427,37 @@
   mode: restart
 - id: basement_door_lounge_iris_flash
   alias: Basement Door Motion - Lounge Iris Flash Red
-  description: Flash the lounge Iris light red for 5 seconds when motion is detected
-    at the basement door, then restore previous state.
+  description: Flash the lounge Iris and Signe lights red for 5 seconds when motion
+    is detected at the basement door, then restore previous state.
   triggers:
-  - platform: state
-    entity_id: binary_sensor.office_basement_entrance_motion_sensor_occupancy
+  - entity_id: binary_sensor.basement_door_ding
     to: 'on'
+    trigger: state
+  - entity_id: binary_sensor.upstairs_ding
+    to: 'on'
+    trigger: state
   conditions: []
   actions:
-  - data:
-      scene_id: lounge_iris_before_flash
+  - action: scene.create
+    data:
+      scene_id: iris_snapshot
       snapshot_entities:
       - light.lounge_iris
-    action: scene.create
-  - target:
-      entity_id: light.lounge_iris
+      - light.lounge_signe_light
+  - action: light.turn_on
+    target:
+      entity_id:
+      - light.lounge_iris
+      - light.lounge_signe_light
     data:
-      color_name: red
+      rgb_color:
+      - 255
+      - 0
+      - 0
       brightness: 255
-    action: light.turn_on
   - delay:
       seconds: 5
-  - target:
-      entity_id: scene.lounge_iris_before_flash
-    action: scene.turn_on
+  - action: scene.turn_on
+    target:
+      entity_id: scene.iris_snapshot
   mode: single

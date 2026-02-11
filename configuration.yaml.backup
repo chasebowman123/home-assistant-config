@@ -14,30 +14,6 @@ lovelace:
       icon: mdi:home
       show_in_sidebar: true
       filename: dashboards/kohbo-eidam/kohbo.yaml
-    lovelace-lounge:
-      mode: yaml
-      title: Lounge
-      icon: mdi:sofa
-      show_in_sidebar: true
-      filename: dashboards/06-lounge-room-dashboard.yaml
-    lovelace-bedroom:
-      mode: yaml
-      title: Bedroom
-      icon: mdi:bed
-      show_in_sidebar: true
-      filename: dashboards/07-bedroom-room-dashboard.yaml
-    lovelace-lucas:
-      mode: yaml
-      title: Lucas Room
-      icon: mdi:baby-face-outline
-      show_in_sidebar: true
-      filename: dashboards/08-lucas-room-dashboard.yaml
-    lovelace-kitchen-office:
-      mode: yaml
-      title: Kitchen and Office
-      icon: mdi:silverware-fork-knife
-      show_in_sidebar: true
-      filename: dashboards/09-kitchen-office-dashboard.yaml
 
 ###############################################################################
 # PACKAGES - Room-based architecture
