@@ -1,0 +1,64 @@
+###############################################################################
+# KITCHEN - Room State Management & Appliance Alerts
+# States: Auto, Cooking, Off
+###############################################################################
+
+input_select:
+  kitchen_state:
+    name: "Kitchen State"
+    options:
+      - Auto
+      - Cooking
+      - "Off"
+    initial: Auto
+    icon: mdi:stove
+
+automation:
+  ###########################################################################
+  # KITCHEN STATE: COOKING
+  # Brighter lights, disable motion-off timers
+  ###########################################################################
+  - id: kitchen_state_cooking
+    alias: "Kitchen - State Cooking"
+    trigger:
+      - platform: state
+        entity_id: input_select.kitchen_state
+        to: "Cooking"
+    action:
+      - service: light.turn_on
+        target:
+          entity_id: light.kitchen_spotlights
+        data:
+          brightness_pct: 100
+          color_temp_kelvin: 4000
+
+  - id: kitchen_state_off
+    alias: "Kitchen - State Off"
+    trigger:
+      - platform: state
+        entity_id: input_select.kitchen_state
+        to: "Off"
+    action:
+      - service: light.turn_off
+        target:
+          entity_id: light.kitchen_spotlights
+
+  ###########################################################################
+  # EXISTING: Coffee pot left on (migrated)
+  ###########################################################################
+  - id: alert_coffee_pot_left_on
+    alias: "Alert - Coffee Pot Left On"
+    trigger:
+      - platform: state
+        entity_id: switch.coffee_machine
+        to: "on"
+        for:
+          hours: 1
+    action:
+      - service: notify.mobile_app_edward_s_iphone
+        data:
+          title: "☕ Kitchen Alert"
+          message: "Coffee machine has been on for over an hour"
+      - service: switch.turn_off
+        target:
+          entity_id: switch.coffee_machine

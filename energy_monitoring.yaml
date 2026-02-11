@@ -1,0 +1,148 @@
+###############################################################################
+# ENERGY MONITORING
+# Template sensors for per-room power and daily costs
+# Utility meters for daily/weekly/monthly tracking
+###############################################################################
+
+template:
+  - sensor:
+      # Total Home Power - sum of all monitored power strips
+      - name: "Total Home Power"
+        unique_id: total_home_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: >
+          {% set lounge = states('sensor.lounge_usage') | float(0) %}
+          {% set bedroom = states('sensor.bedroom_usage') | float(0) %}
+          {% set lucas_nanit = states('sensor.unnamed_p304m_nanit_current_consumption') | float(0) %}
+          {% set lucas_echo = states('sensor.unnamed_p304m_echo_hub_current_consumption') | float(0) %}
+          {% set lucas_air_filter = states('sensor.unnamed_p304m_air_filter_current_consumption') | float(0) %}
+          {% set lucas_humidifier = states('sensor.unnamed_p304m_humidifier_current_consumption') | float(0) %}
+          {% set lucas_air_purifier = states('sensor.unnamed_p304m_levoit_air_purifier_current_consumption') | float(0) %}
+          {% set lucas_echo_show = states('sensor.unnamed_p304m_echo_show_15_current_consumption') | float(0) %}
+          {% set lucas_temp = states('sensor.unnamed_p304m_temp_and_humid_sensor_current_consumption') | float(0) %}
+          {% set office_macbook = states('sensor.unnamed_p304m_macbook_charger_current_consumption') | float(0) %}
+          {% set office_usbc = states('sensor.unnamed_p304m_multi_usb_c_charger_current_consumption') | float(0) %}
+          {% set office_sonos = states('sensor.unnamed_p304m_sonos_speaker_current_consumption') | float(0) %}
+          {% set kitchen = states('sensor.kitchen_appliances_current_consumption') | float(0) %}
+          {% set lucas_total = lucas_nanit + lucas_echo + lucas_air_filter + lucas_humidifier + lucas_air_purifier + lucas_echo_show + lucas_temp %}
+          {% set office_total = office_macbook + office_usbc + office_sonos %}
+          {{ (lounge + bedroom + lucas_total + office_total + kitchen) | round(1) }}
+
+      # Lounge Total Power
+      - name: "Lounge Total Power"
+        unique_id: lounge_total_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: "{{ states('sensor.lounge_usage') | float(0) | round(1) }}"
+
+      # Bedroom Total Power
+      - name: "Bedroom Total Power"
+        unique_id: bedroom_total_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: "{{ states('sensor.bedroom_usage') | float(0) | round(1) }}"
+
+      # Lucas Room Total Power
+      - name: "Lucas Room Total Power"
+        unique_id: lucas_room_total_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: >
+          {% set nanit = states('sensor.unnamed_p304m_nanit_current_consumption') | float(0) %}
+          {% set echo = states('sensor.unnamed_p304m_echo_hub_current_consumption') | float(0) %}
+          {% set air_filter = states('sensor.unnamed_p304m_air_filter_current_consumption') | float(0) %}
+          {% set humidifier = states('sensor.unnamed_p304m_humidifier_current_consumption') | float(0) %}
+          {% set air_purifier = states('sensor.unnamed_p304m_levoit_air_purifier_current_consumption') | float(0) %}
+          {% set echo_show = states('sensor.unnamed_p304m_echo_show_15_current_consumption') | float(0) %}
+          {% set temp = states('sensor.unnamed_p304m_temp_and_humid_sensor_current_consumption') | float(0) %}
+          {{ (nanit + echo + air_filter + humidifier + air_purifier + echo_show + temp) | round(1) }}
+
+      # Office Total Power
+      - name: "Office Total Power"
+        unique_id: office_total_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: >
+          {% set macbook = states('sensor.unnamed_p304m_macbook_charger_current_consumption') | float(0) %}
+          {% set usbc = states('sensor.unnamed_p304m_multi_usb_c_charger_current_consumption') | float(0) %}
+          {% set sonos = states('sensor.unnamed_p304m_sonos_speaker_current_consumption') | float(0) %}
+          {{ (macbook + usbc + sonos) | round(1) }}
+
+      # Kitchen Total Power
+      - name: "Kitchen Total Power"
+        unique_id: kitchen_total_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: "{{ states('sensor.kitchen_appliances_current_consumption') | float(0) | round(1) }}"
+
+      # Today's Estimated Cost (30p per kWh)
+      - name: "Today Energy Cost"
+        unique_id: today_energy_cost
+        unit_of_measurement: "£"
+        state: >
+          {% set kwh = states('sensor.daily_home_energy') | float(0) %}
+          {{ (kwh * 0.30) | round(2) }}
+
+      # Total Home Energy (for utility meter source)
+      - name: "Total Home Energy"
+        unique_id: total_home_energy
+        unit_of_measurement: "kWh"
+        device_class: energy
+        state_class: total_increasing
+        state: >
+          {% set entities = [
+            'sensor.kitchen_appliances_today_s_consumption',
+            'sensor.unnamed_p304m_tv_today_s_consumption',
+            'sensor.unnamed_p304m_fire_cube_today_s_consumption',
+            'sensor.unnamed_p304m_sonos_today_s_consumption',
+            'sensor.unnamed_p304m_bedroom_marshall_speaker_today_s_consumption',
+            'sensor.unnamed_p304m_samsung_tv_today_s_consumption',
+            'sensor.unnamed_p304m_sonos_arc_today_s_consumption',
+            'sensor.unnamed_p304m_sonos_sub_mini_today_s_consumption',
+            'sensor.unnamed_p304m_playstation_5_today_s_consumption',
+            'sensor.unnamed_p304m_hue_sync_box_today_s_consumption',
+            'sensor.unnamed_p304m_hue_tv_lights_today_s_consumption',
+            'sensor.unnamed_p304m_piano_today_s_consumption',
+            'sensor.unnamed_p304m_piano_lamp_today_s_consumption',
+            'sensor.unnamed_p304m_amazon_fire_cube_today_s_consumption',
+            'sensor.unnamed_p304m_nanit_today_s_consumption',
+            'sensor.unnamed_p304m_echo_hub_today_s_consumption',
+            'sensor.unnamed_p304m_air_filter_today_s_consumption',
+            'sensor.unnamed_p304m_humidifier_today_s_consumption',
+            'sensor.unnamed_p304m_levoit_air_purifier_today_s_consumption',
+            'sensor.unnamed_p304m_echo_show_15_today_s_consumption',
+            'sensor.unnamed_p304m_macbook_charger_today_s_consumption',
+            'sensor.unnamed_p304m_multi_usb_c_charger_today_s_consumption',
+            'sensor.unnamed_p304m_sonos_speaker_today_s_consumption'
+          ] %}
+          {% set total = namespace(val=0) %}
+          {% for e in entities %}
+            {% set total.val = total.val + states(e) | float(0) %}
+          {% endfor %}
+          {{ total.val | round(3) }}
+
+utility_meter:
+  daily_home_energy:
+    source: sensor.total_home_energy
+    cycle: daily
+  weekly_home_energy:
+    source: sensor.total_home_energy
+    cycle: weekly
+  monthly_home_energy:
+    source: sensor.total_home_energy
+    cycle: monthly
+
+automation:
+  - id: daily_energy_summary
+    alias: "Energy - Daily Summary"
+    trigger:
+      - platform: time
+        at: "21:00:00"
+    action:
+      - service: notify.mobile_app_edward_s_iphone
+        data:
+          title: "⚡ Daily Energy"
+          message: >
+            Today's usage: {{ states('sensor.daily_home_energy') | round(2) }} kWh
+            (est. £{{ states('sensor.today_energy_cost') }})

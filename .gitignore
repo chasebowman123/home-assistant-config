@@ -1,0 +1,46 @@
+# Secrets — NEVER commit these
+secrets.yaml
+secrets_*.yaml
+
+# Database and logs
+home-assistant.log
+home-assistant_v2.db
+home-assistant_v2.db-shm
+home-assistant_v2.db-wal
+
+# Storage and system
+.storage/
+.cloud/
+.google.token
+
+# Backup files
+backups/
+*.bak
+*.old
+
+# Compiled Python
+__pycache__/
+*.py[cod]
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code workspace settings
+.vscode/
+
+# Dependency directories
+deps/
+
+# Zigbee2MQTT data
+zigbee2mqtt/
+
+# TTS cache
+tts/
+
+# Custom components cache
+custom_components/*/__pycache__/
+
+# Temporary files
+*.tmp
+*.tempcustom_components/

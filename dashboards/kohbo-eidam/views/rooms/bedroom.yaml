@@ -1,0 +1,350 @@
+#################################################
+#                                               #
+#              BEDROOM DASHBOARD                #
+#              Kohbo Style for Eidam            #
+#                                               #
+#################################################
+
+title: Bedroom
+path: bedroom
+icon: mdi:bed
+subview: true
+
+type: custom:vertical-layout
+
+cards:
+  #################################################
+  #                PAGE HEADER                    #
+  #################################################
+  
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Bedroom
+      - navigation_path: /lovelace/rooms
+      - settings_path: '#bedroom_settings'
+
+  #################################################
+  #              STATUS CHIPS                     #
+  #################################################
+
+  - type: horizontal-stack
+    cards:
+      # Room State Chip
+      - type: custom:button-card
+        template: kohbo_chip_card_room_mode
+        entity: input_select.house_state
+        tap_action:
+          action: more-info
+
+      # Temperature Chip
+      - type: custom:button-card
+        template: kohbo_chip_card
+        entity: sensor.edward_bedside_sensor_temperature
+        icon: mdi:thermometer
+        state_display: >
+          [[[ 
+            const temp = parseFloat(entity.state);
+            return isNaN(temp) ? '--' : Math.round(temp) + '°C';
+          ]]]
+        styles:
+          icon:
+            - color: >
+                [[[
+                  const temp = parseFloat(entity.state);
+                  if (temp < 16) return '#3B82F6';
+                  if (temp > 22) return '#EF4444';
+                  return '#22C55E';
+                ]]]
+
+      # Humidity Chip
+      - type: custom:button-card
+        template: kohbo_chip_card
+        entity: sensor.edward_bedside_sensor_humidity
+        icon: mdi:water-percent
+        state_display: >
+          [[[ 
+            const h = parseFloat(entity.state);
+            return isNaN(h) ? '--' : Math.round(h) + '%';
+          ]]]
+        styles:
+          icon:
+            - color: >
+                [[[
+                  const h = parseFloat(entity.state);
+                  if (h < 40 || h > 60) return '#F97316';
+                  return '#22C55E';
+                ]]]
+
+  #################################################
+  #               LIGHT SCENES                    #
+  #################################################
+
+  - type: custom:button-card
+    template: section_title
+    name: Scenes
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: Bright
+        icon: mdi:brightness-7
+        styles:
+          icon:
+            - color: '#FCD34D'
+        tap_action:
+          action: call-service
+          service: scene.turn_on
+          service_data:
+            entity_id: scene.bedroom_bright
+
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: Evening
+        icon: mdi:weather-sunset
+        styles:
+          icon:
+            - color: '#F97316'
+        tap_action:
+          action: call-service
+          service: scene.turn_on
+          service_data:
+            entity_id: scene.bedroom_evening
+
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: Night
+        icon: mdi:weather-night
+        styles:
+          icon:
+            - color: '#6366F1'
+        tap_action:
+          action: call-service
+          service: scene.turn_on
+          service_data:
+            entity_id: scene.bedroom_nightlight
+
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: "Off"
+        icon: mdi:lightbulb-off
+        styles:
+          icon:
+            - color: 'var(--secondary-text-color)'
+        tap_action:
+          action: call-service
+          service: light.turn_off
+          service_data:
+            entity_id: light.bedroom
+
+  #################################################
+  #                   LIGHTS                      #
+  #################################################
+
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  - type: custom:mushroom-light-card
+    entity: light.bedroom
+    name: All Lights
+    show_brightness_control: true
+    use_light_color: true
+    card_mod:
+      style: |
+        ha-card {
+          background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(99, 102, 241, 0.05) 100%);
+          border: 1px solid rgba(139, 92, 246, 0.3);
+          border-radius: 12px;
+        }
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:mushroom-light-card
+        entity: light.bedroom_spot_lights
+        name: Spotlights
+        show_brightness_control: true
+        collapsible_controls: true
+
+      - type: custom:mushroom-light-card
+        entity: light.bedroom_pendant
+        name: Pendant
+        show_brightness_control: true
+        collapsible_controls: true
+
+      - type: custom:mushroom-light-card
+        entity: light.bedroom_edward_bedside
+        name: Edward Bedside
+        show_brightness_control: true
+        show_color_control: true
+        use_light_color: true
+        collapsible_controls: true
+
+      - type: custom:mushroom-light-card
+        entity: light.bedroom_loretta_bedside
+        name: Loretta Bedside
+        show_brightness_control: true
+        show_color_control: true
+        use_light_color: true
+        collapsible_controls: true
+
+      - type: custom:mushroom-light-card
+        entity: light.bedroom_play_left
+        name: Play Left
+        show_brightness_control: true
+        show_color_control: true
+        use_light_color: true
+        collapsible_controls: true
+
+      - type: custom:mushroom-light-card
+        entity: light.bedroom_play_right
+        name: Play Right
+        show_brightness_control: true
+        show_color_control: true
+        use_light_color: true
+        collapsible_controls: true
+
+  #################################################
+  #                   MEDIA                       #
+  #################################################
+
+  - type: custom:button-card
+    template: section_title
+    name: Media
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: media_player.bedroom_tv
+        name: TV
+        icon: mdi:television
+        template: kohbo_device_entity
+        tap_action:
+          action: more-info
+
+      - type: custom:button-card
+        entity: media_player.bedroom_sonos
+        name: Sonos Beam
+        icon: mdi:speaker
+        template: kohbo_device_entity
+        tap_action:
+          action: more-info
+
+      - type: custom:button-card
+        entity: media_player.bedroom_fire_cube
+        name: Fire TV Cube
+        icon: mdi:fire
+        template: kohbo_device_entity
+
+      - type: custom:button-card
+        entity: media_player.bedroom_echo
+        name: Echo
+        icon: mdi:amazon-alexa
+        template: kohbo_device_entity
+
+  #################################################
+  #                   CLIMATE                     #
+  #################################################
+
+  - type: custom:button-card
+    template: section_title
+    name: Climate
+
+  - type: custom:mushroom-climate-card
+    entity: climate.room_6
+    name: Heating
+    show_temperature_control: true
+    collapsible_controls: true
+    card_mod:
+      style: |
+        ha-card {
+          border-radius: 12px;
+        }
+
+  - type: custom:mini-graph-card
+    entities:
+      - entity: sensor.edward_bedside_sensor_temperature
+        name: Temperature
+      - entity: sensor.edward_bedside_sensor_humidity
+        name: Humidity
+        y_axis: secondary
+    hours_to_show: 24
+    points_per_hour: 2
+    line_width: 2
+    height: 100
+    show:
+      legend: true
+    color_thresholds:
+      - value: 16
+        color: '#3B82F6'
+      - value: 19
+        color: '#22C55E'
+      - value: 22
+        color: '#EF4444'
+
+  #################################################
+  #                  DEVICES                      #
+  #################################################
+
+  - type: custom:button-card
+    template: section_title
+    name: Power Strip
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: switch.bedroom_av_strip_plug1
+        name: TV
+        icon: mdi:television
+        template: kohbo_device_smart_plug_entity
+
+      - type: custom:button-card
+        entity: switch.bedroom_av_strip_plug2
+        name: Fire Cube
+        icon: mdi:fire
+        template: kohbo_device_smart_plug_entity
+
+      - type: custom:button-card
+        entity: switch.bedroom_av_strip_plug3
+        name: Sonos Beam
+        icon: mdi:speaker
+        template: kohbo_device_smart_plug_entity
+
+      - type: custom:button-card
+        entity: switch.bedroom_av_strip_plug4
+        name: Marshall Speaker
+        icon: mdi:speaker-wireless
+        template: kohbo_device_smart_plug_entity
+
+  #################################################
+  #             SETTINGS POPUP                    #
+  #################################################
+
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#bedroom_settings'
+        close_by_clicking_outside: true
+        
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Bedroom Settings
+
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+
+      - type: entities
+        entities:
+          - entity: switch.adaptive_lighting_bedroom
+            name: Adaptive Lighting
+            icon: mdi:theme-light-dark
+            secondary_info: last-changed

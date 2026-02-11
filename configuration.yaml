@@ -1,0 +1,35 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+lovelace:
+  mode: storage
+  dashboards:
+    dashboard-kohbo:
+      mode: yaml
+      title: "Overview"
+      icon: mdi:home
+      show_in_sidebar: true
+      filename: dashboards/kohbo-eidam/kohbo.yaml
+
+###############################################################################
+# PACKAGES - Room-based architecture
+# Each room is a self-contained package with its own:
+#   - input_selects (room state)
+#   - input_booleans (room toggles)
+#   - automations (room behavior)
+#   - template sensors (room-specific)
+#   - scripts (room actions)
+#
+# Inspired by github.com/johnkoht/hassio-config
+###############################################################################
+homeassistant:
+  packages: !include_dir_named packages
+
+# Legacy includes (will be migrated to packages over time)
+automation: !include automations.yaml
+# script: !include scripts.yaml
+scene: !include scenes.yaml
