@@ -1,0 +1,459 @@
+views:
+  ###############################################################################
+  # LIGHTING DASHBOARD
+  # All lights by room - click to navigate to room detail
+  ###############################################################################
+
+  - title: Lighting
+    path: lighting
+    icon: mdi:lightbulb-group
+
+    type: sections
+    max_columns: 4
+
+    sections:
+      # ===========================================================================
+      # OVERVIEW
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                icon: mdi:lightbulb
+                content: >
+                  {{ states.light | selectattr('state', 'eq', 'on') | list | count }} lights on
+                icon_color: yellow
+              - type: template
+                icon: mdi:home
+                content: >
+                  {{ states.light | selectattr('state', 'eq', 'on') | map(attribute='entity_id') | map('area_name') | unique | list | count }} rooms
+                icon_color: amber
+
+      # ===========================================================================
+      # QUICK ACTIONS
+      # ===========================================================================
+      - type: grid
+        title: Quick Actions
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Morning
+                icon: mdi:weather-sunset-up
+                icon_color: amber
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: script.morning_routine
+                card_mod:
+                  style: "ha-card { background: rgba(245, 158, 11, 0.15); }"
+
+              - type: custom:mushroom-template-card
+                primary: Evening
+                icon: mdi:weather-sunset-down
+                icon_color: orange
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: script.sunset_routine
+                card_mod:
+                  style: "ha-card { background: rgba(249, 115, 22, 0.15); }"
+
+              - type: custom:mushroom-template-card
+                primary: Goodnight
+                icon: mdi:bed
+                icon_color: indigo
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: script.goodnight_routine
+                card_mod:
+                  style: "ha-card { background: rgba(99, 102, 241, 0.15); }"
+
+              - type: custom:mushroom-template-card
+                primary: All Off
+                icon: mdi:lightbulb-off
+                icon_color: grey
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: script.all_lights_off
+                card_mod:
+                  style: "ha-card { background: rgba(100, 100, 100, 0.15); }"
+
+      # ===========================================================================
+      # LOUNGE
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Lounge
+            secondary: >
+              {% set lights = ['light.lounge_spotlights', 'light.lounge_wall_lights', 'light.lounge_signe_light', 'light.lounge_iris'] %}
+              {% set on = lights | select('is_state', 'on') | list | count %}
+              {{ on }}/{{ lights | count }} lights
+            icon: mdi:sofa
+            icon_color: "{% if is_state('light.lounge', 'on') %}amber{% else %}disabled{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /lounge-room
+            hold_action:
+              action: toggle
+              entity: light.lounge
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(234, 88, 12, 0.05) 100%);
+                  border: 1px solid rgba(245, 158, 11, 0.3);
+                }
+
+          # Lounge scenes
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                icon: mdi:sofa
+                primary: Relax
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.lounge_relax
+
+              - type: custom:mushroom-template-card
+                icon: mdi:television
+                primary: TV
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.lounge_tv
+
+              - type: custom:mushroom-template-card
+                icon: mdi:image-filter-hdr
+                primary: Hills
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.lounge_rolling_hills
+
+              - type: custom:mushroom-template-card
+                icon: mdi:party-popper
+                primary: Party
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.lounge_bright
+
+      # ===========================================================================
+      # BEDROOM
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Bedroom
+            secondary: >
+              {% set lights = ['light.bedroom_spot_lights', 'light.bedroom_signe_light', 'light.bedroom_tv_strip_light'] %}
+              {% set on = lights | select('is_state', 'on') | list | count %}
+              {{ on }}/{{ lights | count }} lights
+            icon: mdi:bed
+            icon_color: "{% if is_state('light.bedroom', 'on') %}violet{% else %}disabled{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /bedroom-room
+            hold_action:
+              action: toggle
+              entity: light.bedroom
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(124, 58, 237, 0.05) 100%);
+                  border: 1px solid rgba(139, 92, 246, 0.3);
+                }
+
+          # Bedroom scenes
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                icon: mdi:sofa
+                primary: Relax
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.bedroom_relax
+
+              - type: custom:mushroom-template-card
+                icon: mdi:sleep
+                primary: Sleepy
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.bedroom_sleepy
+
+              - type: custom:mushroom-template-card
+                icon: mdi:weather-sunny
+                primary: Arise
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.bedroom_arise
+
+              - type: custom:mushroom-template-card
+                icon: mdi:image-filter-hdr
+                primary: Hills
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.bedroom_rolling_hills
+
+      # ===========================================================================
+      # LUCAS'S ROOM
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Lucas's Room
+            secondary: >
+              {% set lights = ['light.lucass_room_spot_lights', 'light.lucass_room_pendant_light', 'light.lucass_room_iris'] %}
+              {% set on = lights | select('is_state', 'on') | list | count %}
+              {{ on }}/{{ lights | count }} lights
+            icon: mdi:baby-face-outline
+            icon_color: "{% if is_state('light.lucass_room', 'on') %}cyan{% else %}disabled{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /lucas-room
+            hold_action:
+              action: toggle
+              entity: light.lucass_room
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(59, 130, 246, 0.05) 100%);
+                  border: 1px solid rgba(6, 182, 212, 0.3);
+                }
+
+          # Lucas scenes
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                icon: mdi:weather-sunny
+                primary: Arise
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.lucass_room_arise
+
+              - type: custom:mushroom-template-card
+                icon: mdi:book-open-variant
+                primary: Story
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.lucass_room_storybook
+
+              - type: custom:mushroom-template-card
+                icon: mdi:sleep
+                primary: Sleepy
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.lucass_room_sleepy
+
+              - type: custom:mushroom-template-card
+                icon: mdi:weather-night
+                primary: Night
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: script.lucas_nightlight
+
+      # ===========================================================================
+      # HALLWAY
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Hallway
+            secondary: >
+              {% set lights = ['light.hallway_lamp_post', 'light.hallway_signe_light', 'light.flo_table_lamp', 'light.hallway_wall_lights'] %}
+              {% set on = lights | select('is_state', 'on') | list | count %}
+              {{ on }}/{{ lights | count }} lights
+            icon: mdi:door
+            icon_color: "{% if is_state('light.hallway', 'on') %}orange{% else %}disabled{% endif %}"
+            tap_action:
+              action: more-info
+              entity: light.hallway
+            hold_action:
+              action: toggle
+              entity: light.hallway
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(249, 115, 22, 0.05) 100%);
+                  border: 1px solid rgba(251, 146, 60, 0.3);
+                }
+
+          # Hallway individual lights
+          - type: custom:mushroom-light-card
+            entity: light.hallway_lamp_post
+            name: Lamp Post
+            show_brightness_control: true
+            collapsible_controls: true
+
+          - type: custom:mushroom-light-card
+            entity: light.hallway_signe_light
+            name: Signe
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+
+          - type: custom:mushroom-light-card
+            entity: light.flo_table_lamp
+            name: Flo Lamp
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+
+      # ===========================================================================
+      # KITCHEN & OFFICE
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Kitchen & Office
+            secondary: >
+              {% set on_count = 0 %}
+              {% if is_state('light.kitchen_spotlights', 'on') %}{% set on_count = on_count + 1 %}{% endif %}
+              {% if is_state('light.office_spotlights', 'on') %}{% set on_count = on_count + 1 %}{% endif %}
+              {% if is_state('light.boudoir_spotlights', 'on') %}{% set on_count = on_count + 1 %}{% endif %}
+              {{ on_count }}/3 areas
+            icon: mdi:chef-hat
+            icon_color: "{% if is_state('light.kitchen_spotlights', 'on') or is_state('light.office_spotlights', 'on') %}teal{% else %}disabled{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /kitchen-office
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(20, 184, 166, 0.2) 0%, rgba(13, 148, 136, 0.05) 100%);
+                  border: 1px solid rgba(20, 184, 166, 0.3);
+                }
+
+          - type: custom:mushroom-light-card
+            entity: light.kitchen_spotlights
+            name: Kitchen
+            show_brightness_control: true
+            collapsible_controls: true
+
+          - type: custom:mushroom-light-card
+            entity: light.office_spotlights
+            name: Office
+            show_brightness_control: true
+            collapsible_controls: true
+
+          - type: custom:mushroom-light-card
+            entity: light.boudoir_spotlights
+            name: Boudoir
+            show_brightness_control: true
+            collapsible_controls: true
+
+      # ===========================================================================
+      # BATHROOMS
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Bathrooms
+            secondary: >
+              {% set on_count = 0 %}
+              {% if is_state('light.bathroom_spotlights', 'on') %}{% set on_count = on_count + 1 %}{% endif %}
+              {% if is_state('light.lucass_bathroom_spotlights', 'on') %}{% set on_count = on_count + 1 %}{% endif %}
+              {% if is_state('light.cloakroom_spotlights', 'on') %}{% set on_count = on_count + 1 %}{% endif %}
+              {{ on_count }}/3 bathrooms
+            icon: mdi:shower
+            icon_color: "{% if is_state('light.bathroom_spotlights', 'on') %}sky{% else %}disabled{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /bathrooms
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(6, 182, 212, 0.05) 100%);
+                  border: 1px solid rgba(14, 165, 233, 0.3);
+                }
+
+          - type: custom:mushroom-light-card
+            entity: light.bathroom_spotlights
+            name: Main Bathroom
+            show_brightness_control: true
+            collapsible_controls: true
+
+          - type: custom:mushroom-light-card
+            entity: light.lucass_bathroom_spotlights
+            name: Lucas's Bathroom
+            show_brightness_control: true
+            collapsible_controls: true
+
+          - type: custom:mushroom-light-card
+            entity: light.cloakroom_spotlights
+            name: Cloakroom
+            show_brightness_control: true
+            collapsible_controls: true
+
+      # ===========================================================================
+      # OUTSIDE
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Outside
+            secondary: >
+              {% if is_state('light.courtyard_light', 'on') or is_state('light.garden_lights', 'on') %}Lights on{% else %}Lights off{% endif %}
+            icon: mdi:tree
+            icon_color: "{% if is_state('light.courtyard_light', 'on') or is_state('light.garden_lights', 'on') %}green{% else %}disabled{% endif %}"
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.05) 100%);
+                  border: 1px solid rgba(34, 197, 94, 0.3);
+                }
+
+          - type: custom:mushroom-light-card
+            entity: light.courtyard_light
+            name: Courtyard
+            show_brightness_control: true
+            collapsible_controls: true
+
+          - type: custom:mushroom-light-card
+            entity: light.garden_lights
+            name: Garden
+            show_brightness_control: true
+            collapsible_controls: true

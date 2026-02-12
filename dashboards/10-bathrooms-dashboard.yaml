@@ -1,0 +1,215 @@
+views:
+  ###############################################################################
+  # BATHROOMS DASHBOARD
+  # Main Bathroom, Lucas's Bathroom, Cloakroom
+  ###############################################################################
+
+  - title: Bathrooms
+    path: bathrooms
+    icon: mdi:shower
+    subview: true
+
+    type: sections
+    max_columns: 3
+
+    sections:
+      # ===========================================================================
+      # HEADER
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: back
+              - type: template
+                icon: mdi:shower
+                content: "Bathrooms"
+                icon_color: sky
+              - type: template
+                icon: mdi:water-percent
+                content: "{{ states('sensor.bathroom_th_humidity') | round(0) }}%"
+                icon_color: "{% set h = states('sensor.bathroom_th_humidity') | float %}{% if h > 70 %}red{% elif h > 60 %}orange{% else %}green{% endif %}"
+
+      # ===========================================================================
+      # MAIN BATHROOM
+      # ===========================================================================
+      - type: grid
+        title: Main Bathroom
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.bathroom_spotlights
+            name: Spotlights
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(6, 182, 212, 0.05) 100%);
+                  border: 1px solid rgba(14, 165, 233, 0.3);
+                }
+
+          - type: custom:mushroom-light-card
+            entity: light.bathroom_strip_light
+            name: Strip Light
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+
+          - type: custom:mushroom-template-card
+            primary: Humidity
+            secondary: "{{ states('sensor.bathroom_th_humidity') | round(0) }}%"
+            icon: mdi:water-percent
+            icon_color: "{% set h = states('sensor.bathroom_th_humidity') | float %}{% if h > 70 %}red{% elif h > 60 %}orange{% else %}green{% endif %}"
+
+          # Towel Rail (future - when ZBMINI-L2 installed)
+          - type: custom:mushroom-template-card
+            primary: Towel Rail
+            secondary: "Not yet connected"
+            icon: mdi:radiator
+            icon_color: grey
+
+          # Fan (future - when ZBMINI-L2 installed)
+          - type: custom:mushroom-template-card
+            primary: Extractor Fan
+            secondary: "Not yet connected"
+            icon: mdi:fan
+            icon_color: grey
+
+      # ===========================================================================
+      # LUCAS'S BATHROOM
+      # ===========================================================================
+      - type: grid
+        title: Lucas's Bathroom
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.lucass_bathroom_spotlights
+            name: Spotlights
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+                  border: 1px solid rgba(6, 182, 212, 0.3);
+                }
+
+          - type: custom:mushroom-template-card
+            primary: Bath Temperature
+            secondary: "{{ states('sensor.lucas_bath_temp_sensor_temperature') | round(1) }}°C"
+            icon: mdi:thermometer-water
+            icon_color: "{% set t = states('sensor.lucas_bath_temp_sensor_temperature') | float %}{% if t < 36 %}blue{% elif t > 40 %}red{% else %}green{% endif %}"
+
+          # Fan (future - when ZBMINI-L2 installed)
+          - type: custom:mushroom-template-card
+            primary: Extractor Fan
+            secondary: "Not yet connected"
+            icon: mdi:fan
+            icon_color: grey
+
+          # Bathtime routine button
+          - type: custom:mushroom-template-card
+            primary: Start Bathtime
+            secondary: "Lights + Music"
+            icon: mdi:bathtub
+            icon_color: cyan
+            tap_action:
+              action: call-service
+              service: script.lucas_bathtime
+            card_mod:
+              style: "ha-card { background: rgba(6, 182, 212, 0.2); }"
+
+      # ===========================================================================
+      # CLOAKROOM
+      # ===========================================================================
+      - type: grid
+        title: Cloakroom
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.cloakroom_spotlights
+            name: Spotlights
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(107, 114, 128, 0.15) 0%, rgba(75, 85, 99, 0.05) 100%);
+                  border: 1px solid rgba(107, 114, 128, 0.3);
+                }
+
+          - type: custom:mushroom-template-card
+            primary: Cloakroom Door
+            secondary: "{% if is_state('binary_sensor.cloakroom_door', 'on') %}Open{% else %}Closed{% endif %}"
+            icon: mdi:door
+            icon_color: "{% if is_state('binary_sensor.cloakroom_door', 'on') %}orange{% else %}green{% endif %}"
+
+          # Fan (future - when ZBMINI-L2 installed)
+          - type: custom:mushroom-template-card
+            primary: Extractor Fan
+            secondary: "Not yet connected"
+            icon: mdi:fan
+            icon_color: grey
+
+      # ===========================================================================
+      # SCENES
+      # ===========================================================================
+      - type: grid
+        title: Quick Actions
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: All On
+                icon: mdi:lightbulb-group
+                icon_color: yellow
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
+                  target:
+                    entity_id:
+                      - light.bathroom_spotlights
+                      - light.lucass_bathroom_spotlights
+                      - light.cloakroom_spotlights
+
+              - type: custom:mushroom-template-card
+                primary: All Off
+                icon: mdi:lightbulb-off
+                icon_color: grey
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: light.turn_off
+                  target:
+                    entity_id:
+                      - light.bathroom_spotlights
+                      - light.lucass_bathroom_spotlights
+                      - light.cloakroom_spotlights
+
+              - type: custom:mushroom-template-card
+                primary: Relax Mode
+                icon: mdi:candle
+                icon_color: orange
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.bathroom_relax
+
+      # ===========================================================================
+      # FUTURE - SMART SWITCHES
+      # ===========================================================================
+      - type: grid
+        title: Smart Switches (Coming Soon)
+        cards:
+          - type: markdown
+            content: |
+              **Sonoff ZBMINI-L2 switches to install:**
+              - ☐ Main Bathroom Fan
+              - ☐ Lucas's Bathroom Fan  
+              - ☐ Cloakroom Fan
+              - ☐ Boudoir Fan
+              - ☐ Towel Rail (optional)
+
+              *See electrician brief for installation details*

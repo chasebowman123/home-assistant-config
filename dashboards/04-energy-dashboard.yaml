@@ -1,0 +1,570 @@
+views:
+  ###############################################################################
+  # ENERGY DASHBOARD - CORRECTED
+  # Power usage, costs, appliance consumption
+  # Updated with actual entity IDs from Home Assistant export
+  ###############################################################################
+
+  - title: Energy
+    path: energy
+    icon: mdi:lightning-bolt
+
+    type: sections
+    max_columns: 3
+
+    sections:
+      # ===========================================================================
+      # OVERVIEW
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                icon: mdi:washing-machine
+                content: "{% if is_state('sensor.washing_machine_machine_state', 'run') %}Running{% else %}Idle{% endif %}"
+                icon_color: "{% if is_state('sensor.washing_machine_machine_state', 'run') %}blue{% else %}grey{% endif %}"
+              - type: template
+                icon: mdi:tumble-dryer
+                content: "{% if is_state('sensor.tumble_dryer_machine_state', 'run') %}Running{% else %}Idle{% endif %}"
+                icon_color: "{% if is_state('sensor.tumble_dryer_machine_state', 'run') %}orange{% else %}grey{% endif %}"
+              - type: template
+                icon: mdi:dishwasher
+                content: "{% if is_state('sensor.dishwasher_operation_state', 'run') %}Running{% else %}Ready{% endif %}"
+                icon_color: "{% if is_state('sensor.dishwasher_operation_state', 'run') %}green{% else %}grey{% endif %}"
+              - type: template
+                icon: mdi:stove
+                content: "{% if not is_state('sensor.oven', 'off') %}On{% else %}Off{% endif %}"
+                icon_color: "{% if not is_state('sensor.oven', 'off') %}red{% else %}grey{% endif %}"
+              - type: template
+                icon: mdi:fridge
+                content: "{{ states('number.refrigerator_fridge_temperature') }}°C"
+                icon_color: cyan
+
+      # ===========================================================================
+      # SUMMARY CARDS
+      # ===========================================================================
+      - type: grid
+        title: Summary
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Lights On
+            secondary: "{{ states.light | selectattr('state', 'eq', 'on') | list | count }} lights"
+            icon: mdi:lightbulb-group
+            icon_color: yellow
+            tap_action:
+              action: navigate
+              navigation_path: /lighting
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(234, 179, 8, 0.05) 100%);
+                  border: 1px solid rgba(234, 179, 8, 0.3);
+                }
+
+          - type: custom:mushroom-template-card
+            primary: Heating
+            secondary: >
+              {% set heating = states.climate | selectattr('attributes.hvac_action', 'eq', 'heating') | list | count %}
+              {{ heating }} zones active
+            icon: mdi:fire
+            icon_color: "{% if states.climate | selectattr('attributes.hvac_action', 'eq', 'heating') | list | count > 0 %}orange{% else %}grey{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /climate
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(249, 115, 22, 0.05) 100%);
+                  border: 1px solid rgba(249, 115, 22, 0.3);
+                }
+
+      # ===========================================================================
+      # WASHING MACHINE
+      # ===========================================================================
+      - type: grid
+        title: Washing Machine
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Washing Machine
+            secondary: >
+              {% if is_state('sensor.washing_machine_machine_state', 'run') %}
+                Running
+              {% elif is_state('sensor.washing_machine_machine_state', 'stop') %}
+                Stopped
+              {% else %}
+                {{ states('sensor.washing_machine_machine_state') | title }}
+              {% endif %}
+            icon: mdi:washing-machine
+            icon_color: "{% if is_state('sensor.washing_machine_machine_state', 'run') %}blue{% else %}grey{% endif %}"
+            tap_action:
+              action: more-info
+              entity: sensor.washing_machine_machine_state
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(33, 150, 243, 0.15) 0%, rgba(33, 150, 243, 0.05) 100%);
+                  border: 1px solid rgba(33, 150, 243, 0.3);
+                }
+
+          - type: custom:mushroom-entity-card
+            entity: sensor.washing_machine_energy
+            name: Total Energy
+            icon: mdi:lightning-bolt
+
+          - type: custom:mushroom-entity-card
+            entity: sensor.washing_machine_power
+            name: Current Power
+            icon: mdi:flash
+
+          - type: custom:mushroom-entity-card
+            entity: sensor.washing_machine_water_consumption
+            name: Water Used
+            icon: mdi:water
+
+          - type: custom:mushroom-template-card
+            primary: Completion
+            secondary: "{{ states('sensor.washing_machine_completion_time') | as_timestamp | timestamp_custom('%H:%M') if states('sensor.washing_machine_completion_time') not in ['unavailable', 'unknown'] else 'N/A' }}"
+            icon: mdi:clock-check
+            icon_color: "{% if is_state('sensor.washing_machine_machine_state', 'run') %}blue{% else %}grey{% endif %}"
+
+      # ===========================================================================
+      # TUMBLE DRYER
+      # ===========================================================================
+      - type: grid
+        title: Tumble Dryer
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Tumble Dryer
+            secondary: >
+              {% if is_state('sensor.tumble_dryer_machine_state', 'run') %}
+                Running
+              {% elif is_state('sensor.tumble_dryer_machine_state', 'stop') %}
+                Stopped
+              {% else %}
+                {{ states('sensor.tumble_dryer_machine_state') | title }}
+              {% endif %}
+            icon: mdi:tumble-dryer
+            icon_color: "{% if is_state('sensor.tumble_dryer_machine_state', 'run') %}orange{% else %}grey{% endif %}"
+            tap_action:
+              action: more-info
+              entity: sensor.tumble_dryer_machine_state
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(255, 152, 0, 0.15) 0%, rgba(255, 152, 0, 0.05) 100%);
+                  border: 1px solid rgba(255, 152, 0, 0.3);
+                }
+
+          - type: custom:mushroom-entity-card
+            entity: sensor.tumble_dryer_energy
+            name: Total Energy
+            icon: mdi:lightning-bolt
+
+          - type: custom:mushroom-entity-card
+            entity: sensor.tumble_dryer_power
+            name: Current Power
+            icon: mdi:flash
+
+          - type: custom:mushroom-entity-card
+            entity: switch.tumble_dryer_wrinkle_prevent
+            name: Wrinkle Prevent
+            tap_action:
+              action: toggle
+
+          - type: custom:mushroom-template-card
+            primary: Completion
+            secondary: "{{ states('sensor.tumble_dryer_completion_time') | as_timestamp | timestamp_custom('%H:%M') if states('sensor.tumble_dryer_completion_time') not in ['unavailable', 'unknown'] else 'N/A' }}"
+            icon: mdi:clock-check
+            icon_color: "{% if is_state('sensor.tumble_dryer_machine_state', 'run') %}orange{% else %}grey{% endif %}"
+
+      # ===========================================================================
+      # DISHWASHER
+      # ===========================================================================
+      - type: grid
+        title: Dishwasher
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Dishwasher
+            secondary: >
+              {% if is_state('sensor.dishwasher_operation_state', 'run') %}
+                Running
+              {% elif is_state('sensor.dishwasher_salt_nearly_empty', 'present') %}
+                Needs salt refill
+              {% else %}
+                {{ states('sensor.dishwasher_operation_state') | title }}
+              {% endif %}
+            icon: mdi:dishwasher
+            icon_color: >
+              {% if is_state('sensor.dishwasher_operation_state', 'run') %}green
+              {% elif is_state('sensor.dishwasher_salt_nearly_empty', 'present') %}amber
+              {% else %}grey{% endif %}
+            badge_icon: "{% if is_state('sensor.dishwasher_salt_nearly_empty', 'present') %}mdi:alert{% endif %}"
+            badge_color: amber
+            tap_action:
+              action: more-info
+              entity: sensor.dishwasher_operation_state
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(76, 175, 80, 0.05) 100%);
+                  border: 1px solid rgba(76, 175, 80, 0.3);
+                }
+
+          - type: custom:mushroom-template-card
+            primary: Door
+            secondary: "{{ states('sensor.dishwasher_door') | title }}"
+            icon: mdi:door
+            icon_color: "{% if is_state('sensor.dishwasher_door', 'open') %}orange{% else %}green{% endif %}"
+
+          - type: custom:mushroom-entity-card
+            entity: switch.dishwasher_power
+            name: Power
+            tap_action:
+              action: toggle
+
+          - type: custom:mushroom-entity-card
+            entity: select.dishwasher_selected_programme
+            name: Programme
+            tap_action:
+              action: more-info
+
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: sensor.dishwasher_salt_nearly_empty
+                state: "present"
+            card:
+              type: custom:mushroom-template-card
+              primary: "Salt Low"
+              secondary: "Refill needed"
+              icon: mdi:shaker-outline
+              icon_color: amber
+              card_mod:
+                style: |
+                  ha-card {
+                    background: rgba(245, 158, 11, 0.2);
+                    border: 1px solid rgba(245, 158, 11, 0.5);
+                  }
+
+      # ===========================================================================
+      # OVEN
+      # ===========================================================================
+      - type: grid
+        title: Oven
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Oven
+            secondary: >
+              {% if not is_state('sensor.oven', 'off') %}
+                {{ states('sensor.oven_programme') }} - {{ states('sensor.oven_target_temperature') }}°C
+              {% else %}
+                Off
+              {% endif %}
+            icon: mdi:stove
+            icon_color: "{% if not is_state('sensor.oven', 'off') %}red{% else %}grey{% endif %}"
+            tap_action:
+              action: more-info
+              entity: sensor.oven
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(244, 67, 54, 0.15) 0%, rgba(244, 67, 54, 0.05) 100%);
+                  border: 1px solid rgba(244, 67, 54, 0.3);
+                }
+
+          - type: custom:mushroom-template-card
+            primary: Door
+            secondary: "{% if is_state('binary_sensor.oven_door', 'on') %}Open{% else %}Closed{% endif %}"
+            icon: mdi:door
+            icon_color: "{% if is_state('binary_sensor.oven_door', 'on') %}orange{% else %}green{% endif %}"
+
+          - type: custom:mushroom-entity-card
+            entity: sensor.oven_programme
+            name: Programme
+            icon: mdi:chef-hat
+
+          - type: custom:mushroom-entity-card
+            entity: sensor.oven_programme_phase
+            name: Phase
+            icon: mdi:progress-clock
+
+          - type: custom:mushroom-entity-card
+            entity: light.oven_light
+            name: Oven Light
+            tap_action:
+              action: toggle
+
+      # ===========================================================================
+      # REFRIGERATOR
+      # ===========================================================================
+      - type: grid
+        title: Refrigerator
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Refrigerator
+            secondary: "Fridge {{ states('number.refrigerator_fridge_temperature') }}°C • Freezer {{ states('number.refrigerator_freezer_temperature') }}°C"
+            icon: mdi:fridge
+            icon_color: cyan
+            tap_action:
+              action: more-info
+              entity: number.refrigerator_fridge_temperature
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(0, 188, 212, 0.15) 0%, rgba(0, 188, 212, 0.05) 100%);
+                  border: 1px solid rgba(0, 188, 212, 0.3);
+                }
+
+          - type: custom:mushroom-number-card
+            entity: number.refrigerator_fridge_temperature
+            name: Fridge Temp
+            icon: mdi:fridge-top
+            display_mode: buttons
+
+          - type: custom:mushroom-number-card
+            entity: number.refrigerator_freezer_temperature
+            name: Freezer Temp
+            icon: mdi:fridge-bottom
+            display_mode: buttons
+
+          - type: custom:mushroom-template-card
+            primary: Door
+            secondary: "{% if is_state('binary_sensor.refrigerator_door', 'on') %}Open{% else %}Closed{% endif %}"
+            icon: mdi:door
+            icon_color: "{% if is_state('binary_sensor.refrigerator_door', 'on') %}red{% else %}green{% endif %}"
+
+          - type: custom:mushroom-entity-card
+            entity: switch.refrigerator_express_cool
+            name: Express Cool
+            tap_action:
+              action: toggle
+
+      # ===========================================================================
+      # SMART PLUGS (Tapo)
+      # ===========================================================================
+      - type: grid
+        title: Smart Plugs
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: switch.bubble_light
+            name: Bubble Light
+            tap_action:
+              action: toggle
+
+          - type: custom:mushroom-entity-card
+            entity: switch.bar_light
+            name: Bar Light
+            tap_action:
+              action: toggle
+
+          - type: custom:mushroom-entity-card
+            entity: switch.office_edison_light
+            name: Office Edison
+            tap_action:
+              action: toggle
+
+          - type: custom:mushroom-entity-card
+            entity: switch.disco_lights
+            name: Disco Lights
+            tap_action:
+              action: toggle
+
+          - type: custom:mushroom-entity-card
+            entity: switch.cloud_lamp
+            name: Cloud Lamp
+            tap_action:
+              action: toggle
+
+          - type: custom:mushroom-entity-card
+            entity: switch.banana_light
+            name: Banana Light
+            tap_action:
+              action: toggle
+
+          - type: custom:mushroom-entity-card
+            entity: switch.bedside_devices
+            name: Bedside Devices
+            tap_action:
+              action: toggle
+
+      # ===========================================================================
+      # HEATING ZONES
+      # ===========================================================================
+      - type: grid
+        title: Heating Zones
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Hallway
+            secondary: "{{ state_attr('climate.hallway', 'current_temperature') }}°C -> {{ state_attr('climate.hallway', 'temperature') }}°C"
+            icon: mdi:radiator
+            icon_color: "{% if state_attr('climate.hallway', 'hvac_action') == 'heating' %}orange{% else %}grey{% endif %}"
+            tap_action:
+              action: more-info
+              entity: climate.hallway
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, transparent 100%);
+                  border: 1px solid rgba(251, 146, 60, 0.2);
+                }
+
+          - type: custom:mushroom-template-card
+            primary: Lounge
+            secondary: "{{ state_attr('climate.lounge', 'current_temperature') | default('--') }}°C -> {{ state_attr('climate.lounge', 'temperature') | default('--') }}°C"
+            icon: mdi:radiator
+            icon_color: "{% if state_attr('climate.lounge', 'hvac_action') == 'heating' %}orange{% else %}grey{% endif %}"
+            tap_action:
+              action: more-info
+              entity: climate.lounge
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, transparent 100%);
+                  border: 1px solid rgba(245, 158, 11, 0.2);
+                }
+
+          - type: custom:mushroom-template-card
+            primary: Bedroom
+            secondary: "{{ state_attr('climate.room_6', 'current_temperature') }}°C -> {{ state_attr('climate.room_6', 'temperature') }}°C"
+            icon: mdi:radiator
+            icon_color: "{% if state_attr('climate.room_6', 'hvac_action') == 'heating' %}orange{% else %}grey{% endif %}"
+            tap_action:
+              action: more-info
+              entity: climate.room_6
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, transparent 100%);
+                  border: 1px solid rgba(139, 92, 246, 0.2);
+                }
+
+          - type: custom:mushroom-template-card
+            primary: Lucas's Room
+            secondary: "{{ state_attr('climate.room_5', 'current_temperature') }}°C -> {{ state_attr('climate.room_5', 'temperature') }}°C"
+            icon: mdi:radiator
+            icon_color: "{% if state_attr('climate.room_5', 'hvac_action') == 'heating' %}orange{% else %}grey{% endif %}"
+            tap_action:
+              action: more-info
+              entity: climate.room_5
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, transparent 100%);
+                  border: 1px solid rgba(6, 182, 212, 0.2);
+                }
+
+          - type: custom:mushroom-template-card
+            primary: Kitchen
+            secondary: "{{ state_attr('climate.kitchen', 'current_temperature') }}°C -> {{ state_attr('climate.kitchen', 'temperature') }}°C"
+            icon: mdi:radiator
+            icon_color: "{% if state_attr('climate.kitchen', 'hvac_action') == 'heating' %}orange{% else %}grey{% endif %}"
+            tap_action:
+              action: more-info
+              entity: climate.kitchen
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, transparent 100%);
+                  border: 1px solid rgba(20, 184, 166, 0.2);
+                }
+
+          - type: custom:mushroom-template-card
+            primary: Office
+            secondary: "{{ state_attr('climate.office', 'current_temperature') }}°C -> {{ state_attr('climate.office', 'temperature') }}°C"
+            icon: mdi:radiator
+            icon_color: "{% if state_attr('climate.office', 'hvac_action') == 'heating' %}orange{% else %}grey{% endif %}"
+            tap_action:
+              action: more-info
+              entity: climate.office
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, transparent 100%);
+                  border: 1px solid rgba(16, 185, 129, 0.2);
+                }
+
+      # ===========================================================================
+      # AIR PURIFIER
+      # ===========================================================================
+      - type: grid
+        title: Air Quality
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Air Purifier
+            secondary: >
+              PM2.5: {{ states('sensor.core_400s_pm2_5') }}
+              {% set pm = states('sensor.core_400s_pm2_5') | float(0) %}
+              {% if pm < 35 %}({{ states('sensor.core_400s_air_quality') | title }}){% elif pm < 75 %}(Moderate){% else %}(Poor){% endif %}
+            icon: mdi:air-purifier
+            icon_color: "{% set pm = states('sensor.core_400s_pm2_5') | float(0) %}{% if pm < 35 %}green{% elif pm < 75 %}yellow{% else %}red{% endif %}"
+            tap_action:
+              action: more-info
+              entity: fan.core_400s
+
+          - type: custom:mushroom-template-card
+            primary: Filter Life
+            secondary: "{{ states('sensor.core_400s_filter_lifetime') }}% remaining"
+            icon: mdi:air-filter
+            icon_color: "{% set l = states('sensor.core_400s_filter_lifetime') | float(100) %}{% if l > 30 %}green{% elif l > 15 %}yellow{% else %}red{% endif %}"
+
+      # ===========================================================================
+      # MAINTENANCE ALERTS
+      # ===========================================================================
+      - type: grid
+        title: Maintenance
+        cards:
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: sensor.dishwasher_salt_nearly_empty
+                state: "present"
+            card:
+              type: custom:mushroom-template-card
+              primary: "Dishwasher Salt"
+              secondary: "Refill needed"
+              icon: mdi:shaker-outline
+              icon_color: amber
+              card_mod:
+                style: |
+                  ha-card {
+                    background: rgba(245, 158, 11, 0.2);
+                    border: 1px solid rgba(245, 158, 11, 0.5);
+                  }
+
+          - type: conditional
+            conditions:
+              - condition: numeric_state
+                entity: sensor.core_400s_filter_lifetime
+                below: 20
+            card:
+              type: custom:mushroom-template-card
+              primary: "Air Purifier Filter"
+              secondary: "{{ states('sensor.core_400s_filter_lifetime') }}% remaining"
+              icon: mdi:air-filter
+              icon_color: amber
+              card_mod:
+                style: |
+                  ha-card {
+                    background: rgba(245, 158, 11, 0.2);
+                    border: 1px solid rgba(245, 158, 11, 0.5);
+                  }
+
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: binary_sensor.bedroom_humidifier_water_shortage
+                state: "on"
+            card:
+              type: custom:mushroom-template-card
+              primary: "Bedroom Humidifier"
+              secondary: "Needs water refill"
+              icon: mdi:water-alert
+              icon_color: red
+              card_mod:
+                style: |
+                  ha-card {
+                    background: rgba(239, 68, 68, 0.2);
+                    border: 1px solid rgba(239, 68, 68, 0.5);
+                  }

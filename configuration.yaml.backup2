@@ -38,60 +38,6 @@ lovelace:
       icon: mdi:silverware-fork-knife
       show_in_sidebar: true
       filename: dashboards/09-kitchen-office-dashboard.yaml
-    lovelace-overview:
-      mode: yaml
-      title: Home
-      icon: mdi:home
-      show_in_sidebar: true
-      filename: dashboards/01-overview-dashboard.yaml
-    lovelace-security:
-      mode: yaml
-      title: Security
-      icon: mdi:shield-home
-      show_in_sidebar: true
-      filename: dashboards/02-security-dashboard.yaml
-    lovelace-climate:
-      mode: yaml
-      title: Climate
-      icon: mdi:thermostat
-      show_in_sidebar: true
-      filename: dashboards/03-climate-dashboard.yaml
-    lovelace-energy:
-      mode: yaml
-      title: Energy
-      icon: mdi:lightning-bolt
-      show_in_sidebar: true
-      filename: dashboards/04-energy-dashboard.yaml
-    lovelace-lighting:
-      mode: yaml
-      title: Lighting
-      icon: mdi:lightbulb-group
-      show_in_sidebar: true
-      filename: dashboards/05-lighting-dashboard.yaml
-    lovelace-bathrooms:
-      mode: yaml
-      title: Bathrooms
-      icon: mdi:shower
-      show_in_sidebar: true
-      filename: dashboards/10-bathrooms-dashboard.yaml
-    lovelace-appliances:
-      mode: yaml
-      title: Appliances
-      icon: mdi:washing-machine
-      show_in_sidebar: true
-      filename: dashboards/11-appliances-dashboard.yaml
-    lovelace-media:
-      mode: yaml
-      title: Media
-      icon: mdi:play-circle
-      show_in_sidebar: true
-      filename: dashboards/12-media-dashboard.yaml
-    lovelace-settings:
-      mode: yaml
-      title: Settings
-      icon: mdi:cog
-      show_in_sidebar: true
-      filename: dashboards/13-settings-dashboard.yaml
 
 ###############################################################################
 # PACKAGES - Room-based architecture

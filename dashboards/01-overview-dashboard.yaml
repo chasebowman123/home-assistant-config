@@ -1,0 +1,383 @@
+views:
+  ###############################################################################
+  # OVERVIEW DASHBOARD
+  # Main home screen - quick glance at everything
+  ###############################################################################
+
+  - title: Home
+    path: home
+    icon: mdi:home
+
+    type: sections
+    max_columns: 4
+
+    sections:
+      # ===========================================================================
+      # WELCOME HEADER
+      # ===========================================================================
+      - type: grid
+        cards:
+          - type: custom:mushroom-template-card
+            primary: >
+              {% set hour = now().hour %}
+              {% if hour < 12 %}Good morning{% elif hour < 17 %}Good afternoon{% else %}Good evening{% endif %}, Edward
+            secondary: "{{ now().strftime('%A, %d %B') }}"
+            icon: mdi:home
+            icon_color: amber
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent;
+                  border: none;
+                  --card-primary-font-size: 24px;
+                }
+
+          - type: custom:mushroom-chips-card
+            alignment: end
+            chips:
+              - type: template
+                icon: mdi:thermometer
+                content: "{{ states('sensor.home_outdoor_temperature') | round(0) }}°C"
+                icon_color: cyan
+              - type: weather
+                entity: weather.forecast_home
+                show_temperature: false
+                show_conditions: true
+              - type: template
+                icon: mdi:weather-sunset-down
+                content: "{{ as_timestamp(state_attr('sun.sun', 'next_setting')) | timestamp_custom('%H:%M') }}"
+                icon_color: orange
+
+      # ===========================================================================
+      # ROOM CARDS - Click to navigate
+      # ===========================================================================
+      - type: grid
+        title: Rooms
+        cards:
+          # LOUNGE
+          - type: custom:mushroom-template-card
+            primary: Lounge
+            secondary: >
+              {{ state_attr('climate.lounge', 'current_temperature') | round(0) }}°C
+              {% if is_state('light.lounge', 'on') %} • Lights on{% endif %}
+            icon: mdi:sofa
+            icon_color: "{% if is_state('light.lounge', 'on') %}amber{% else %}disabled{% endif %}"
+            badge_icon: "{% if is_state('media_player.lounge_tv_2', 'on') %}mdi:television{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /lounge-room
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(234, 88, 12, 0.05) 100%);
+                  border: 1px solid rgba(245, 158, 11, 0.2);
+                }
+
+          # BEDROOM
+          - type: custom:mushroom-template-card
+            primary: Bedroom
+            secondary: >
+              {{ state_attr('climate.room_6', 'current_temperature') | round(0) }}°C
+              {% if is_state('light.bedroom', 'on') %} • Lights on{% endif %}
+            icon: mdi:bed
+            icon_color: "{% if is_state('light.bedroom', 'on') %}violet{% else %}disabled{% endif %}"
+            badge_icon: "{% if is_state('media_player.lg_webos_tv_oled55g54lw', 'on') %}mdi:television{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /bedroom-room
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(124, 58, 237, 0.05) 100%);
+                  border: 1px solid rgba(139, 92, 246, 0.2);
+                }
+
+          # LUCAS'S ROOM
+          - type: custom:mushroom-template-card
+            primary: Lucas's Room
+            secondary: >
+              {{ state_attr('climate.room_5', 'current_temperature') | round(0) }}°C • {{ state_attr('climate.room_5', 'current_humidity') | round(0) }}%
+              {% if is_state('input_boolean.lucas_napping', 'on') %} • 😴{% endif %}
+            icon: mdi:baby-face-outline
+            icon_color: "{% if is_state('light.lucass_room', 'on') %}cyan{% else %}disabled{% endif %}"
+            badge_icon: "{% if is_state('input_boolean.lucas_napping', 'on') %}mdi:sleep{% endif %}"
+            badge_color: indigo
+            tap_action:
+              action: navigate
+              navigation_path: /lucas-room
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+                  border: 1px solid rgba(6, 182, 212, 0.2);
+                }
+
+          # KITCHEN & OFFICE
+          - type: custom:mushroom-template-card
+            primary: Kitchen & Office
+            secondary: >
+              {{ state_attr('climate.kitchen', 'current_temperature') | round(0) }}°C
+              {% if is_state('light.kitchen_spotlights', 'on') or is_state('light.office_spotlights', 'on') %} • Lights on{% endif %}
+            icon: mdi:chef-hat
+            icon_color: "{% if is_state('light.kitchen_spotlights', 'on') %}teal{% else %}disabled{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /kitchen-office
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(13, 148, 136, 0.05) 100%);
+                  border: 1px solid rgba(20, 184, 166, 0.2);
+                }
+
+          # HALLWAY
+          - type: custom:mushroom-template-card
+            primary: Hallway
+            secondary: >
+              {{ state_attr('climate.hallway', 'current_temperature') | round(0) }}°C
+              {% if is_state('light.hallway', 'on') %} • Lights on{% endif %}
+            icon: mdi:door
+            icon_color: "{% if is_state('light.hallway', 'on') %}orange{% else %}disabled{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /lighting
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(249, 115, 22, 0.05) 100%);
+                  border: 1px solid rgba(251, 146, 60, 0.2);
+                }
+
+          # BATHROOMS
+          - type: custom:mushroom-template-card
+            primary: Bathrooms
+            secondary: "{{ states('sensor.bathroom_th_humidity') | round(0) }}% humidity"
+            icon: mdi:shower
+            icon_color: "{% if is_state('light.bathroom_spotlights', 'on') %}cyan{% else %}disabled{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /bathrooms
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(6, 182, 212, 0.05) 100%);
+                  border: 1px solid rgba(14, 165, 233, 0.2);
+                }
+
+      # ===========================================================================
+      # SECURITY SUMMARY
+      # ===========================================================================
+      - type: grid
+        title: Security
+        cards:
+          - type: custom:mushroom-alarm-control-panel-card
+            entity: alarm_control_panel.home_alarm
+            states:
+              - armed_away
+              - armed_home
+            show_keypad: false
+
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                icon: mdi:account
+                content: Edward
+                icon_color: "{% if is_state('person.edward_eidam', 'home') %}green{% else %}grey{% endif %}"
+              - type: template
+                icon: mdi:account
+                content: Loretta
+                icon_color: "{% if is_state('person.loretta_eidam', 'home') %}green{% else %}grey{% endif %}"
+              - type: template
+                icon: mdi:dog
+                content: Dogs
+                icon_color: "{% if is_state('input_boolean.dogs_are_out', 'off') %}green{% else %}orange{% endif %}"
+                tap_action:
+                  action: toggle
+                  entity: input_boolean.dogs_are_out
+
+          - type: custom:mushroom-template-card
+            primary: Cameras
+            secondary: >
+              {% set offline = states.camera | selectattr('state', 'eq', 'unavailable') | list | count %}
+              {% if offline > 0 %}{{ offline }} offline{% else %}All online{% endif %}
+            icon: mdi:cctv
+            icon_color: "{% if states.camera | selectattr('state', 'eq', 'unavailable') | list | count > 0 %}red{% else %}green{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /security
+
+      # ===========================================================================
+      # CLIMATE & ENERGY
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Climate
+            secondary: >
+              {% set heating = states.climate | selectattr('attributes.hvac_action', 'eq', 'heating') | list | count %}
+              {% if heating > 0 %}{{ heating }} zones heating{% else %}Idle{% endif %}
+            icon: mdi:thermostat
+            icon_color: "{% if states.climate | selectattr('attributes.hvac_action', 'eq', 'heating') | list | count > 0 %}orange{% else %}grey{% endif %}"
+            tap_action:
+              action: navigate
+              navigation_path: /climate
+
+          - type: custom:mushroom-template-card
+            primary: Energy
+            secondary: >
+              {% set lights = states.light | selectattr('state', 'eq', 'on') | list | count %}
+              {{ lights }} lights on
+            icon: mdi:lightning-bolt
+            icon_color: yellow
+            tap_action:
+              action: navigate
+              navigation_path: /energy
+
+      # ===========================================================================
+      # QUICK ACTIONS
+      # ===========================================================================
+      - type: grid
+        title: Quick Actions
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: Morning
+                icon: mdi:weather-sunset-up
+                icon_color: amber
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: script.morning_routine
+                card_mod:
+                  style: "ha-card { background: rgba(245, 158, 11, 0.15); }"
+
+              - type: custom:mushroom-template-card
+                primary: Evening
+                icon: mdi:weather-night
+                icon_color: purple
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: script.sunset_routine
+                card_mod:
+                  style: "ha-card { background: rgba(147, 51, 234, 0.15); }"
+
+              - type: custom:mushroom-template-card
+                primary: Movie
+                icon: mdi:movie-open
+                icon_color: blue
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  target:
+                    entity_id: scene.lounge_tv
+                card_mod:
+                  style: "ha-card { background: rgba(59, 130, 246, 0.15); }"
+
+              - type: custom:mushroom-template-card
+                primary: Goodnight
+                icon: mdi:bed
+                icon_color: indigo
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: script.goodnight_routine
+                card_mod:
+                  style: "ha-card { background: rgba(99, 102, 241, 0.15); }"
+
+              - type: custom:mushroom-template-card
+                primary: All Off
+                icon: mdi:lightbulb-off
+                icon_color: grey
+                layout: vertical
+                tap_action:
+                  action: call-service
+                  service: script.all_lights_off
+                card_mod:
+                  style: "ha-card { background: rgba(100, 100, 100, 0.15); }"
+
+      # ===========================================================================
+      # MODES
+      # ===========================================================================
+      - type: grid
+        title: Modes
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: entity
+                entity: input_boolean.lucas_napping
+                tap_action:
+                  action: toggle
+              - type: entity
+                entity: input_boolean.do_not_disturb
+                tap_action:
+                  action: toggle
+              - type: entity
+                entity: input_boolean.loretta_meeting_mode
+                tap_action:
+                  action: toggle
+              - type: entity
+                entity: input_boolean.vacation_mode
+                tap_action:
+                  action: toggle
+
+      # ===========================================================================
+      # APPLIANCES
+      # ===========================================================================
+      - type: grid
+        title: Appliances
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                icon: mdi:washing-machine
+                content: "{% if is_state('sensor.washing_machine_machine_state', 'run') %}Running{% else %}Idle{% endif %}"
+                icon_color: "{% if is_state('sensor.washing_machine_machine_state', 'run') %}blue{% else %}grey{% endif %}"
+                tap_action:
+                  action: navigate
+                  navigation_path: /appliances
+              - type: template
+                icon: mdi:tumble-dryer
+                content: "{% if is_state('sensor.tumble_dryer_machine_state', 'run') %}Running{% else %}Idle{% endif %}"
+                icon_color: "{% if is_state('sensor.tumble_dryer_machine_state', 'run') %}orange{% else %}grey{% endif %}"
+              - type: template
+                icon: mdi:dishwasher
+                content: "{% if is_state('sensor.dishwasher_operation_state', 'run') %}Running{% else %}Ready{% endif %}"
+                icon_color: "{% if is_state('sensor.dishwasher_operation_state', 'run') %}green{% else %}grey{% endif %}"
+              - type: template
+                icon: mdi:stove
+                content: "{% if not is_state('sensor.oven', 'off') %}On{% else %}Off{% endif %}"
+                icon_color: "{% if not is_state('sensor.oven', 'off') %}red{% else %}grey{% endif %}"
+
+      # ===========================================================================
+      # ALERTS
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: conditional
+            conditions:
+              - condition: numeric_state
+                entity: sensor.garden_battery
+                below: 20
+            card:
+              type: custom:mushroom-template-card
+              primary: "⚠️ Garden Camera"
+              secondary: "Battery {{ states('sensor.garden_battery') }}% - Charge needed"
+              icon: mdi:battery-alert
+              icon_color: red
+
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: sensor.dishwasher_salt_nearly_empty
+                state: "present"
+            card:
+              type: custom:mushroom-template-card
+              primary: "⚠️ Dishwasher"
+              secondary: "Salt refill needed"
+              icon: mdi:shaker-outline
+              icon_color: amber

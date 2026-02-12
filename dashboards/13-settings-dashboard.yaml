@@ -1,0 +1,298 @@
+views:
+    ###############################################################################
+    # SETTINGS / ADMIN DASHBOARD
+    # Helpers, modes, system status, configuration
+    ###############################################################################
+
+  - title: Settings
+    path: settings
+    icon: mdi:cog
+
+    type: sections
+    max_columns: 3
+
+    sections:
+      # ===========================================================================
+      # MODES & TOGGLES
+      # ===========================================================================
+      - type: grid
+        title: Modes
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.lucas_napping
+            name: Lucas Napping
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  {% if is_state('input_boolean.lucas_napping', 'on') %}
+                  background: rgba(99, 102, 241, 0.2);
+                  border: 1px solid rgba(99, 102, 241, 0.4);
+                  {% endif %}
+                }
+
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.do_not_disturb
+            name: Do Not Disturb
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  {% if is_state('input_boolean.do_not_disturb', 'on') %}
+                  background: rgba(239, 68, 68, 0.2);
+                  border: 1px solid rgba(239, 68, 68, 0.4);
+                  {% endif %}
+                }
+
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.loretta_meeting_mode
+            name: Loretta Meeting Mode
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  {% if is_state('input_boolean.loretta_meeting_mode', 'on') %}
+                  background: rgba(59, 130, 246, 0.2);
+                  border: 1px solid rgba(59, 130, 246, 0.4);
+                  {% endif %}
+                }
+
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.vacation_mode
+            name: Vacation Mode
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  {% if is_state('input_boolean.vacation_mode', 'on') %}
+                  background: rgba(20, 184, 166, 0.2);
+                  border: 1px solid rgba(20, 184, 166, 0.4);
+                  {% endif %}
+                }
+
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.goodnight_active
+            name: Goodnight Active
+            tap_action:
+              action: toggle
+
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.dogs_are_out
+            name: Dogs Are Out
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  {% if is_state('input_boolean.dogs_are_out', 'on') %}
+                  background: rgba(249, 115, 22, 0.2);
+                  border: 1px solid rgba(249, 115, 22, 0.4);
+                  {% endif %}
+                }
+
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.work_hours_active
+            name: Work Hours Active
+
+      # ===========================================================================
+      # TIME SETTINGS
+      # ===========================================================================
+      - type: grid
+        title: Schedule Times
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: input_datetime.lucas_waketime
+            name: Lucas Wake Time
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-entity-card
+            entity: input_datetime.lucas_bedtime
+            name: Lucas Bedtime
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-entity-card
+            entity: input_datetime.household_morning_weekday
+            name: Weekday Morning
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-entity-card
+            entity: input_datetime.household_morning_weekend
+            name: Weekend Morning
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-entity-card
+            entity: input_datetime.adult_bedtime
+            name: Adult Bedtime
+            tap_action:
+              action: more-info
+
+      # ===========================================================================
+      # BINARY SENSORS (Template)
+      # ===========================================================================
+      - type: grid
+        title: Calculated States
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Nanny Scheduled
+            secondary: "{% if is_state('binary_sensor.nanny_scheduled', 'on') %}Yes (08:00-17:30){% else %}No{% endif %}"
+            icon: mdi:account-clock
+            icon_color: "{% if is_state('binary_sensor.nanny_scheduled', 'on') %}green{% else %}grey{% endif %}"
+
+          - type: custom:mushroom-template-card
+            primary: House Occupied
+            secondary: "{% if is_state('binary_sensor.house_occupied', 'on') %}Yes{% else %}No{% endif %}"
+            icon: mdi:home-account
+            icon_color: "{% if is_state('binary_sensor.house_occupied', 'on') %}green{% else %}grey{% endif %}"
+
+          - type: custom:mushroom-template-card
+            primary: Adults Away
+            secondary: "{% if is_state('binary_sensor.adults_away', 'on') %}Yes{% else %}No{% endif %}"
+            icon: mdi:account-off
+            icon_color: "{% if is_state('binary_sensor.adults_away', 'on') %}orange{% else %}grey{% endif %}"
+
+          - type: custom:mushroom-template-card
+            primary: Safe to Arm Alarm
+            secondary: "{% if is_state('binary_sensor.safe_to_arm_alarm', 'on') %}Yes{% else %}No{% endif %}"
+            icon: mdi:shield-check
+            icon_color: "{% if is_state('binary_sensor.safe_to_arm_alarm', 'on') %}green{% else %}grey{% endif %}"
+
+          - type: custom:mushroom-template-card
+            primary: Lucas Sleep Hours
+            secondary: "{% if is_state('binary_sensor.lucas_sleep_hours', 'on') %}Yes (19:00-07:00){% else %}No{% endif %}"
+            icon: mdi:sleep
+            icon_color: "{% if is_state('binary_sensor.lucas_sleep_hours', 'on') %}indigo{% else %}grey{% endif %}"
+
+      # ===========================================================================
+      # SYSTEM STATUS
+      # ===========================================================================
+      - type: grid
+        title: System Status
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Home Assistant
+            secondary: "Uptime: {{ states('sensor.ha_uptime') | default('--') }}"
+            icon: mdi:home-assistant
+            icon_color: cyan
+
+          - type: custom:mushroom-template-card
+            primary: Synology NAS
+            secondary: "{{ states('sensor.synology_status') | default('Online') }}"
+            icon: mdi:nas
+            icon_color: green
+
+          - type: custom:mushroom-template-card
+            primary: Zigbee2MQTT
+            secondary: "v{{ states('sensor.zigbee2mqtt_version') | default('2.7.2') }}"
+            icon: mdi:zigbee
+            icon_color: yellow
+
+          - type: custom:mushroom-template-card
+            primary: Hue Bridge
+            secondary: "Connected"
+            icon: mdi:bridge
+            icon_color: orange
+
+      # ===========================================================================
+      # AUTOMATIONS STATUS
+      # ===========================================================================
+      - type: grid
+        title: Automations
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Total Automations
+            secondary: "{{ states.automation | list | count }}"
+            icon: mdi:robot
+            icon_color: blue
+
+          - type: custom:mushroom-template-card
+            primary: Active
+            secondary: "{{ states.automation | selectattr('state', 'eq', 'on') | list | count }}"
+            icon: mdi:check-circle
+            icon_color: green
+
+          - type: custom:mushroom-template-card
+            primary: Disabled
+            secondary: "{{ states.automation | selectattr('state', 'eq', 'off') | list | count }}"
+            icon: mdi:pause-circle
+            icon_color: grey
+
+      # ===========================================================================
+      # SCRIPTS
+      # ===========================================================================
+      - type: grid
+        title: Scripts
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: script.morning_routine
+            name: Morning Routine
+            tap_action:
+              action: call-service
+              service: script.morning_routine
+
+          - type: custom:mushroom-entity-card
+            entity: script.goodnight_routine
+            name: Goodnight Routine
+            tap_action:
+              action: call-service
+              service: script.goodnight_routine
+
+          - type: custom:mushroom-entity-card
+            entity: script.sunset_routine
+            name: Sunset Routine
+            tap_action:
+              action: call-service
+              service: script.sunset_routine
+
+          - type: custom:mushroom-entity-card
+            entity: script.all_lights_off
+            name: All Lights Off
+            tap_action:
+              action: call-service
+              service: script.all_lights_off
+
+          - type: custom:mushroom-entity-card
+            entity: script.lucas_morning_routine
+            name: Lucas Morning
+            tap_action:
+              action: call-service
+              service: script.lucas_morning_routine
+
+          - type: custom:mushroom-entity-card
+            entity: script.lucas_bathtime
+            name: Lucas Bathtime
+            tap_action:
+              action: call-service
+              service: script.lucas_bathtime
+
+          - type: custom:mushroom-entity-card
+            entity: script.lucas_bedtime
+            name: Lucas Bedtime
+            tap_action:
+              action: call-service
+              service: script.lucas_bedtime
+
+      # ===========================================================================
+      # NETWORK
+      # ===========================================================================
+      - type: grid
+        title: Network
+        cards:
+          - type: custom:mushroom-template-card
+            primary: eero Pro 7
+            secondary: "Online"
+            icon: mdi:wifi
+            icon_color: green
+
+          - type: custom:mushroom-template-card
+            primary: Connected Devices
+            secondary: "{{ states('sensor.eero_connected_devices') | default('--') }}"
+            icon: mdi:devices
+            icon_color: blue

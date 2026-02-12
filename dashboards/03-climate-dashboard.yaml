@@ -1,0 +1,261 @@
+views:
+  ###############################################################################
+  # CLIMATE DASHBOARD
+  # Heating, humidity, air quality
+  ###############################################################################
+
+  - title: Climate
+    path: climate
+    icon: mdi:thermostat
+
+    type: sections
+    max_columns: 3
+
+    sections:
+      # ===========================================================================
+      # OVERVIEW
+      # ===========================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                icon: mdi:thermometer
+                content: "Outside {{ states('sensor.home_outdoor_temperature') | round(0) }}°C"
+                icon_color: cyan
+              - type: template
+                icon: mdi:fire
+                content: >
+                  {% set heating = states.climate | selectattr('attributes.hvac_action', 'eq', 'heating') | list | count %}
+                  {{ heating }} zones heating
+                icon_color: "{% if states.climate | selectattr('attributes.hvac_action', 'eq', 'heating') | list | count > 0 %}red{% else %}grey{% endif %}"
+
+      # ===========================================================================
+      # TEMPERATURE ZONES
+      # ===========================================================================
+      - type: grid
+        title: Temperature Zones
+        cards:
+          # HALLWAY
+          - type: custom:mushroom-climate-card
+            entity: climate.hallway
+            name: Hallway
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.05) 100%);
+                  border: 1px solid rgba(251, 146, 60, 0.2);
+                }
+
+          # LOUNGE
+          - type: custom:mushroom-climate-card
+            entity: climate.lounge
+            name: Lounge
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(234, 88, 12, 0.05) 100%);
+                  border: 1px solid rgba(245, 158, 11, 0.2);
+                }
+
+          # BEDROOM
+          - type: custom:mushroom-climate-card
+            entity: climate.room_6
+            name: Bedroom
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(124, 58, 237, 0.05) 100%);
+                  border: 1px solid rgba(139, 92, 246, 0.2);
+                }
+
+          # LUCAS'S ROOM
+          - type: custom:mushroom-climate-card
+            entity: climate.room_5
+            name: Lucas's Room
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+                  border: 1px solid rgba(6, 182, 212, 0.2);
+                }
+
+          # KITCHEN
+          - type: custom:mushroom-climate-card
+            entity: climate.kitchen
+            name: Kitchen
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(20, 184, 166, 0.1) 0%, rgba(13, 148, 136, 0.05) 100%);
+                  border: 1px solid rgba(20, 184, 166, 0.2);
+                }
+
+          # OFFICE
+          - type: custom:mushroom-climate-card
+            entity: climate.office
+            name: Office
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+                  border: 1px solid rgba(16, 185, 129, 0.2);
+                }
+
+      # ===========================================================================
+      # SCHEDULE REFERENCE
+      # ===========================================================================
+      - type: grid
+        title: Schedule
+        cards:
+          - type: markdown
+            content: |
+              | Time | General | Lucas |
+              |------|---------|-------|
+              | **Day** 07:00-22:00 | 24°C | 22°C |
+              | **Night** 22:00-07:00 | 20°C | 22°C |
+              | **Away** | 18°C | 22°C |
+
+      # ===========================================================================
+      # HUMIDITY
+      # ===========================================================================
+      - type: grid
+        title: Humidity
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Hallway
+            secondary: "{{ state_attr('climate.hallway', 'current_humidity') }}%"
+            icon: mdi:water-percent
+            icon_color: "{% set h = state_attr('climate.hallway', 'current_humidity') | float %}{% if h < 40 %}orange{% elif h < 60 %}green{% else %}blue{% endif %}"
+
+          - type: custom:mushroom-template-card
+            primary: Lounge
+            secondary: "{{ state_attr('climate.lounge', 'current_humidity') }}%"
+            icon: mdi:water-percent
+            icon_color: "{% set h = state_attr('climate.lounge', 'current_humidity') | float %}{% if h < 40 %}orange{% elif h < 60 %}green{% else %}blue{% endif %}"
+
+          - type: custom:mushroom-template-card
+            primary: Lucas's Room
+            secondary: "{{ state_attr('climate.room_5', 'current_humidity') }}%"
+            icon: mdi:water-percent
+            icon_color: "{% set h = state_attr('climate.room_5', 'current_humidity') | float %}{% if h < 45 %}orange{% elif h <= 55 %}green{% else %}blue{% endif %}"
+
+          - type: custom:mushroom-template-card
+            primary: Bedroom
+            secondary: "{{ state_attr('climate.room_6', 'current_humidity') }}%"
+            icon: mdi:water-percent
+            icon_color: "{% set h = state_attr('climate.room_6', 'current_humidity') | float %}{% if h < 40 %}orange{% elif h < 60 %}green{% else %}blue{% endif %}"
+
+          - type: custom:mushroom-template-card
+            primary: Bathroom
+            secondary: "{{ states('sensor.bathroom_th_humidity') }}%"
+            icon: mdi:water-percent
+            icon_color: "{% set h = states('sensor.bathroom_th_humidity') | float %}{% if h > 70 %}red{% elif h > 60 %}orange{% else %}green{% endif %}"
+
+      # ===========================================================================
+      # HUMIDIFIERS
+      # ===========================================================================
+      - type: grid
+        title: Humidifiers
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: humidifier.living_room_humidifier
+            name: Living Room
+            tap_action:
+              action: more-info
+
+          - type: custom:mushroom-entity-card
+            entity: humidifier.bedroom_humidifier
+            name: Bedroom
+            tap_action:
+              action: more-info
+
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: binary_sensor.living_room_humidifier_water_shortage
+                state: "on"
+            card:
+              type: custom:mushroom-template-card
+              primary: "⚠️ Living Room Humidifier"
+              secondary: "Needs water refill"
+              icon: mdi:water-alert
+              icon_color: red
+
+          - type: conditional
+            conditions:
+              - condition: state
+                entity: binary_sensor.bedroom_humidifier_water_shortage
+                state: "on"
+            card:
+              type: custom:mushroom-template-card
+              primary: "⚠️ Bedroom Humidifier"
+              secondary: "Needs water refill"
+              icon: mdi:water-alert
+              icon_color: red
+
+      # ===========================================================================
+      # AIR QUALITY
+      # ===========================================================================
+      - type: grid
+        title: Air Quality
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Air Purifier
+            secondary: >
+              PM2.5: {{ states('sensor.core_400s_pm2_5') }}
+              {% set pm = states('sensor.core_400s_pm2_5') | float %}
+              {% if pm < 35 %}(Good){% elif pm < 75 %}(Moderate){% else %}(Poor){% endif %}
+            icon: mdi:air-purifier
+            icon_color: "{% set pm = states('sensor.core_400s_pm2_5') | float %}{% if pm < 35 %}green{% elif pm < 75 %}yellow{% else %}red{% endif %}"
+            tap_action:
+              action: more-info
+              entity: fan.core_400s
+
+          - type: custom:mushroom-fan-card
+            entity: fan.core_400s
+            name: Core 400S
+            show_percentage_control: true
+            collapsible_controls: true
+
+          - type: custom:mushroom-template-card
+            primary: Filter Life
+            secondary: "{{ states('sensor.core_400s_filter_lifetime') }}% remaining"
+            icon: mdi:air-filter
+            icon_color: "{% set l = states('sensor.core_400s_filter_lifetime') | float %}{% if l > 30 %}green{% elif l > 15 %}yellow{% else %}red{% endif %}"
+
+      # ===========================================================================
+      # HOT WATER
+      # ===========================================================================
+      - type: grid
+        title: Hot Water
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: water_heater.hot_water
+            name: Hot Water
+            tap_action:
+              action: more-info
+
+      # ===========================================================================
+      # WEATHER
+      # ===========================================================================
+      - type: grid
+        title: Weather
+        cards:
+          - type: weather-forecast
+            entity: weather.forecast_home
+            show_forecast: true
+            forecast_type: daily
