@@ -1,73 +1,549 @@
-show_weather_dashboard:
-  alias: Show Weather Dashboard on TV
-  description: Opens the Weather dashboard on Fire TV Cube
-  sequence:
-  - service: media_player.turn_on
-    target:
-      entity_id: media_player.lounge_fire_cube
-  - delay:
-      seconds: 3
-  - service: androidtv.adb_command
-    target:
-      entity_id: media_player.lounge_fire_cube
-    data:
-      command: am start -a android.intent.action.VIEW -d "https://nujraxh1k9mt9kk0ul8x56dxac9afine.ui.nabu.casa/lovelace/weather"
-        -n com.amazon.cloud9/com.amazon.slate.fire_tv.FireTvSlateActivity
+###############################################################################
+# SCRIPTS
+# Reusable action sequences for routines
+# Add to scripts.yaml or configuration.yaml under script:
+###############################################################################
+
+# =============================================================================
+# MORNING ROUTINES
+# =============================================================================
+morning_routine:
+  alias: "Morning Routine"
+  description: "Household wake-up routine - triggered by Flic button or voice"
+  icon: mdi:weather-sunset-up
   mode: single
-  icon: mdi:weather-partly-cloudy
-hide_weather_dashboard:
-  alias: Hide Weather Dashboard
-  description: Returns Fire TV to home screen
   sequence:
-  - service: androidtv.adb_command
-    target:
-      entity_id: media_player.lounge_fire_cube
-    data:
-      command: input keyevent KEYCODE_HOME
+    # Turn on hallway lights
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.hallway_lamp_post
+          - light.hallway_signe_light
+          - light.hue_color_lamp_1  # Flo lamp
+      data:
+        brightness_pct: 80
+        transition: 5
+
+    # Turn on kitchen lights
+    - service: light.turn_on
+      target:
+        entity_id: light.kitchen_spotlights
+      data:
+        brightness_pct: 100
+        transition: 3
+
+    # Set lounge to Rolling Hills scene
+    - service: scene.turn_on
+      target:
+        entity_id: scene.lounge_rolling_hills
+
+    # Set bedroom to Rolling Hills scene
+    - service: scene.turn_on
+      target:
+        entity_id: scene.bedroom_rolling_hills
+
+    # Turn off goodnight mode
+    - service: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.goodnight_active
+
+    # Boost heating if cold
+    - if:
+        - condition: numeric_state
+          entity_id: sensor.hallway_temp_temperature
+          below: 22
+      then:
+        - service: climate.set_temperature
+          target:
+            entity_id:
+              - climate.hallway
+              - climate.lounge
+              - climate.kitchen
+          data:
+            temperature: 24
+
+    # Weather announcement (delay to let lights settle)
+    - delay:
+        seconds: 3
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.kitchen
+        message: >
+          Good morning! Today's weather:
+          {{ state_attr('weather.home', 'temperature') }} degrees
+          and {{ states('weather.home') }}.
+        data:
+          type: announce
+
+# ---------------------------------------------------------------------------
+lucas_morning_routine:
+  alias: "Lucas Morning Routine"
+  description: "Wake up routine for Lucas's room"
+  icon: mdi:baby-face
   mode: single
-  icon: mdi:home
-doorbell_flash_red_pulse:
-  alias: Doorbell Flash - Red Pulse
-  description: Pulses the Lounge Iris red 3 times then restores previous state
+  sequence:
+    # Set Lucas's room to Arise scene
+    - service: scene.turn_on
+      target:
+        entity_id: scene.lucass_room_arise
+
+    # Turn off napping mode
+    - service: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.lucas_napping
+
+    # Play wake-up music on Echo Show
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.lucas_s_room_echo_show
+      data:
+        media_content_type: SPOTIFY
+        media_content_id: "spotify:playlist:XXXXX"  # Replace with Lucas Morning playlist URI
+
+    # Notify Edward
+    - service: notify.mobile_app_edwards_iphone
+      data:
+        title: "Lucas is awake"
+        message: "Good morning! Lucas's room lights are on."
+
+    # Announce on Edward's bedside Echo
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.edward_s_echo_show
+        message: "Lucas is awake. Good morning!"
+        data:
+          type: announce
+
+# =============================================================================
+# LUCAS ROUTINES
+# =============================================================================
+lucas_bathtime:
+  alias: "Lucas Bathtime"
+  description: "Start Lucas's bathtime routine"
+  icon: mdi:bathtub
+  mode: single
+  sequence:
+    # Set bathroom to Relax scene
+    - service: scene.turn_on
+      target:
+        entity_id: scene.lucass_bathroom_relax
+
+    # Set Lucas's room Iris to blue/calming
+    - service: light.turn_on
+      target:
+        entity_id: light.lucass_room_iris
+      data:
+        brightness_pct: 40
+        rgb_color: [100, 149, 237]  # Cornflower blue
+        transition: 2
+
+    # Start bath timer
+    - service: timer.start
+      target:
+        entity_id: timer.lucas_bath_timer
+      data:
+        duration: "00:20:00"
+
+    # Play bathtime music
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.lucas_bathroom_echo  # Update with correct entity
+      data:
+        media_content_type: SPOTIFY
+        media_content_id: "spotify:playlist:XXXXX"  # Replace with Lucas Bathtime playlist URI
+
+# ---------------------------------------------------------------------------
+lucas_wind_down:
+  alias: "Lucas Wind Down"
+  description: "Pre-bedtime calming routine"
+  icon: mdi:weather-sunset
+  mode: single
+  sequence:
+    # Set Iris to warm dim
+    - service: light.turn_on
+      target:
+        entity_id: light.lucass_room_iris
+      data:
+        brightness_pct: 30
+        color_temp: 500  # Very warm
+        transition: 10
+
+    # Dim spotlights
+    - service: light.turn_on
+      target:
+        entity_id: light.lucass_room_spot_lights
+      data:
+        brightness_pct: 20
+        transition: 10
+
+    # Turn on cloud lamp
+    - service: switch.turn_on
+      target:
+        entity_id: switch.cloud_lamp
+
+    # Turn off pendant (too bright)
+    - service: light.turn_off
+      target:
+        entity_id: light.lucass_room_pendant_light
+      data:
+        transition: 5
+
+    # Set lucas_napping to on (suppresses loud notifications)
+    - service: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.lucas_napping
+
+    # Play calm music (low volume)
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.lucas_s_room_echo_show
+      data:
+        volume_level: 0.3
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.lucas_s_room_echo_show
+      data:
+        media_content_type: SPOTIFY
+        media_content_id: "spotify:playlist:XXXXX"  # Replace with calm/lullaby playlist
+
+# ---------------------------------------------------------------------------
+lucas_bedtime:
+  alias: "Lucas Bedtime"
+  description: "Lights off and lullaby"
+  icon: mdi:moon-waning-crescent
+  mode: single
+  sequence:
+    # Turn off all Lucas room lights
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.lucass_room_spot_lights
+          - light.lucass_room_pendant_light
+          - light.lucass_room_iris
+      data:
+        transition: 10
+
+    # Turn off cloud lamp
+    - service: switch.turn_off
+      target:
+        entity_id: switch.cloud_lamp
+
+    # Make sure napping mode is on
+    - service: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.lucas_napping
+
+    # Play lullaby (will fade out)
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.lucas_s_room_echo_show
+      data:
+        volume_level: 0.25
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.lucas_s_room_echo_show
+      data:
+        media_content_type: SPOTIFY
+        media_content_id: "spotify:playlist:XXXXX"  # Replace with Lucas Lullaby playlist
+
+    # Fade out music after 15 minutes
+    - delay:
+        minutes: 15
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.lucas_s_room_echo_show
+      data:
+        volume_level: 0.1
+    - delay:
+        minutes: 5
+    - service: media_player.media_stop
+      target:
+        entity_id: media_player.lucas_s_room_echo_show
+
+# ---------------------------------------------------------------------------
+lucas_nightlight:
+  alias: "Lucas Nightlight"
+  description: "Gentle nightlight using Iris (for when he needs one)"
+  icon: mdi:lightbulb-night
+  mode: single
+  sequence:
+    # Turn off all lights except Iris
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.lucass_room_spot_lights
+          - light.lucass_room_pendant_light
+    - service: switch.turn_off
+      target:
+        entity_id: switch.cloud_lamp
+    # Set Iris to very dim warm orange
+    - service: light.turn_on
+      target:
+        entity_id: light.lucass_room_iris
+      data:
+        brightness_pct: 2
+        rgb_color: [255, 100, 50]  # Warm orange (sleep-friendly)
+
+# =============================================================================
+# EVENING & BEDTIME ROUTINES
+# =============================================================================
+sunset_routine:
+  alias: "Sunset Routine"
+  description: "Automatic evening ambiance"
+  icon: mdi:weather-sunset-down
+  mode: single
+  sequence:
+    # Hallway lamp post ON
+    - service: light.turn_on
+      target:
+        entity_id: light.hallway_lamp_post
+      data:
+        brightness_pct: 80
+        transition: 30
+
+    # Hallway Signe ON (ambient)
+    - service: light.turn_on
+      target:
+        entity_id: light.hallway_signe_light
+      data:
+        brightness_pct: 60
+        transition: 30
+
+    # Flo lamp ON
+    - service: light.turn_on
+      target:
+        entity_id: light.hue_color_lamp_1
+      data:
+        brightness_pct: 70
+        transition: 30
+
+    # Lounge to Rolling Hills scene
+    - service: scene.turn_on
+      target:
+        entity_id: scene.lounge_rolling_hills
+
+    # Bedroom to Rolling Hills scene
+    - service: scene.turn_on
+      target:
+        entity_id: scene.bedroom_rolling_hills
+
+    # Bubble light OFF
+    - service: switch.turn_off
+      target:
+        entity_id: switch.bubble_light
+
+# ---------------------------------------------------------------------------
+goodnight_routine:
+  alias: "Goodnight Routine"
+  description: "Household bedtime - triggered by Flic button"
+  icon: mdi:bed
+  mode: single
+  sequence:
+    # Set goodnight mode active
+    - service: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.goodnight_active
+
+    # Turn off all lights EXCEPT hallway and lounge
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.kitchen_spotlights
+          - light.office_spotlights
+          - light.boudoir_spotlights
+          - light.bathroom_spotlights
+          - light.bathroom_strip_light
+          - light.lucass_bathroom_spotlights
+          - light.courtyard_light
+          - light.garden_lights
+      data:
+        transition: 5
+
+    # Turn off all Shelly plug lights except needed ones
+    - service: switch.turn_off
+      target:
+        entity_id:
+          - switch.bubble_light
+          - switch.banana_light
+          - switch.disco_lights
+          - switch.bar_light
+          - switch.office_edison_light
+
+    # Set hallway to night mode (dimmer)
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.hallway_lamp_post
+          - light.hallway_signe_light
+      data:
+        brightness_pct: 40
+        transition: 10
+
+    # Set lounge to Chill scene
+    - service: scene.turn_on
+      target:
+        entity_id: scene.lounge_rest
+
+    # Set bedroom to Sleepy scene
+    - service: scene.turn_on
+      target:
+        entity_id: scene.bedroom_sleepy
+
+    # Set heating to night mode
+    - service: climate.set_temperature
+      target:
+        entity_id:
+          - climate.hallway
+          - climate.lounge
+          - climate.kitchen
+          - climate.office
+      data:
+        temperature: 20
+
+    # Lucas's room stays at 22
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.lucas_s_room  # Lucas's room - rename when fixed
+      data:
+        temperature: 22
+
+    # Bedroom at 20
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.bedroom_2  # Bedroom - rename when fixed
+      data:
+        temperature: 20
+
+# =============================================================================
+# UTILITY SCRIPTS
+# =============================================================================
+all_lights_off:
+  alias: "All Lights Off"
+  description: "Emergency all lights off"
+  icon: mdi:lightbulb-off
+  mode: single
+  sequence:
+    - service: light.turn_off
+      target:
+        entity_id: all
+    - service: switch.turn_off
+      target:
+        entity_id:
+          - switch.bubble_light
+          - switch.banana_light
+          - switch.disco_lights
+          - switch.bar_light
+          - switch.office_edison_light
+          - switch.cloud_lamp
+
+# ---------------------------------------------------------------------------
+arriving_home:
+  alias: "Arriving Home"
+  description: "Welcome home sequence"
+  icon: mdi:home-import-outline
+  mode: single
+  sequence:
+    # Disarm Ring
+    - service: alarm_control_panel.alarm_disarm
+      target:
+        entity_id: alarm_control_panel.home_alarm
+
+    # If after sunset, turn on welcome lights
+    - if:
+        - condition: sun
+          after: sunset
+      then:
+        - service: light.turn_on
+          target:
+            entity_id:
+              - light.hallway_lamp_post
+              - light.hallway_signe_light
+          data:
+            brightness_pct: 100
+            transition: 2
+
+# ---------------------------------------------------------------------------
+leaving_home:
+  alias: "Leaving Home"
+  description: "Departure checklist"
+  icon: mdi:home-export-outline
+  mode: single
+  sequence:
+    # Check if lights should be off
+    - service: notify.mobile_app_edwards_iphone
+      data:
+        title: "🏠 Leaving Home"
+        message: "Have a good day! Checking house status..."
+
+    # Set heating to away mode
+    - service: climate.set_temperature
+      target:
+        entity_id:
+          - climate.hallway
+          - climate.lounge
+          - climate.kitchen
+          - climate.office
+      data:
+        temperature: 18
+
+# ---------------------------------------------------------------------------
+silent_doorbell_flash:
+  alias: "Silent Doorbell Flash"
+  description: "Flash lights blue for silent doorbell alert"
   icon: mdi:bell-ring
   mode: single
   sequence:
-  - action: scene.create
-    data:
-      scene_id: iris_before_doorbell
-      snapshot_entities:
-      - light.lounge_iris
-  - repeat:
-      count: 3
-      sequence:
-      - action: light.turn_on
-        target:
-          entity_id: light.lounge_iris
-        data:
-          rgb_color:
-          - 255
-          - 0
-          - 0
-          brightness_pct: 100
-          transition: 0.3
-      - delay:
-          seconds: 1
-      - action: light.turn_on
-        target:
-          entity_id: light.lounge_iris
-        data:
-          rgb_color:
-          - 255
-          - 0
-          - 0
-          brightness_pct: 30
-          transition: 0.3
-      - delay:
-          seconds: 1
-  - delay:
-      seconds: 1
-  - action: scene.turn_on
-    target:
-      entity_id: scene.iris_before_doorbell
-    data:
-      transition: 2
+    # Store current light states (we'll restore after)
+    # Flash sequence: 3 blue pulses
+    - repeat:
+        count: 3
+        sequence:
+          # Flash ON - Blue
+          - service: light.turn_on
+            target:
+              entity_id:
+                - light.lounge_iris
+                - light.lounge_signe_light
+                - light.bedroom_signe_light
+                - light.hallway_signe_light
+            data:
+              rgb_color: [0, 100, 255]
+              brightness_pct: 100
+              transition: 0.2
+          - delay:
+              milliseconds: 500
+          # Flash OFF
+          - service: light.turn_off
+            target:
+              entity_id:
+                - light.lounge_iris
+                - light.lounge_signe_light
+                - light.bedroom_signe_light
+                - light.hallway_signe_light
+            data:
+              transition: 0.2
+          - delay:
+              milliseconds: 300
+    # Restore previous states (lights will return to previous scene)
+    - delay:
+        seconds: 2
+    # Re-apply current scene based on time of day
+    - if:
+        - condition: state
+          entity_id: input_boolean.goodnight_active
+          state: "on"
+      then:
+        - service: scene.turn_on
+          target:
+            entity_id: scene.lounge_rest
+      else:
+        - if:
+            - condition: sun
+              after: sunset
+          then:
+            - service: scene.turn_on
+              target:
+                entity_id: scene.lounge_rolling_hills
+
