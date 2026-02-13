@@ -65,7 +65,7 @@ views:
 
           # BEDROOM
           - type: custom:mushroom-climate-card
-            entity: climate.room_6
+            entity: climate.bedroom_2
             name: Bedroom
             show_temperature_control: true
             collapsible_controls: true
@@ -78,7 +78,7 @@ views:
 
           # LUCAS'S ROOM
           - type: custom:mushroom-climate-card
-            entity: climate.room_5
+            entity: climate.lucas_s_room
             name: Lucas's Room
             show_temperature_control: true
             collapsible_controls: true
@@ -149,15 +149,15 @@ views:
 
           - type: custom:mushroom-template-card
             primary: Lucas's Room
-            secondary: "{{ state_attr('climate.room_5', 'current_humidity') }}%"
+            secondary: "{{ state_attr('climate.lucas_s_room', 'current_humidity') }}%"
             icon: mdi:water-percent
-            icon_color: "{% set h = state_attr('climate.room_5', 'current_humidity') | float %}{% if h < 45 %}orange{% elif h <= 55 %}green{% else %}blue{% endif %}"
+            icon_color: "{% set h = state_attr('climate.lucas_s_room', 'current_humidity') | float %}{% if h < 45 %}orange{% elif h <= 55 %}green{% else %}blue{% endif %}"
 
           - type: custom:mushroom-template-card
             primary: Bedroom
-            secondary: "{{ state_attr('climate.room_6', 'current_humidity') }}%"
+            secondary: "{{ state_attr('climate.bedroom_2', 'current_humidity') }}%"
             icon: mdi:water-percent
-            icon_color: "{% set h = state_attr('climate.room_6', 'current_humidity') | float %}{% if h < 40 %}orange{% elif h < 60 %}green{% else %}blue{% endif %}"
+            icon_color: "{% set h = state_attr('climate.bedroom_2', 'current_humidity') | float %}{% if h < 40 %}orange{% elif h < 60 %}green{% else %}blue{% endif %}"
 
           - type: custom:mushroom-template-card
             primary: Bathroom

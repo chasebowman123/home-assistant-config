@@ -220,7 +220,7 @@ cards:
     name: Climate
 
   - type: custom:mushroom-climate-card
-    entity: climate.room_5
+    entity: climate.lucas_s_room
     name: Heating
     show_temperature_control: true
     collapsible_controls: true

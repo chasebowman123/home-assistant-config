@@ -479,17 +479,17 @@ sections:
             }
       - type: custom:mushroom-template-card
         primary: Bedroom
-        secondary: "{{ state_attr('climate.room_6', 'current_temperature') }}°C → {{ state_attr('climate.room_6', 'temperature') }}°C"
+        secondary: "{{ state_attr('climate.bedroom_2', 'current_temperature') }}°C → {{ state_attr('climate.bedroom_2', 'temperature') }}°C"
         icon: mdi:radiator
         icon_color: |-
-          {% if state_attr('climate.room_6', 'hvac_action') == 'heating' %}
+          {% if state_attr('climate.bedroom_2', 'hvac_action') == 'heating' %}
             orange
           {% else %}
             grey
           {% endif %}
         tap_action:
           action: more-info
-          entity: climate.room_6
+          entity: climate.bedroom_2
         card_mod:
           style: |
             ha-card {
@@ -498,17 +498,17 @@ sections:
             }
       - type: custom:mushroom-template-card
         primary: Lucas's Room
-        secondary: "{{ state_attr('climate.room_5', 'current_temperature') }}°C → {{ state_attr('climate.room_5', 'temperature') }}°C"
+        secondary: "{{ state_attr('climate.lucas_s_room', 'current_temperature') }}°C → {{ state_attr('climate.lucas_s_room', 'temperature') }}°C"
         icon: mdi:radiator
         icon_color: |-
-          {% if state_attr('climate.room_5', 'hvac_action') == 'heating' %}
+          {% if state_attr('climate.lucas_s_room', 'hvac_action') == 'heating' %}
             orange
           {% else %}
             grey
           {% endif %}
         tap_action:
           action: more-info
-          entity: climate.room_5
+          entity: climate.lucas_s_room
         card_mod:
           style: |
             ha-card {

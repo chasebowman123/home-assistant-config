@@ -260,7 +260,7 @@ sections:
       - type: custom:decluttering-card
         template: climate_card
         variables:
-          - climate_entity: climate.room_5
+          - climate_entity: climate.lucas_s_room
 
       - type: custom:decluttering-card
         template: device_switch

@@ -109,7 +109,7 @@ cards:
           action: call-service
           service: scene.turn_on
           service_data:
-            entity_id: scene.lounge_bright
+            entity_id: scene.lounge_energise
 
       - type: custom:button-card
         template: kohbo_scene_button
@@ -135,7 +135,7 @@ cards:
           action: call-service
           service: scene.turn_on
           service_data:
-            entity_id: scene.lounge_movie
+            entity_id: scene.lounge_tv_motown
 
       - type: custom:button-card
         template: kohbo_scene_button

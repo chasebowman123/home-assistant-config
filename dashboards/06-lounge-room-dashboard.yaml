@@ -100,7 +100,7 @@ sections:
           - scene_2_name: TV
           - scene_2_icon: mdi:television
           - scene_2_color: purple
-          - scene_2_entity: scene.lounge_tv
+          - scene_2_entity: scene.lounge_tv_tokyo
           - scene_3_name: Energise
           - scene_3_icon: mdi:flash
           - scene_3_color: yellow

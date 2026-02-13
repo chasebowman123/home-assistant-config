@@ -97,7 +97,7 @@ cards:
           action: call-service
           service: scene.turn_on
           service_data:
-            entity_id: scene.bedroom_bright
+            entity_id: scene.bedroom_shine
 
       - type: custom:button-card
         template: kohbo_scene_button
@@ -256,7 +256,7 @@ cards:
     name: Climate
 
   - type: custom:mushroom-climate-card
-    entity: climate.room_6
+    entity: climate.bedroom_2
     name: Heating
     show_temperature_control: true
     collapsible_controls: true

@@ -32,7 +32,7 @@ sections:
       - type: custom:decluttering-card
         template: climate_card
         variables:
-          - climate_entity: climate.room_6
+          - climate_entity: climate.bedroom_2
 
       - type: custom:decluttering-card
         template: temperature_card

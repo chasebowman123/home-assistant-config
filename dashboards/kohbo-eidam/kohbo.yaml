@@ -2370,14 +2370,14 @@ views:
               action: more-info
               haptic: light
           - type: custom:button-card
-            entity: climate.room_5
+            entity: climate.lucas_s_room
             name: "Lucas's Room"
             template: kohbo_thermostat_entity
             tap_action:
               action: more-info
               haptic: light
           - type: custom:button-card
-            entity: climate.room_6
+            entity: climate.bedroom_2
             name: Bedroom
             template: kohbo_thermostat_entity
             tap_action:
