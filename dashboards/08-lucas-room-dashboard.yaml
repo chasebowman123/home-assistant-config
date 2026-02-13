@@ -5,605 +5,607 @@
 # Requires: mushroom-cards, card-mod, button-card (HACS)
 ###############################################################################
 
-title: Lucas's Room
-path: lucas-room
-icon: mdi:baby-face-outline
-subview: true
 
-type: sections
-max_columns: 3
+views:
+  - title: Lucas's Room
+    path: lucas-room
+    icon: mdi:baby-face-outline
+    subview: true
 
-sections:
-  # =====================================================================
-  # HEADER — Status chips
-  # =====================================================================
-  - type: grid
-    cards:
-      - type: custom:mushroom-chips-card
-        chips:
-          - type: back
-          - type: template
-            icon: mdi:baby-face-outline
-            content: "Lucas's Room"
-            icon_color: cyan
-          - type: template
+    type: sections
+    max_columns: 3
+
+    sections:
+      # =====================================================================
+      # HEADER — Status chips
+      # =====================================================================
+      - type: grid
+        cards:
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: back
+              - type: template
+                icon: mdi:baby-face-outline
+                content: "Lucas's Room"
+                icon_color: cyan
+              - type: template
+                icon: mdi:thermometer
+                content: "{{ states('sensor.lucas_room_temp_temperature') | round(1) }}°C"
+                icon_color: >
+                  {% set temp = states('sensor.lucas_room_temp_temperature') | float(0) %}
+                  {% if temp < 18 %}blue{% elif temp > 23 %}red{% else %}green{% endif %}
+              - type: template
+                icon: mdi:water-percent
+                content: "{{ states('sensor.lucas_room_temp_humidity') | round(0) }}%"
+                icon_color: >
+                  {% set h = states('sensor.lucas_room_temp_humidity') | float(0) %}
+                  {% if h < 45 %}amber{% elif h > 55 %}blue{% else %}green{% endif %}
+              - type: template
+                icon: mdi:bathtub
+                content: "Bath {{ states('sensor.lucas_bath_temp_sensor_temperature') | round(0) }}°C"
+                icon_color: cyan
+              - type: entity
+                entity: input_boolean.lucas_napping
+                icon: mdi:sleep
+            card_mod:
+              style: |
+                ha-card {
+                  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(59, 130, 246, 0.06) 100%);
+                  border: 1px solid rgba(6, 182, 212, 0.2);
+                  border-radius: 16px !important;
+                }
+
+      # =====================================================================
+      # NAPPING MODE — Full width accent
+      # =====================================================================
+      - type: grid
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.lucas_napping
+            name: "Napping Mode — Silences doorbell, dims lights"
+            icon: mdi:sleep
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  {% if is_state('input_boolean.lucas_napping', 'on') %}
+                  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.12) 100%);
+                  border: 2px solid rgba(99, 102, 241, 0.5);
+                  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+                  {% else %}
+                  background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, transparent 100%);
+                  border: 1px solid rgba(99, 102, 241, 0.12);
+                  {% endif %}
+                }
+
+      # =====================================================================
+      # CAMERA + ENVIRONMENT
+      # =====================================================================
+      - type: grid
+        title: ""
+        column_span: 2
+        cards:
+          - type: picture-entity
+            entity: camera.lucass_room_snapshot
+            name: ""
+            show_state: false
+            show_name: false
+            camera_view: live
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 20px !important;
+                  overflow: hidden;
+                  border: 2px solid rgba(6, 182, 212, 0.25);
+                  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+                  aspect-ratio: 16/9;
+                }
+
+      - type: grid
+        title: Environment
+        column_span: 1
+        cards:
+          # Temperature
+          - type: custom:mushroom-template-card
+            primary: Temperature
+            secondary: "{{ states('sensor.lucas_room_temp_temperature') | round(1) }}°C"
             icon: mdi:thermometer
-            content: "{{ states('sensor.lucas_room_temp_temperature') | round(1) }}°C"
             icon_color: >
               {% set temp = states('sensor.lucas_room_temp_temperature') | float(0) %}
               {% if temp < 18 %}blue{% elif temp > 23 %}red{% else %}green{% endif %}
-          - type: template
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  {% set temp = states('sensor.lucas_room_temp_temperature') | float(0) %}
+                  {% if temp >= 18 and temp <= 23 %}
+                  background: linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(16, 185, 129, 0.06) 100%);
+                  border: 1px solid rgba(34, 197, 94, 0.3);
+                  {% elif temp < 18 %}
+                  background: linear-gradient(135deg, rgba(59, 130, 246, 0.18) 0%, rgba(99, 102, 241, 0.06) 100%);
+                  border: 1px solid rgba(59, 130, 246, 0.3);
+                  {% else %}
+                  background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(249, 115, 22, 0.06) 100%);
+                  border: 1px solid rgba(239, 68, 68, 0.3);
+                  {% endif %}
+                }
+
+          # Humidity
+          - type: custom:mushroom-template-card
+            primary: Humidity
+            secondary: "{{ states('sensor.lucas_room_temp_humidity') | round(0) }}%"
             icon: mdi:water-percent
-            content: "{{ states('sensor.lucas_room_temp_humidity') | round(0) }}%"
             icon_color: >
               {% set h = states('sensor.lucas_room_temp_humidity') | float(0) %}
               {% if h < 45 %}amber{% elif h > 55 %}blue{% else %}green{% endif %}
-          - type: template
-            icon: mdi:bathtub
-            content: "Bath {{ states('sensor.lucas_bath_temp_sensor_temperature') | round(0) }}°C"
-            icon_color: cyan
-          - type: entity
-            entity: input_boolean.lucas_napping
-            icon: mdi:sleep
-        card_mod:
-          style: |
-            ha-card {
-              background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(59, 130, 246, 0.06) 100%);
-              border: 1px solid rgba(6, 182, 212, 0.2);
-              border-radius: 16px !important;
-            }
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  {% set h = states('sensor.lucas_room_temp_humidity') | float(0) %}
+                  {% if h >= 45 and h <= 55 %}
+                  background: linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(16, 185, 129, 0.06) 100%);
+                  border: 1px solid rgba(34, 197, 94, 0.3);
+                  {% else %}
+                  background: linear-gradient(135deg, rgba(249, 115, 22, 0.18) 0%, rgba(245, 158, 11, 0.06) 100%);
+                  border: 1px solid rgba(249, 115, 22, 0.3);
+                  {% endif %}
+                }
 
-  # =====================================================================
-  # NAPPING MODE — Full width accent
-  # =====================================================================
-  - type: grid
-    cards:
-      - type: custom:mushroom-entity-card
-        entity: input_boolean.lucas_napping
-        name: "Napping Mode — Silences doorbell, dims lights"
-        icon: mdi:sleep
-        tap_action:
-          action: toggle
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              {% if is_state('input_boolean.lucas_napping', 'on') %}
-              background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.12) 100%);
-              border: 2px solid rgba(99, 102, 241, 0.5);
-              box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
-              {% else %}
-              background: linear-gradient(135deg, rgba(99, 102, 241, 0.06) 0%, transparent 100%);
-              border: 1px solid rgba(99, 102, 241, 0.12);
-              {% endif %}
-            }
+          # Heating
+          - type: custom:mushroom-climate-card
+            entity: climate.lucas_s_room
+            name: Heating
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  background: linear-gradient(135deg, rgba(251, 146, 60, 0.14) 0%, rgba(234, 88, 12, 0.04) 100%);
+                  border: 1px solid rgba(251, 146, 60, 0.25);
+                }
 
-  # =====================================================================
-  # CAMERA + ENVIRONMENT
-  # =====================================================================
-  - type: grid
-    title: ""
-    column_span: 2
-    cards:
-      - type: picture-entity
-        entity: camera.lucass_room_snapshot
-        name: ""
-        show_state: false
-        show_name: false
-        camera_view: live
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 20px !important;
-              overflow: hidden;
-              border: 2px solid rgba(6, 182, 212, 0.25);
-              box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-              aspect-ratio: 16/9;
-            }
-
-  - type: grid
-    title: Environment
-    column_span: 1
-    cards:
-      # Temperature
-      - type: custom:mushroom-template-card
-        primary: Temperature
-        secondary: "{{ states('sensor.lucas_room_temp_temperature') | round(1) }}°C"
-        icon: mdi:thermometer
-        icon_color: >
-          {% set temp = states('sensor.lucas_room_temp_temperature') | float(0) %}
-          {% if temp < 18 %}blue{% elif temp > 23 %}red{% else %}green{% endif %}
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              {% set temp = states('sensor.lucas_room_temp_temperature') | float(0) %}
-              {% if temp >= 18 and temp <= 23 %}
-              background: linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(16, 185, 129, 0.06) 100%);
-              border: 1px solid rgba(34, 197, 94, 0.3);
-              {% elif temp < 18 %}
-              background: linear-gradient(135deg, rgba(59, 130, 246, 0.18) 0%, rgba(99, 102, 241, 0.06) 100%);
-              border: 1px solid rgba(59, 130, 246, 0.3);
-              {% else %}
-              background: linear-gradient(135deg, rgba(239, 68, 68, 0.18) 0%, rgba(249, 115, 22, 0.06) 100%);
-              border: 1px solid rgba(239, 68, 68, 0.3);
-              {% endif %}
-            }
-
-      # Humidity
-      - type: custom:mushroom-template-card
-        primary: Humidity
-        secondary: "{{ states('sensor.lucas_room_temp_humidity') | round(0) }}%"
-        icon: mdi:water-percent
-        icon_color: >
-          {% set h = states('sensor.lucas_room_temp_humidity') | float(0) %}
-          {% if h < 45 %}amber{% elif h > 55 %}blue{% else %}green{% endif %}
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              {% set h = states('sensor.lucas_room_temp_humidity') | float(0) %}
-              {% if h >= 45 and h <= 55 %}
-              background: linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(16, 185, 129, 0.06) 100%);
-              border: 1px solid rgba(34, 197, 94, 0.3);
-              {% else %}
-              background: linear-gradient(135deg, rgba(249, 115, 22, 0.18) 0%, rgba(245, 158, 11, 0.06) 100%);
-              border: 1px solid rgba(249, 115, 22, 0.3);
-              {% endif %}
-            }
-
-      # Heating
-      - type: custom:mushroom-climate-card
-        entity: climate.lucas_s_room
-        name: Heating
-        show_temperature_control: true
-        collapsible_controls: true
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              background: linear-gradient(135deg, rgba(251, 146, 60, 0.14) 0%, rgba(234, 88, 12, 0.04) 100%);
-              border: 1px solid rgba(251, 146, 60, 0.25);
-            }
-
-  # =====================================================================
-  # ROUTINES — Quick action buttons
-  # =====================================================================
-  - type: grid
-    title: Routines
-    cards:
-      - type: horizontal-stack
+      # =====================================================================
+      # ROUTINES — Quick action buttons
+      # =====================================================================
+      - type: grid
+        title: Routines
         cards:
-          - type: custom:button-card
-            name: Morning
-            icon: mdi:weather-sunny
-            color: rgb(245, 158, 11)
-            styles:
-              card:
-                - background: "linear-gradient(145deg, rgba(245, 158, 11, 0.22) 0%, rgba(234, 88, 12, 0.06) 100%)"
-                - border: "1px solid rgba(245, 158, 11, 0.3)"
-                - border-radius: 18px
-                - padding: 20px 6px
-                - box-shadow: "0 4px 16px rgba(245, 158, 11, 0.08)"
-              icon:
-                - width: 36px
-                - color: rgb(245, 158, 11)
-              name:
-                - font-size: 12px
-                - font-weight: 600
-                - color: rgba(255, 255, 255, 0.9)
-                - margin-top: 8px
-            tap_action:
-              action: call-service
-              service: script.lucas_morning_routine
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                name: Morning
+                icon: mdi:weather-sunny
+                color: rgb(245, 158, 11)
+                styles:
+                  card:
+                    - background: "linear-gradient(145deg, rgba(245, 158, 11, 0.22) 0%, rgba(234, 88, 12, 0.06) 100%)"
+                    - border: "1px solid rgba(245, 158, 11, 0.3)"
+                    - border-radius: 18px
+                    - padding: 20px 6px
+                    - box-shadow: "0 4px 16px rgba(245, 158, 11, 0.08)"
+                  icon:
+                    - width: 36px
+                    - color: rgb(245, 158, 11)
+                  name:
+                    - font-size: 12px
+                    - font-weight: 600
+                    - color: rgba(255, 255, 255, 0.9)
+                    - margin-top: 8px
+                tap_action:
+                  action: call-service
+                  service: script.lucas_morning_routine
 
-          - type: custom:button-card
-            name: Bathtime
-            icon: mdi:bathtub
-            color: rgb(6, 182, 212)
-            styles:
-              card:
-                - background: "linear-gradient(145deg, rgba(6, 182, 212, 0.22) 0%, rgba(59, 130, 246, 0.06) 100%)"
-                - border: "1px solid rgba(6, 182, 212, 0.3)"
-                - border-radius: 18px
-                - padding: 20px 6px
-                - box-shadow: "0 4px 16px rgba(6, 182, 212, 0.08)"
-              icon:
-                - width: 36px
-                - color: rgb(6, 182, 212)
-              name:
-                - font-size: 12px
-                - font-weight: 600
-                - color: rgba(255, 255, 255, 0.9)
-                - margin-top: 8px
-            tap_action:
-              action: call-service
-              service: script.lucas_bathtime
+              - type: custom:button-card
+                name: Bathtime
+                icon: mdi:bathtub
+                color: rgb(6, 182, 212)
+                styles:
+                  card:
+                    - background: "linear-gradient(145deg, rgba(6, 182, 212, 0.22) 0%, rgba(59, 130, 246, 0.06) 100%)"
+                    - border: "1px solid rgba(6, 182, 212, 0.3)"
+                    - border-radius: 18px
+                    - padding: 20px 6px
+                    - box-shadow: "0 4px 16px rgba(6, 182, 212, 0.08)"
+                  icon:
+                    - width: 36px
+                    - color: rgb(6, 182, 212)
+                  name:
+                    - font-size: 12px
+                    - font-weight: 600
+                    - color: rgba(255, 255, 255, 0.9)
+                    - margin-top: 8px
+                tap_action:
+                  action: call-service
+                  service: script.lucas_bathtime
 
-          - type: custom:button-card
-            name: Wind Down
-            icon: mdi:weather-sunset
-            color: rgb(249, 115, 22)
-            styles:
-              card:
-                - background: "linear-gradient(145deg, rgba(249, 115, 22, 0.22) 0%, rgba(234, 88, 12, 0.06) 100%)"
-                - border: "1px solid rgba(249, 115, 22, 0.3)"
-                - border-radius: 18px
-                - padding: 20px 6px
-                - box-shadow: "0 4px 16px rgba(249, 115, 22, 0.08)"
-              icon:
-                - width: 36px
-                - color: rgb(249, 115, 22)
-              name:
-                - font-size: 12px
-                - font-weight: 600
-                - color: rgba(255, 255, 255, 0.9)
-                - margin-top: 8px
-            tap_action:
-              action: call-service
-              service: script.lucas_wind_down
+              - type: custom:button-card
+                name: Wind Down
+                icon: mdi:weather-sunset
+                color: rgb(249, 115, 22)
+                styles:
+                  card:
+                    - background: "linear-gradient(145deg, rgba(249, 115, 22, 0.22) 0%, rgba(234, 88, 12, 0.06) 100%)"
+                    - border: "1px solid rgba(249, 115, 22, 0.3)"
+                    - border-radius: 18px
+                    - padding: 20px 6px
+                    - box-shadow: "0 4px 16px rgba(249, 115, 22, 0.08)"
+                  icon:
+                    - width: 36px
+                    - color: rgb(249, 115, 22)
+                  name:
+                    - font-size: 12px
+                    - font-weight: 600
+                    - color: rgba(255, 255, 255, 0.9)
+                    - margin-top: 8px
+                tap_action:
+                  action: call-service
+                  service: script.lucas_wind_down
 
-          - type: custom:button-card
-            name: Bedtime
-            icon: mdi:bed
-            color: rgb(99, 102, 241)
-            styles:
-              card:
-                - background: "linear-gradient(145deg, rgba(99, 102, 241, 0.22) 0%, rgba(129, 140, 248, 0.06) 100%)"
-                - border: "1px solid rgba(99, 102, 241, 0.3)"
-                - border-radius: 18px
-                - padding: 20px 6px
-                - box-shadow: "0 4px 16px rgba(99, 102, 241, 0.08)"
-              icon:
-                - width: 36px
-                - color: rgb(99, 102, 241)
-              name:
-                - font-size: 12px
-                - font-weight: 600
-                - color: rgba(255, 255, 255, 0.9)
-                - margin-top: 8px
-            tap_action:
-              action: call-service
-              service: script.lucas_bedtime
+              - type: custom:button-card
+                name: Bedtime
+                icon: mdi:bed
+                color: rgb(99, 102, 241)
+                styles:
+                  card:
+                    - background: "linear-gradient(145deg, rgba(99, 102, 241, 0.22) 0%, rgba(129, 140, 248, 0.06) 100%)"
+                    - border: "1px solid rgba(99, 102, 241, 0.3)"
+                    - border-radius: 18px
+                    - padding: 20px 6px
+                    - box-shadow: "0 4px 16px rgba(99, 102, 241, 0.08)"
+                  icon:
+                    - width: 36px
+                    - color: rgb(99, 102, 241)
+                  name:
+                    - font-size: 12px
+                    - font-weight: 600
+                    - color: rgba(255, 255, 255, 0.9)
+                    - margin-top: 8px
+                tap_action:
+                  action: call-service
+                  service: script.lucas_bedtime
 
-          - type: custom:button-card
-            name: Nightlight
-            icon: mdi:lightbulb-night
-            color: rgb(251, 191, 36)
-            styles:
-              card:
-                - background: "linear-gradient(145deg, rgba(251, 191, 36, 0.18) 0%, rgba(245, 158, 11, 0.05) 100%)"
-                - border: "1px solid rgba(251, 191, 36, 0.25)"
-                - border-radius: 18px
-                - padding: 20px 6px
-              icon:
-                - width: 36px
-                - color: rgb(251, 191, 36)
-              name:
-                - font-size: 12px
-                - font-weight: 600
-                - color: rgba(255, 255, 255, 0.9)
-                - margin-top: 8px
-            tap_action:
-              action: call-service
-              service: script.lucas_nightlight
-  # =====================================================================
-  # SCENES — Light presets
-  # =====================================================================
-  - type: grid
-    title: Scenes
-    cards:
-      - type: horizontal-stack
+              - type: custom:button-card
+                name: Nightlight
+                icon: mdi:lightbulb-night
+                color: rgb(251, 191, 36)
+                styles:
+                  card:
+                    - background: "linear-gradient(145deg, rgba(251, 191, 36, 0.18) 0%, rgba(245, 158, 11, 0.05) 100%)"
+                    - border: "1px solid rgba(251, 191, 36, 0.25)"
+                    - border-radius: 18px
+                    - padding: 20px 6px
+                  icon:
+                    - width: 36px
+                    - color: rgb(251, 191, 36)
+                  name:
+                    - font-size: 12px
+                    - font-weight: 600
+                    - color: rgba(255, 255, 255, 0.9)
+                    - margin-top: 8px
+                tap_action:
+                  action: call-service
+                  service: script.lucas_nightlight
+      # =====================================================================
+      # SCENES — Light presets
+      # =====================================================================
+      - type: grid
+        title: Scenes
         cards:
-          - type: custom:button-card
-            name: Arise
-            icon: mdi:weather-sunny
-            color: rgb(245, 158, 11)
-            styles:
-              card:
-                - background: "rgba(245, 158, 11, 0.1)"
-                - border: "1px solid rgba(245, 158, 11, 0.2)"
-                - border-radius: 14px
-                - padding: 14px 4px
-              icon:
-                - width: 28px
-              name:
-                - font-size: 11px
-                - font-weight: 500
-                - margin-top: 6px
+          - type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                name: Arise
+                icon: mdi:weather-sunny
+                color: rgb(245, 158, 11)
+                styles:
+                  card:
+                    - background: "rgba(245, 158, 11, 0.1)"
+                    - border: "1px solid rgba(245, 158, 11, 0.2)"
+                    - border-radius: 14px
+                    - padding: 14px 4px
+                  icon:
+                    - width: 28px
+                  name:
+                    - font-size: 11px
+                    - font-weight: 500
+                    - margin-top: 6px
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.lucass_room_arise
+
+              - type: custom:button-card
+                name: Storybook
+                icon: mdi:book-open-variant
+                color: rgb(244, 114, 182)
+                styles:
+                  card:
+                    - background: "rgba(244, 114, 182, 0.1)"
+                    - border: "1px solid rgba(244, 114, 182, 0.2)"
+                    - border-radius: 14px
+                    - padding: 14px 4px
+                  icon:
+                    - width: 28px
+                  name:
+                    - font-size: 11px
+                    - font-weight: 500
+                    - margin-top: 6px
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.lucass_room_storybook
+
+              - type: custom:button-card
+                name: Nebula
+                icon: mdi:star-shooting
+                color: rgb(139, 92, 246)
+                styles:
+                  card:
+                    - background: "rgba(139, 92, 246, 0.1)"
+                    - border: "1px solid rgba(139, 92, 246, 0.2)"
+                    - border-radius: 14px
+                    - padding: 14px 4px
+                  icon:
+                    - width: 28px
+                  name:
+                    - font-size: 11px
+                    - font-weight: 500
+                    - margin-top: 6px
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.lucass_room_nebula
+
+              - type: custom:button-card
+                name: Starlight
+                icon: mdi:star-four-points
+                color: rgb(96, 165, 250)
+                styles:
+                  card:
+                    - background: "rgba(96, 165, 250, 0.1)"
+                    - border: "1px solid rgba(96, 165, 250, 0.2)"
+                    - border-radius: 14px
+                    - padding: 14px 4px
+                  icon:
+                    - width: 28px
+                  name:
+                    - font-size: 11px
+                    - font-weight: 500
+                    - margin-top: 6px
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.lucass_room_starlight
+
+              - type: custom:button-card
+                name: Sleepy
+                icon: mdi:sleep
+                color: rgb(99, 102, 241)
+                styles:
+                  card:
+                    - background: "rgba(99, 102, 241, 0.1)"
+                    - border: "1px solid rgba(99, 102, 241, 0.2)"
+                    - border-radius: 14px
+                    - padding: 14px 4px
+                  icon:
+                    - width: 28px
+                  name:
+                    - font-size: 11px
+                    - font-weight: 500
+                    - margin-top: 6px
+                tap_action:
+                  action: call-service
+                  service: scene.turn_on
+                  service_data:
+                    entity_id: scene.lucass_room_sleepy
+
+              - type: custom:button-card
+                name: "Off"
+                icon: mdi:lightbulb-off
+                color: rgb(107, 114, 128)
+                styles:
+                  card:
+                    - background: "rgba(107, 114, 128, 0.08)"
+                    - border: "1px solid rgba(107, 114, 128, 0.15)"
+                    - border-radius: 14px
+                    - padding: 14px 4px
+                  icon:
+                    - width: 28px
+                  name:
+                    - font-size: 11px
+                    - font-weight: 500
+                    - margin-top: 6px
+                tap_action:
+                  action: call-service
+                  service: light.turn_off
+                  service_data:
+                    entity_id: light.lucass_room
+
+      # =====================================================================
+      # LIGHTS
+      # =====================================================================
+      - type: grid
+        title: Lights
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.lucass_room_spot_lights
+            name: Spotlights
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, transparent 100%);
+                  border: 1px solid rgba(6, 182, 212, 0.15);
+                }
+
+          - type: custom:mushroom-light-card
+            entity: light.lucass_room_pendant_light
+            name: Pendant
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, transparent 100%);
+                  border: 1px solid rgba(6, 182, 212, 0.15);
+                }
+
+          - type: custom:mushroom-light-card
+            entity: light.lucass_room_iris
+            name: Iris (Nightlight)
+            show_brightness_control: true
+            show_color_control: true
+            use_light_color: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, transparent 100%);
+                  border: 1px solid rgba(139, 92, 246, 0.15);
+                }
+      # =====================================================================
+      # DEVICES
+      # =====================================================================
+      - type: grid
+        title: Devices
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: switch.cloud_lamp
+            name: Cloud Lamp
+            icon: mdi:cloud
             tap_action:
-              action: call-service
-              service: scene.turn_on
-              service_data:
-                entity_id: scene.lucass_room_arise
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  background: linear-gradient(135deg, rgba(96, 165, 250, 0.08) 0%, transparent 100%);
+                  border: 1px solid rgba(96, 165, 250, 0.15);
+                }
 
-          - type: custom:button-card
-            name: Storybook
-            icon: mdi:book-open-variant
-            color: rgb(244, 114, 182)
-            styles:
-              card:
-                - background: "rgba(244, 114, 182, 0.1)"
-                - border: "1px solid rgba(244, 114, 182, 0.2)"
-                - border-radius: 14px
-                - padding: 14px 4px
-              icon:
-                - width: 28px
-              name:
-                - font-size: 11px
-                - font-weight: 500
-                - margin-top: 6px
+          - type: custom:mushroom-entity-card
+            entity: switch.lucas_strip_nanit
+            name: Nanit Monitor
+            icon: mdi:baby-carriage
             tap_action:
-              action: call-service
-              service: scene.turn_on
-              service_data:
-                entity_id: scene.lucass_room_storybook
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, transparent 100%);
+                  border: 1px solid rgba(6, 182, 212, 0.15);
+                }
 
-          - type: custom:button-card
-            name: Nebula
-            icon: mdi:star-shooting
-            color: rgb(139, 92, 246)
-            styles:
-              card:
-                - background: "rgba(139, 92, 246, 0.1)"
-                - border: "1px solid rgba(139, 92, 246, 0.2)"
-                - border-radius: 14px
-                - padding: 14px 4px
-              icon:
-                - width: 28px
-              name:
-                - font-size: 11px
-                - font-weight: 500
-                - margin-top: 6px
+          - type: custom:mushroom-entity-card
+            entity: switch.lucas_strip_humidifier
+            name: Humidifier
+            icon: mdi:air-humidifier
             tap_action:
-              action: call-service
-              service: scene.turn_on
-              service_data:
-                entity_id: scene.lucass_room_nebula
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  {% if is_state('switch.lucas_strip_humidifier', 'on') %}
+                  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(96, 165, 250, 0.06) 100%);
+                  border: 1px solid rgba(59, 130, 246, 0.35);
+                  {% else %}
+                  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, transparent 100%);
+                  border: 1px solid rgba(59, 130, 246, 0.15);
+                  {% endif %}
+                }
 
-          - type: custom:button-card
-            name: Starlight
-            icon: mdi:star-four-points
-            color: rgb(96, 165, 250)
-            styles:
-              card:
-                - background: "rgba(96, 165, 250, 0.1)"
-                - border: "1px solid rgba(96, 165, 250, 0.2)"
-                - border-radius: 14px
-                - padding: 14px 4px
-              icon:
-                - width: 28px
-              name:
-                - font-size: 11px
-                - font-weight: 500
-                - margin-top: 6px
+          - type: custom:mushroom-entity-card
+            entity: switch.lucas_strip_air_filter
+            name: Air Filter
+            icon: mdi:air-filter
             tap_action:
-              action: call-service
-              service: scene.turn_on
-              service_data:
-                entity_id: scene.lucass_room_starlight
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  {% if is_state('switch.lucas_strip_air_filter', 'on') %}
+                  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(16, 185, 129, 0.06) 100%);
+                  border: 1px solid rgba(34, 197, 94, 0.35);
+                  {% else %}
+                  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, transparent 100%);
+                  border: 1px solid rgba(34, 197, 94, 0.15);
+                  {% endif %}
+                }
 
-          - type: custom:button-card
-            name: Sleepy
-            icon: mdi:sleep
-            color: rgb(99, 102, 241)
-            styles:
-              card:
-                - background: "rgba(99, 102, 241, 0.1)"
-                - border: "1px solid rgba(99, 102, 241, 0.2)"
-                - border-radius: 14px
-                - padding: 14px 4px
-              icon:
-                - width: 28px
-              name:
-                - font-size: 11px
-                - font-weight: 500
-                - margin-top: 6px
-            tap_action:
-              action: call-service
-              service: scene.turn_on
-              service_data:
-                entity_id: scene.lucass_room_sleepy
+      # =====================================================================
+      # MEDIA
+      # =====================================================================
+      - type: grid
+        title: Media
+        cards:
+          - type: custom:mushroom-media-player-card
+            entity: media_player.lucas_s_echo_show
+            name: Echo Show 5
+            use_media_info: true
+            show_volume_level: true
+            volume_controls:
+              - volume_mute
+              - volume_set
+            media_controls:
+              - play_pause_stop
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.04) 100%);
+                  border: 1px solid rgba(139, 92, 246, 0.2);
+                }
 
-          - type: custom:button-card
-            name: "Off"
-            icon: mdi:lightbulb-off
-            color: rgb(107, 114, 128)
-            styles:
-              card:
-                - background: "rgba(107, 114, 128, 0.08)"
-                - border: "1px solid rgba(107, 114, 128, 0.15)"
-                - border-radius: 14px
-                - padding: 14px 4px
-              icon:
-                - width: 28px
-              name:
-                - font-size: 11px
-                - font-weight: 500
-                - margin-top: 6px
-            tap_action:
-              action: call-service
-              service: light.turn_off
-              service_data:
-                entity_id: light.lucass_room
-
-  # =====================================================================
-  # LIGHTS
-  # =====================================================================
-  - type: grid
-    title: Lights
-    cards:
-      - type: custom:mushroom-light-card
-        entity: light.lucass_room_spot_lights
-        name: Spotlights
-        show_brightness_control: true
-        collapsible_controls: true
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, transparent 100%);
-              border: 1px solid rgba(6, 182, 212, 0.15);
-            }
-
-      - type: custom:mushroom-light-card
-        entity: light.lucass_room_pendant_light
-        name: Pendant
-        show_brightness_control: true
-        collapsible_controls: true
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, transparent 100%);
-              border: 1px solid rgba(6, 182, 212, 0.15);
-            }
-
-      - type: custom:mushroom-light-card
-        entity: light.lucass_room_iris
-        name: Iris (Nightlight)
-        show_brightness_control: true
-        show_color_control: true
-        use_light_color: true
-        collapsible_controls: true
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, transparent 100%);
-              border: 1px solid rgba(139, 92, 246, 0.15);
-            }
-  # =====================================================================
-  # DEVICES
-  # =====================================================================
-  - type: grid
-    title: Devices
-    cards:
-      - type: custom:mushroom-entity-card
-        entity: switch.cloud_lamp
-        name: Cloud Lamp
-        icon: mdi:cloud
-        tap_action:
-          action: toggle
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              background: linear-gradient(135deg, rgba(96, 165, 250, 0.08) 0%, transparent 100%);
-              border: 1px solid rgba(96, 165, 250, 0.15);
-            }
-
-      - type: custom:mushroom-entity-card
-        entity: switch.lucas_strip_nanit
-        name: Nanit Monitor
-        icon: mdi:baby-carriage
-        tap_action:
-          action: toggle
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, transparent 100%);
-              border: 1px solid rgba(6, 182, 212, 0.15);
-            }
-
-      - type: custom:mushroom-entity-card
-        entity: switch.lucas_strip_humidifier
-        name: Humidifier
-        icon: mdi:air-humidifier
-        tap_action:
-          action: toggle
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              {% if is_state('switch.lucas_strip_humidifier', 'on') %}
-              background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(96, 165, 250, 0.06) 100%);
-              border: 1px solid rgba(59, 130, 246, 0.35);
-              {% else %}
-              background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, transparent 100%);
-              border: 1px solid rgba(59, 130, 246, 0.15);
-              {% endif %}
-            }
-
-      - type: custom:mushroom-entity-card
-        entity: switch.lucas_strip_air_filter
-        name: Air Filter
-        icon: mdi:air-filter
-        tap_action:
-          action: toggle
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              {% if is_state('switch.lucas_strip_air_filter', 'on') %}
-              background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(16, 185, 129, 0.06) 100%);
-              border: 1px solid rgba(34, 197, 94, 0.35);
-              {% else %}
-              background: linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, transparent 100%);
-              border: 1px solid rgba(34, 197, 94, 0.15);
-              {% endif %}
-            }
-
-  # =====================================================================
-  # MEDIA
-  # =====================================================================
-  - type: grid
-    title: Media
-    cards:
-      - type: custom:mushroom-media-player-card
-        entity: media_player.lucas_s_echo_show
-        name: Echo Show 5
-        use_media_info: true
-        show_volume_level: true
-        volume_controls:
-          - volume_mute
-          - volume_set
-        media_controls:
-          - play_pause_stop
-        collapsible_controls: true
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.04) 100%);
-              border: 1px solid rgba(139, 92, 246, 0.2);
-            }
-
-  # =====================================================================
-  # SCHEDULE
-  # =====================================================================
-  - type: grid
-    title: ""
-    cards:
-      - type: markdown
-        content: |
-          ## 📅 Daily Schedule
-          | ⏰ Time | 🎯 Event | 💡 Automation |
-          |---------|----------|---------------|
-          | 07:00 | Wake up | Arise scene + music |
-          | 18:00 | Bathtime | Bathroom Relax + blue lights |
-          | 18:45 | Wind down | Warm dim lights + calm music |
-          | 19:30 | Bedtime | All lights off + lullaby |
-        card_mod:
-          style: |
-            ha-card {
-              border-radius: 16px !important;
-              background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
-              border: 1px solid rgba(6, 182, 212, 0.12);
-              padding: 4px 16px;
-            }
-            ha-markdown {
-              font-size: 13px;
-            }
-            table {
-              width: 100%;
-            }
-            th {
-              color: rgba(6, 182, 212, 0.8) !important;
-              font-weight: 600;
-              padding: 6px 8px;
-            }
-            td {
-              padding: 6px 8px;
-            }
+      # =====================================================================
+      # SCHEDULE
+      # =====================================================================
+      - type: grid
+        title: ""
+        cards:
+          - type: markdown
+            content: |
+              ## 📅 Daily Schedule
+              | ⏰ Time | 🎯 Event | 💡 Automation |
+              |---------|----------|---------------|
+              | 07:00 | Wake up | Arise scene + music |
+              | 18:00 | Bathtime | Bathroom Relax + blue lights |
+              | 18:45 | Wind down | Warm dim lights + calm music |
+              | 19:30 | Bedtime | All lights off + lullaby |
+            card_mod:
+              style: |
+                ha-card {
+                  border-radius: 16px !important;
+                  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
+                  border: 1px solid rgba(6, 182, 212, 0.12);
+                  padding: 4px 16px;
+                }
+                ha-markdown {
+                  font-size: 13px;
+                }
+                table {
+                  width: 100%;
+                }
+                th {
+                  color: rgba(6, 182, 212, 0.8) !important;
+                  font-weight: 600;
+                  padding: 6px 8px;
+                }
+                td {
+                  padding: 6px 8px;
+                }
