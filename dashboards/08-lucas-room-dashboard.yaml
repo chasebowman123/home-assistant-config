@@ -1,297 +1,624 @@
 ###############################################################################
-# LUCAS DASHBOARD (Refactored with Decluttering Templates)
-# Child monitoring and caregiver-friendly controls
-# Large touch targets, clear status indicators, routine buttons
+# LUCAS'S ROOM DASHBOARD — FLAGSHIP DESIGN
+# Premium child-focused dashboard: camera, climate, routines, music
+# Requires: mushroom-cards, card-mod, button-card (HACS)
 ###############################################################################
 
-title: Lucas
-path: lucas
-icon: mdi:baby-face
+views:
+  - title: Lucas's Room
+    path: lucas-room
+    icon: mdi:baby-face-outline
+    subview: true
 
-type: sections
-max_columns: 2
+    type: panel
 
-sections:
-  # =========================================================================
-  # STATUS BANNER WITH ROOM STATE
-  # =========================================================================
-  - type: grid
-    title: ""
     cards:
-      # Room state indicator - tap to cycle through states
-      - type: custom:decluttering-card
-        template: lucas_state_chip
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+        grid-template-columns: 1fr 1fr 1fr
+        grid-template-rows: auto
+        grid-gap: 16px
+        margin: 16px
 
-      # Environment chips
-      - type: custom:decluttering-card
-        template: lucas_status_chips
-        variables:
-          - temp_sensor: sensor.lucas_room_temp_temperature
-          - humidity_sensor: sensor.lucas_room_temp_humidity
-          - bath_sensor: sensor.lucas_bath_temp_sensor_temperature
-          - camera: camera.lucass_room_snapshot
+        cards:
+        # ===========================================================================
+        # ROW 1: HEADER BAR (full width)
+        # ===========================================================================
+        - type: custom:mushroom-chips-card
+          view_layout:
+            grid-column: 1 / -1
+          chips:
+            - type: back
+            - type: template
+              icon: mdi:baby-face-outline
+              content: "Lucas's Room"
+              icon_color: cyan
+            - type: template
+              icon: mdi:thermometer
+              content: "{{ states('sensor.lucas_room_temp_temperature') | round(1) }}°C"
+              icon_color: >
+                {% set temp = states('sensor.lucas_room_temp_temperature') | float(0) %}
+                {% if temp < 18 %}blue{% elif temp > 23 %}red{% else %}green{% endif %}
+            - type: template
+              icon: mdi:water-percent
+              content: "{{ states('sensor.lucas_room_temp_humidity') | round(0) }}%"
+              icon_color: >
+                {% set h = states('sensor.lucas_room_temp_humidity') | float(0) %}
+                {% if h < 45 %}amber{% elif h > 55 %}blue{% else %}green{% endif %}
+            - type: template
+              icon: mdi:bathtub
+              content: "Bath {{ states('sensor.lucas_bath_temp_sensor_temperature') | round(0) }}°C"
+              icon_color: cyan
+            - type: entity
+              entity: input_boolean.lucas_napping
+              icon: mdi:sleep
+          card_mod:
+            style: |
+              ha-card {
+                background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(59, 130, 246, 0.06) 100%);
+                border: 1px solid rgba(6, 182, 212, 0.2);
+                border-radius: 20px !important;
+                padding: 4px 8px;
+              }
 
-  # =========================================================================
-  # QUICK ACTIONS - Large touch-friendly routine buttons
-  # =========================================================================
-  - type: grid
-    title: Quick Actions
-    cards:
-      - type: custom:decluttering-card
-        template: lucas_quick_action
-        variables:
-          - title: "🌅 Morning"
-          - subtitle: "Arise scene + wake music"
-          - icon: mdi:weather-sunny
-          - color: amber
-          - scene_entity: scene.lucass_room_arise
+        # ===========================================================================
+        # ROW 2 LEFT: CAMERA FEED
+        # ===========================================================================
+        - type: picture-entity
+          entity: camera.lucass_room_snapshot
+          name: ""
+          show_state: false
+          show_name: false
+          camera_view: live
+          view_layout:
+            grid-column: 1 / 3
+            grid-row: 2 / 4
+          card_mod:
+            style: |
+              ha-card {
+                border-radius: 24px !important;
+                overflow: hidden;
+                border: 2px solid rgba(6, 182, 212, 0.25);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                min-height: 320px;
+              }
+              ha-card .header {
+                display: none;
+              }
 
-      - type: custom:decluttering-card
-        template: lucas_quick_action
-        variables:
-          - title: "🛁 Bathtime"
-          - subtitle: "Bathroom lights + music"
-          - icon: mdi:bathtub
-          - color: cyan
-          - scene_entity: scene.lucass_bathroom_relax
+        # ===========================================================================
+        # ROW 2 RIGHT: ENVIRONMENT CARDS (stacked)
+        # ===========================================================================
+        - type: vertical-stack
+          view_layout:
+            grid-column: 3
+            grid-row: 2
+          cards:
+            # Temperature card
+            - type: custom:mushroom-template-card
+              primary: Temperature
+              secondary: "{{ states('sensor.lucas_room_temp_temperature') | round(1) }}°C"
+              icon: mdi:thermometer
+              icon_color: >
+                {% set temp = states('sensor.lucas_room_temp_temperature') | float(0) %}
+                {% if temp < 18 %}blue{% elif temp > 23 %}red{% elif temp >= 20 and temp <= 22 %}green{% else %}amber{% endif %}
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 20px !important;
+                    {% set temp = states('sensor.lucas_room_temp_temperature') | float(0) %}
+                    {% if temp >= 18 and temp <= 23 %}
+                    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+                    border: 1px solid rgba(34, 197, 94, 0.25);
+                    {% elif temp < 18 %}
+                    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.05) 100%);
+                    border: 1px solid rgba(59, 130, 246, 0.25);
+                    {% else %}
+                    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(249, 115, 22, 0.05) 100%);
+                    border: 1px solid rgba(239, 68, 68, 0.25);
+                    {% endif %}
+                  }
 
-      - type: custom:decluttering-card
-        template: lucas_quick_action
-        variables:
-          - title: "🌙 Wind Down"
-          - subtitle: "Dim lights, warm colours"
-          - icon: mdi:weather-sunset
-          - color: orange
-          - scene_entity: scene.lucass_room_sleepy
+            # Humidity card
+            - type: custom:mushroom-template-card
+              primary: Humidity
+              secondary: "{{ states('sensor.lucas_room_temp_humidity') | round(0) }}%"
+              icon: mdi:water-percent
+              icon_color: >
+                {% set h = states('sensor.lucas_room_temp_humidity') | float(0) %}
+                {% if h < 45 %}amber{% elif h > 55 %}blue{% else %}green{% endif %}
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 20px !important;
+                    {% set h = states('sensor.lucas_room_temp_humidity') | float(0) %}
+                    {% if h >= 45 and h <= 55 %}
+                    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+                    border: 1px solid rgba(34, 197, 94, 0.25);
+                    {% else %}
+                    background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%);
+                    border: 1px solid rgba(249, 115, 22, 0.25);
+                    {% endif %}
+                  }
 
-      - type: custom:decluttering-card
-        template: lucas_quick_action
-        variables:
-          - title: "😴 Sleep"
-          - subtitle: "All lights off"
-          - icon: mdi:moon-waning-crescent
-          - color: indigo
-          - scene_entity: scene.lucass_room_night_time
+        # ===========================================================================
+        # ROW 3 RIGHT: HEATING CONTROL
+        # ===========================================================================
+        - type: custom:mushroom-climate-card
+          entity: climate.lucas_s_room
+          name: Heating
+          show_temperature_control: true
+          collapsible_controls: true
+          view_layout:
+            grid-column: 3
+            grid-row: 3
+          card_mod:
+            style: |
+              ha-card {
+                border-radius: 20px !important;
+                background: linear-gradient(135deg, rgba(251, 146, 60, 0.12) 0%, rgba(234, 88, 12, 0.04) 100%);
+                border: 1px solid rgba(251, 146, 60, 0.2);
+              }
 
-  # =========================================================================
-  # CAMERA
-  # =========================================================================
-  - type: grid
-    title: Camera
-    cards:
-      - type: custom:decluttering-card
-        template: camera_card
-        variables:
-          - camera_entity: camera.lucass_room_snapshot
-          - name: Lucas's Room
+        # ===========================================================================
+        # ROW 4: ROUTINES (full width)
+        # ===========================================================================
+        - type: horizontal-stack
+          view_layout:
+            grid-column: 1 / -1
+          cards:
+            - type: custom:button-card
+              name: Morning
+              icon: mdi:weather-sunny
+              color: rgb(245, 158, 11)
+              styles:
+                card:
+                  - background: "linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(234, 88, 12, 0.08) 100%)"
+                  - border: "1px solid rgba(245, 158, 11, 0.3)"
+                  - border-radius: 20px
+                  - padding: 20px 12px
+                  - box-shadow: "0 4px 16px rgba(245, 158, 11, 0.1)"
+                icon:
+                  - width: 36px
+                  - color: rgb(245, 158, 11)
+                name:
+                  - font-size: 13px
+                  - font-weight: 500
+                  - color: rgba(255, 255, 255, 0.9)
+                  - margin-top: 8px
+              tap_action:
+                action: call-service
+                service: script.lucas_morning_routine
 
-  # =========================================================================
-  # ENVIRONMENT - Temperature & Humidity with ideal ranges
-  # =========================================================================
-  - type: grid
-    title: Environment
-    cards:
-      - type: custom:mushroom-template-card
-        primary: Room Temperature
-        secondary: >
-          {{ states('sensor.lucas_room_temp_temperature') }}°C
-          {% set temp = states('sensor.lucas_room_temp_temperature') | float %}
-          {% if temp >= 18 and temp <= 21 %}✅ Ideal{% elif temp < 18 %}❄️ Cool{% else %}🔥 Warm{% endif %}
-        icon: mdi:thermometer
-        icon_color: >
-          {% set temp = states('sensor.lucas_room_temp_temperature') | float %}
-          {% if temp < 18 %}blue{% elif temp > 22 %}red{% else %}green{% endif %}
+            - type: custom:button-card
+              name: Bathtime
+              icon: mdi:bathtub
+              color: rgb(6, 182, 212)
+              styles:
+                card:
+                  - background: "linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(59, 130, 246, 0.08) 100%)"
+                  - border: "1px solid rgba(6, 182, 212, 0.3)"
+                  - border-radius: 20px
+                  - padding: 20px 12px
+                  - box-shadow: "0 4px 16px rgba(6, 182, 212, 0.1)"
+                icon:
+                  - width: 36px
+                  - color: rgb(6, 182, 212)
+                name:
+                  - font-size: 13px
+                  - font-weight: 500
+                  - color: rgba(255, 255, 255, 0.9)
+                  - margin-top: 8px
+              tap_action:
+                action: call-service
+                service: script.lucas_bathtime
 
-      - type: custom:mushroom-template-card
-        primary: Room Humidity
-        secondary: >
-          {{ states('sensor.lucas_room_temp_humidity') }}%
-          {% set hum = states('sensor.lucas_room_temp_humidity') | float %}
-          {% if hum >= 40 and hum <= 60 %}✅ Ideal{% elif hum < 40 %}💨 Dry{% else %}💧 Humid{% endif %}
-        icon: mdi:water-percent
-        icon_color: >
-          {% set hum = states('sensor.lucas_room_temp_humidity') | float %}
-          {% if hum < 40 %}amber{% elif hum > 60 %}blue{% else %}green{% endif %}
+            - type: custom:button-card
+              name: Wind Down
+              icon: mdi:weather-sunset
+              color: rgb(249, 115, 22)
+              styles:
+                card:
+                  - background: "linear-gradient(135deg, rgba(249, 115, 22, 0.2) 0%, rgba(234, 88, 12, 0.08) 100%)"
+                  - border: "1px solid rgba(249, 115, 22, 0.3)"
+                  - border-radius: 20px
+                  - padding: 20px 12px
+                  - box-shadow: "0 4px 16px rgba(249, 115, 22, 0.1)"
+                icon:
+                  - width: 36px
+                  - color: rgb(249, 115, 22)
+                name:
+                  - font-size: 13px
+                  - font-weight: 500
+                  - color: rgba(255, 255, 255, 0.9)
+                  - margin-top: 8px
+              tap_action:
+                action: call-service
+                service: script.lucas_wind_down
 
-      - type: custom:mushroom-template-card
-        primary: Bathroom Temperature
-        secondary: "{{ states('sensor.lucas_bath_temp_sensor_temperature') }}°C"
-        icon: mdi:bathtub
-        icon_color: cyan
+            - type: custom:button-card
+              name: Bedtime
+              icon: mdi:bed
+              color: rgb(99, 102, 241)
+              styles:
+                card:
+                  - background: "linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(129, 140, 248, 0.08) 100%)"
+                  - border: "1px solid rgba(99, 102, 241, 0.3)"
+                  - border-radius: 20px
+                  - padding: 20px 12px
+                  - box-shadow: "0 4px 16px rgba(99, 102, 241, 0.1)"
+                icon:
+                  - width: 36px
+                  - color: rgb(99, 102, 241)
+                name:
+                  - font-size: 13px
+                  - font-weight: 500
+                  - color: rgba(255, 255, 255, 0.9)
+                  - margin-top: 8px
+              tap_action:
+                action: call-service
+                service: script.lucas_bedtime
 
-      - type: custom:mini-graph-card
-        name: Room Temperature (24h)
-        entities:
-          - entity: sensor.lucas_room_temp_temperature
-            name: Temperature
-            color: "#ff9800"
-        hours_to_show: 24
-        points_per_hour: 4
-        line_width: 2
-        show:
-          labels: true
-          points: false
-          legend: false
-        color_thresholds:
-          - value: 16
-            color: "#2196f3"
-          - value: 18
-            color: "#4caf50"
-          - value: 22
-            color: "#ff9800"
-          - value: 24
-            color: "#f44336"
+            - type: custom:button-card
+              name: Nightlight
+              icon: mdi:lightbulb-night
+              color: rgb(251, 191, 36)
+              styles:
+                card:
+                  - background: "linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%)"
+                  - border: "1px solid rgba(251, 191, 36, 0.25)"
+                  - border-radius: 20px
+                  - padding: 20px 12px
+                icon:
+                  - width: 36px
+                  - color: rgb(251, 191, 36)
+                name:
+                  - font-size: 13px
+                  - font-weight: 500
+                  - color: rgba(255, 255, 255, 0.9)
+                  - margin-top: 8px
+              tap_action:
+                action: call-service
+                service: script.lucas_nightlight
 
-      - type: custom:mini-graph-card
-        name: Room Humidity (24h)
-        entities:
-          - entity: sensor.lucas_room_temp_humidity
-            name: Humidity
-            color: "#2196f3"
-        hours_to_show: 24
-        points_per_hour: 4
-        line_width: 2
-        show:
-          labels: true
-          points: false
-          legend: false
+        # ===========================================================================
+        # ROW 5: LIGHT SCENES (full width)
+        # ===========================================================================
+        - type: horizontal-stack
+          view_layout:
+            grid-column: 1 / -1
+          cards:
+            - type: custom:button-card
+              name: Arise
+              icon: mdi:weather-sunny
+              color: rgb(245, 158, 11)
+              styles:
+                card:
+                  - background: "rgba(245, 158, 11, 0.1)"
+                  - border: "1px solid rgba(245, 158, 11, 0.2)"
+                  - border-radius: 16px
+                  - padding: 14px 8px
+                icon:
+                  - width: 28px
+                name:
+                  - font-size: 12px
+                  - margin-top: 6px
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                service_data:
+                  entity_id: scene.lucass_room_arise
 
-  # =========================================================================
-  # LIGHTING
-  # =========================================================================
-  - type: grid
-    title: Lighting
-    cards:
-      - type: custom:decluttering-card
-        template: light_group_card
-        variables:
-          - light_entity: light.lucass_room
-          - name: All Lights
+            - type: custom:button-card
+              name: Storybook
+              icon: mdi:book-open-variant
+              color: rgb(244, 114, 182)
+              styles:
+                card:
+                  - background: "rgba(244, 114, 182, 0.1)"
+                  - border: "1px solid rgba(244, 114, 182, 0.2)"
+                  - border-radius: 16px
+                  - padding: 14px 8px
+                icon:
+                  - width: 28px
+                name:
+                  - font-size: 12px
+                  - margin-top: 6px
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                service_data:
+                  entity_id: scene.lucass_room_storybook
 
-      - type: custom:decluttering-card
-        template: light_card
-        variables:
-          - light_entity: light.lucass_room_spot_lights
-          - name: Spotlights
-          - icon: mdi:spotlight-beam
+            - type: custom:button-card
+              name: Nebula
+              icon: mdi:star-shooting
+              color: rgb(139, 92, 246)
+              styles:
+                card:
+                  - background: "rgba(139, 92, 246, 0.1)"
+                  - border: "1px solid rgba(139, 92, 246, 0.2)"
+                  - border-radius: 16px
+                  - padding: 14px 8px
+                icon:
+                  - width: 28px
+                name:
+                  - font-size: 12px
+                  - margin-top: 6px
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                service_data:
+                  entity_id: scene.lucass_room_nebula
 
-      - type: custom:decluttering-card
-        template: light_card
-        variables:
-          - light_entity: light.lucass_room_pendant_light
-          - name: Pendant
-          - icon: mdi:ceiling-light
+            - type: custom:button-card
+              name: Starlight
+              icon: mdi:star-four-points
+              color: rgb(96, 165, 250)
+              styles:
+                card:
+                  - background: "rgba(96, 165, 250, 0.1)"
+                  - border: "1px solid rgba(96, 165, 250, 0.2)"
+                  - border-radius: 16px
+                  - padding: 14px 8px
+                icon:
+                  - width: 28px
+                name:
+                  - font-size: 12px
+                  - margin-top: 6px
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                service_data:
+                  entity_id: scene.lucass_room_starlight
 
-      - type: custom:decluttering-card
-        template: light_card
-        variables:
-          - light_entity: light.lucass_room_iris
-          - name: Iris
-          - icon: mdi:lamp
-          - show_color: true
+            - type: custom:button-card
+              name: Sleepy
+              icon: mdi:sleep
+              color: rgb(99, 102, 241)
+              styles:
+                card:
+                  - background: "rgba(99, 102, 241, 0.1)"
+                  - border: "1px solid rgba(99, 102, 241, 0.2)"
+                  - border-radius: 16px
+                  - padding: 14px 8px
+                icon:
+                  - width: 28px
+                name:
+                  - font-size: 12px
+                  - margin-top: 6px
+              tap_action:
+                action: call-service
+                service: scene.turn_on
+                service_data:
+                  entity_id: scene.lucass_room_sleepy
 
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.cloud_lamp
-          - name: Cloud Lamp
-          - icon: mdi:cloud
+            - type: custom:button-card
+              name: "Off"
+              icon: mdi:lightbulb-off
+              color: rgb(107, 114, 128)
+              styles:
+                card:
+                  - background: "rgba(107, 114, 128, 0.1)"
+                  - border: "1px solid rgba(107, 114, 128, 0.2)"
+                  - border-radius: 16px
+                  - padding: 14px 8px
+                icon:
+                  - width: 28px
+                name:
+                  - font-size: 12px
+                  - margin-top: 6px
+              tap_action:
+                action: call-service
+                service: light.turn_off
+                service_data:
+                  entity_id: light.lucass_room
 
-      - type: custom:decluttering-card
-        template: light_card
-        variables:
-          - light_entity: light.lucass_bathroom_spotlights
-          - name: Bathroom Lights
-          - icon: mdi:bathtub
+        # ===========================================================================
+        # ROW 6 LEFT: INDIVIDUAL LIGHTS
+        # ===========================================================================
+        - type: vertical-stack
+          view_layout:
+            grid-column: 1 / 2
+          cards:
+            - type: custom:mushroom-light-card
+              entity: light.lucass_room_spot_lights
+              name: Spotlights
+              show_brightness_control: true
+              collapsible_controls: true
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 20px !important;
+                    background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, transparent 100%);
+                    border: 1px solid rgba(6, 182, 212, 0.15);
+                  }
 
-  # =========================================================================
-  # LIGHTING SCENES - Row 1
-  # =========================================================================
-  - type: grid
-    title: Light Scenes
-    cards:
-      - type: custom:decluttering-card
-        template: scene_row_4
-        variables:
-          - scene_1_name: Arise
-          - scene_1_icon: mdi:weather-sunny
-          - scene_1_color: amber
-          - scene_1_entity: scene.lucass_room_arise
-          - scene_2_name: Storybook
-          - scene_2_icon: mdi:book-open-variant
-          - scene_2_color: pink
-          - scene_2_entity: scene.lucass_room_storybook
-          - scene_3_name: Sleepy
-          - scene_3_icon: mdi:sleep
-          - scene_3_color: purple
-          - scene_3_entity: scene.lucass_room_sleepy
-          - scene_4_name: Night
-          - scene_4_icon: mdi:moon-waning-crescent
-          - scene_4_color: indigo
-          - scene_4_entity: scene.lucass_room_night_time
+            - type: custom:mushroom-light-card
+              entity: light.lucass_room_pendant_light
+              name: Pendant
+              show_brightness_control: true
+              collapsible_controls: true
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 20px !important;
+                    background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, transparent 100%);
+                    border: 1px solid rgba(6, 182, 212, 0.15);
+                  }
 
-      # Row 2 - Fun scenes
-      - type: custom:decluttering-card
-        template: scene_row_4
-        variables:
-          - scene_1_name: Blue Lagoon
-          - scene_1_icon: mdi:waves
-          - scene_1_color: blue
-          - scene_1_entity: scene.lucass_room_blue_lagoon
-          - scene_2_name: Blossom
-          - scene_2_icon: mdi:flower
-          - scene_2_color: pink
-          - scene_2_entity: scene.lucass_room_blossom
-          - scene_3_name: Starlight
-          - scene_3_icon: mdi:star
-          - scene_3_color: yellow
-          - scene_3_entity: scene.lucass_room_starlight
-          - scene_4_name: Nebula
-          - scene_4_icon: mdi:creation
-          - scene_4_color: deep-purple
-          - scene_4_entity: scene.lucass_room_nebula
+        # ===========================================================================
+        # ROW 6 CENTER: MORE LIGHTS + DEVICES
+        # ===========================================================================
+        - type: vertical-stack
+          view_layout:
+            grid-column: 2 / 3
+          cards:
+            - type: custom:mushroom-light-card
+              entity: light.lucass_room_iris
+              name: Iris (Nightlight)
+              show_brightness_control: true
+              show_color_control: true
+              use_light_color: true
+              collapsible_controls: true
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 20px !important;
+                    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, transparent 100%);
+                    border: 1px solid rgba(139, 92, 246, 0.15);
+                  }
 
-  # =========================================================================
-  # CLIMATE CONTROL
-  # =========================================================================
-  - type: grid
-    title: Climate Control
-    cards:
-      - type: custom:decluttering-card
-        template: climate_card
-        variables:
-          - climate_entity: climate.lucas_s_room
+            - type: custom:mushroom-entity-card
+              entity: switch.cloud_lamp
+              name: Cloud Lamp
+              icon: mdi:cloud
+              tap_action:
+                action: toggle
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 20px !important;
+                    background: linear-gradient(135deg, rgba(96, 165, 250, 0.08) 0%, transparent 100%);
+                    border: 1px solid rgba(96, 165, 250, 0.15);
+                  }
 
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_humidifier
-          - name: Humidifier Power
-          - icon: mdi:air-humidifier
+        # ===========================================================================
+        # ROW 6 RIGHT: DEVICES
+        # ===========================================================================
+        - type: vertical-stack
+          view_layout:
+            grid-column: 3
+          cards:
+            - type: custom:mushroom-entity-card
+              entity: switch.lucas_strip_nanit
+              name: Nanit Monitor
+              icon: mdi:baby-carriage
+              tap_action:
+                action: toggle
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 20px !important;
+                    background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, transparent 100%);
+                    border: 1px solid rgba(6, 182, 212, 0.15);
+                  }
 
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_air_filter
-          - name: Air Filter Power
-          - icon: mdi:air-filter
+            - type: custom:mushroom-entity-card
+              entity: switch.lucas_strip_humidifier
+              name: Humidifier
+              icon: mdi:air-humidifier
+              tap_action:
+                action: toggle
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 20px !important;
+                    {% if is_state('switch.lucas_strip_humidifier', 'on') %}
+                    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(96, 165, 250, 0.05) 100%);
+                    border: 1px solid rgba(59, 130, 246, 0.3);
+                    {% else %}
+                    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, transparent 100%);
+                    border: 1px solid rgba(59, 130, 246, 0.15);
+                    {% endif %}
+                  }
 
-  # =========================================================================
-  # DEVICES
-  # =========================================================================
-  - type: grid
-    title: Devices
-    cards:
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_nanit
-          - name: Nanit Monitor
-          - icon: mdi:baby-carriage
+            - type: custom:mushroom-entity-card
+              entity: switch.lucas_strip_air_filter
+              name: Air Filter
+              icon: mdi:air-filter
+              tap_action:
+                action: toggle
+              card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 20px !important;
+                    {% if is_state('switch.lucas_strip_air_filter', 'on') %}
+                    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+                    border: 1px solid rgba(34, 197, 94, 0.3);
+                    {% else %}
+                    background: linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, transparent 100%);
+                    border: 1px solid rgba(34, 197, 94, 0.15);
+                    {% endif %}
+                  }
 
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_temp_and_humid_sensor
-          - name: Temp Sensor
-          - icon: mdi:thermometer
+        # ===========================================================================
+        # ROW 7: MEDIA PLAYER (2 cols) + NAPPING MODE (1 col)
+        # ===========================================================================
+        - type: custom:mushroom-media-player-card
+          entity: media_player.lucas_s_room_echo_show
+          name: Echo Show 5
+          use_media_info: true
+          show_volume_level: true
+          volume_controls:
+            - volume_mute
+            - volume_set
+          media_controls:
+            - play_pause_stop
+          collapsible_controls: true
+          view_layout:
+            grid-column: 1 / 3
+          card_mod:
+            style: |
+              ha-card {
+                border-radius: 20px !important;
+                background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(99, 102, 241, 0.04) 100%);
+                border: 1px solid rgba(139, 92, 246, 0.2);
+              }
+
+        - type: custom:mushroom-entity-card
+          entity: input_boolean.lucas_napping
+          name: Napping Mode
+          icon: mdi:sleep
+          tap_action:
+            action: toggle
+          view_layout:
+            grid-column: 3
+          card_mod:
+            style: |
+              ha-card {
+                border-radius: 20px !important;
+                min-height: 80px;
+                {% if is_state('input_boolean.lucas_napping', 'on') %}
+                background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.1) 100%);
+                border: 2px solid rgba(99, 102, 241, 0.5);
+                {% else %}
+                background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, transparent 100%);
+                border: 1px solid rgba(99, 102, 241, 0.15);
+                {% endif %}
+              }
+
+        # ===========================================================================
+        # ROW 8: SCHEDULE (full width)
+        # ===========================================================================
+        - type: markdown
+          view_layout:
+            grid-column: 1 / -1
+          content: |
+            ## 📅 Daily Schedule
+            | ⏰ Time | 🎯 Event | 💡 Automation |
+            |---------|----------|---------------|
+            | 07:00 | Wake up | Arise scene + music |
+            | 18:00 | Bathtime | Bathroom Relax + blue lights |
+            | 18:45 | Wind down | Warm dim lights + calm music |
+            | 19:30 | Bedtime | All lights off + lullaby |
+          card_mod:
+            style: |
+              ha-card {
+                border-radius: 20px !important;
+                background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
+                border: 1px solid rgba(6, 182, 212, 0.15);
+                padding: 8px 16px;
+              }
+              ha-markdown {
+                font-size: 13px;
+              }
+              table {
+                width: 100%;
+              }
+              th {
+                color: rgba(6, 182, 212, 0.8) !important;
+                font-weight: 600;
+              }
+
