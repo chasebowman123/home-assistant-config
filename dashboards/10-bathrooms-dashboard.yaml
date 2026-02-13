@@ -139,9 +139,9 @@ views:
 
           - type: custom:mushroom-template-card
             primary: Cloakroom Door
-            secondary: "{% if is_state('binary_sensor.cloakroom_door', 'on') %}Open{% else %}Closed{% endif %}"
+            secondary: "{% if is_state('binary_sensor.cloakroom_sensor_contact', 'on') %}Open{% else %}Closed{% endif %}"
             icon: mdi:door
-            icon_color: "{% if is_state('binary_sensor.cloakroom_door', 'on') %}orange{% else %}green{% endif %}"
+            icon_color: "{% if is_state('binary_sensor.cloakroom_sensor_contact', 'on') %}orange{% else %}green{% endif %}"
 
           # Fan (future - when ZBMINI-L2 installed)
           - type: custom:mushroom-template-card

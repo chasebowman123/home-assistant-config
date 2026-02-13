@@ -2,288 +2,290 @@
 # KITCHEN & OFFICE DASHBOARD (Refactored with Decluttering Templates)
 ###############################################################################
 
-title: Kitchen & Office
-path: kitchen-office
-icon: mdi:stove
 
-type: sections
-max_columns: 3
+views:
+  - title: Kitchen & Office
+    path: kitchen-office
+    icon: mdi:stove
 
-sections:
-  # =========================================================================
-  # KITCHEN STATUS
-  # =========================================================================
-  - type: grid
-    title: Kitchen
-    cards:
-      - type: custom:decluttering-card
-        template: room_status_chips
-        variables:
-          - temp_sensor: sensor.kitchen_temperature
-          - humidity_sensor: sensor.kitchen_humidity
+    type: sections
+    max_columns: 3
 
-  # =========================================================================
-  # KITCHEN CLIMATE
-  # =========================================================================
-  - type: grid
-    title: Climate
-    cards:
-      - type: custom:decluttering-card
-        template: climate_card
-        variables:
-          - climate_entity: climate.kitchen
-
-      - type: custom:decluttering-card
-        template: temperature_card
-        variables:
-          - temp_sensor: sensor.kitchen_temperature
-
-      - type: custom:decluttering-card
-        template: humidity_card
-        variables:
-          - humidity_sensor: sensor.kitchen_humidity
-
-  # =========================================================================
-  # KITCHEN LIGHTING
-  # =========================================================================
-  - type: grid
-    title: Lighting
-    cards:
-      - type: custom:decluttering-card
-        template: light_group_card
-        variables:
-          - light_entity: light.kitchen
-          - name: All Lights
-
-      - type: custom:decluttering-card
-        template: light_card
-        variables:
-          - light_entity: light.kitchen_spotlights
-          - name: Spotlights
-          - icon: mdi:spotlight-beam
-
-  # =========================================================================
-  # APPLIANCES
-  # =========================================================================
-  - type: grid
-    title: Appliances
-    cards:
-      - type: custom:mushroom-template-card
-        primary: Dishwasher
-        secondary: >
-          {{ states('sensor.dishwasher_operation_state') | title }}
-          {% if states('sensor.dishwasher_salt_nearly_empty') == 'present' %}
-          ⚠️ Needs Salt
-          {% endif %}
-        icon: mdi:dishwasher
-        icon_color: >
-          {% if states('sensor.dishwasher_operation_state') == 'run' %}
-            blue
-          {% elif states('sensor.dishwasher_salt_nearly_empty') == 'present' %}
-            red
-          {% else %}
-            grey
-          {% endif %}
-        tap_action:
-          action: more-info
-          entity: sensor.dishwasher_operation_state
-
-      - type: custom:mushroom-template-card
-        primary: Oven
-        secondary: "{{ states('sensor.oven') | title }}"
-        icon: mdi:stove
-        icon_color: >
-          {% if states('sensor.oven') != 'off' %}
-            red
-          {% else %}
-            grey
-          {% endif %}
-        tap_action:
-          action: more-info
-          entity: sensor.oven
-
-      - type: custom:mushroom-template-card
-        primary: Refrigerator
-        secondary: "Fridge: {{ states('number.refrigerator_fridge_temperature') }}°C | Freezer: {{ states('number.refrigerator_freezer_temperature') }}°C"
-        icon: mdi:fridge
-        icon_color: cyan
-        tap_action:
-          action: more-info
-          entity: number.refrigerator_fridge_temperature
-
-  # =========================================================================
-  # COFFEE STATION
-  # =========================================================================
-  - type: grid
-    title: Coffee Station
-    cards:
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_espresso_machine
-          - name: Espresso Machine
-          - icon: mdi:coffee-maker
-
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_coffee_grinder
-          - name: Coffee Grinder
-          - icon: mdi:coffee
-
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_coffee_pot
-          - name: Coffee Pot
-          - icon: mdi:coffee-outline
-
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.kitchen_appliances
-          - name: Appliances Plug
-          - icon: mdi:power-socket-uk
-
-  # =========================================================================
-  # OFFICE SECTION
-  # =========================================================================
-  - type: grid
-    title: Office
-    cards:
-      # Office state indicator
-      - type: custom:mushroom-chips-card
-        chips:
-          - type: template
-            entity: input_select.office_state
-            icon: >
-              {% set state = states('input_select.office_state') %}
-              {% if state == 'Meeting' %}mdi:video
-              {% elif state == 'Working' %}mdi:laptop
-              {% elif state == 'Break' %}mdi:coffee
-              {% else %}mdi:desk{% endif %}
-            content: "{{ states('input_select.office_state') }}"
-            icon_color: >
-              {% set state = states('input_select.office_state') %}
-              {% if state == 'Meeting' %}red
-              {% elif state == 'Working' %}green
-              {% elif state == 'Break' %}amber
-              {% else %}grey{% endif %}
-            tap_action:
-              action: call-service
-              service: input_select.select_next
-              target:
-                entity_id: input_select.office_state
-
-      - type: custom:decluttering-card
-        template: room_status_chips
-        variables:
-          - temp_sensor: sensor.office_temp_temperature
-          - humidity_sensor: sensor.office_temp_humidity
-
-  # =========================================================================
-  # OFFICE CLIMATE
-  # =========================================================================
-  - type: grid
-    title: Office Climate
-    cards:
-      - type: custom:decluttering-card
-        template: climate_card
-        variables:
-          - climate_entity: climate.office
-
-      - type: custom:decluttering-card
-        template: temperature_card
-        variables:
-          - temp_sensor: sensor.office_temp_temperature
-
-      - type: custom:decluttering-card
-        template: humidity_card
-        variables:
-          - humidity_sensor: sensor.office_temp_humidity
-
-      - type: custom:decluttering-card
-        template: temperature_graph
-        variables:
-          - temp_sensor: sensor.office_temp_temperature
-          - name: Office
-          - color: "#4caf50"
-
-  # =========================================================================
-  # OFFICE LIGHTING
-  # =========================================================================
-  - type: grid
-    title: Office Lighting
-    cards:
-      - type: custom:decluttering-card
-        template: light_group_card
-        variables:
-          - light_entity: light.office
-          - name: All Lights
-          - show_color: false
-
-      - type: custom:decluttering-card
-        template: light_card
-        variables:
-          - light_entity: light.office_spotlights
-          - name: Spotlights
-          - icon: mdi:spotlight-beam
-
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.office_edison_light
-          - name: Edison Light
-          - icon: mdi:lightbulb-variant
-
-      - type: horizontal-stack
+    sections:
+      # =========================================================================
+      # KITCHEN STATUS
+      # =========================================================================
+      - type: grid
+        title: Kitchen
         cards:
           - type: custom:decluttering-card
-            template: scene_button
+            template: room_status_chips
             variables:
-              - name: Bright
-              - icon: mdi:brightness-7
-              - color: yellow
-              - scene_entity: scene.office_bright
+              - temp_sensor: sensor.kitchen_temperature
+              - humidity_sensor: sensor.kitchen_humidity
+
+      # =========================================================================
+      # KITCHEN CLIMATE
+      # =========================================================================
+      - type: grid
+        title: Climate
+        cards:
+          - type: custom:decluttering-card
+            template: climate_card
+            variables:
+              - climate_entity: climate.kitchen
 
           - type: custom:decluttering-card
-            template: scene_button
+            template: temperature_card
             variables:
-              - name: Dimmed
-              - icon: mdi:brightness-4
-              - color: orange
-              - scene_entity: scene.office_dimmed
+              - temp_sensor: sensor.kitchen_temperature
 
-  # =========================================================================
-  # OFFICE DEVICES
-  # =========================================================================
-  - type: grid
-    title: Office Devices
-    cards:
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_echo_hub
-          - name: Echo Hub
-          - icon: mdi:tablet-dashboard
+          - type: custom:decluttering-card
+            template: humidity_card
+            variables:
+              - humidity_sensor: sensor.kitchen_humidity
 
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_multi_usb_c_charger
-          - name: USB-C Charger
-          - icon: mdi:usb-c-port
+      # =========================================================================
+      # KITCHEN LIGHTING
+      # =========================================================================
+      - type: grid
+        title: Lighting
+        cards:
+          - type: custom:decluttering-card
+            template: light_group_card
+            variables:
+              - light_entity: light.kitchen
+              - name: All Lights
 
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_macbook_charger
-          - name: MacBook Charger
-          - icon: mdi:laptop
+          - type: custom:decluttering-card
+            template: light_card
+            variables:
+              - light_entity: light.kitchen_spotlights
+              - name: Spotlights
+              - icon: mdi:spotlight-beam
 
-      - type: custom:decluttering-card
-        template: device_switch
-        variables:
-          - switch_entity: switch.unnamed_p304m_sonos_speaker
-          - name: Sonos Speaker
-          - icon: mdi:speaker
+      # =========================================================================
+      # APPLIANCES
+      # =========================================================================
+      - type: grid
+        title: Appliances
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Dishwasher
+            secondary: >
+              {{ states('sensor.dishwasher_operation_state') | title }}
+              {% if states('sensor.dishwasher_salt_nearly_empty') == 'present' %}
+              ⚠️ Needs Salt
+              {% endif %}
+            icon: mdi:dishwasher
+            icon_color: >
+              {% if states('sensor.dishwasher_operation_state') == 'run' %}
+                blue
+              {% elif states('sensor.dishwasher_salt_nearly_empty') == 'present' %}
+                red
+              {% else %}
+                grey
+              {% endif %}
+            tap_action:
+              action: more-info
+              entity: sensor.dishwasher_operation_state
+
+          - type: custom:mushroom-template-card
+            primary: Oven
+            secondary: "{{ states('sensor.oven') | title }}"
+            icon: mdi:stove
+            icon_color: >
+              {% if states('sensor.oven') != 'off' %}
+                red
+              {% else %}
+                grey
+              {% endif %}
+            tap_action:
+              action: more-info
+              entity: sensor.oven
+
+          - type: custom:mushroom-template-card
+            primary: Refrigerator
+            secondary: "Fridge: {{ states('number.refrigerator_fridge_temperature') }}°C | Freezer: {{ states('number.refrigerator_freezer_temperature') }}°C"
+            icon: mdi:fridge
+            icon_color: cyan
+            tap_action:
+              action: more-info
+              entity: number.refrigerator_fridge_temperature
+
+      # =========================================================================
+      # COFFEE STATION
+      # =========================================================================
+      - type: grid
+        title: Coffee Station
+        cards:
+          - type: custom:decluttering-card
+            template: device_switch
+            variables:
+              - switch_entity: switch.unnamed_p304m_espresso_machine
+              - name: Espresso Machine
+              - icon: mdi:coffee-maker
+
+          - type: custom:decluttering-card
+            template: device_switch
+            variables:
+              - switch_entity: switch.unnamed_p304m_coffee_grinder
+              - name: Coffee Grinder
+              - icon: mdi:coffee
+
+          - type: custom:decluttering-card
+            template: device_switch
+            variables:
+              - switch_entity: switch.unnamed_p304m_coffee_pot
+              - name: Coffee Pot
+              - icon: mdi:coffee-outline
+
+          - type: custom:decluttering-card
+            template: device_switch
+            variables:
+              - switch_entity: switch.kitchen_appliances
+              - name: Appliances Plug
+              - icon: mdi:power-socket-uk
+
+      # =========================================================================
+      # OFFICE SECTION
+      # =========================================================================
+      - type: grid
+        title: Office
+        cards:
+          # Office state indicator
+          - type: custom:mushroom-chips-card
+            chips:
+              - type: template
+                entity: input_select.office_state
+                icon: >
+                  {% set state = states('input_select.office_state') %}
+                  {% if state == 'Meeting' %}mdi:video
+                  {% elif state == 'Working' %}mdi:laptop
+                  {% elif state == 'Break' %}mdi:coffee
+                  {% else %}mdi:desk{% endif %}
+                content: "{{ states('input_select.office_state') }}"
+                icon_color: >
+                  {% set state = states('input_select.office_state') %}
+                  {% if state == 'Meeting' %}red
+                  {% elif state == 'Working' %}green
+                  {% elif state == 'Break' %}amber
+                  {% else %}grey{% endif %}
+                tap_action:
+                  action: call-service
+                  service: input_select.select_next
+                  target:
+                    entity_id: input_select.office_state
+
+          - type: custom:decluttering-card
+            template: room_status_chips
+            variables:
+              - temp_sensor: sensor.office_temp_temperature
+              - humidity_sensor: sensor.office_temp_humidity
+
+      # =========================================================================
+      # OFFICE CLIMATE
+      # =========================================================================
+      - type: grid
+        title: Office Climate
+        cards:
+          - type: custom:decluttering-card
+            template: climate_card
+            variables:
+              - climate_entity: climate.office
+
+          - type: custom:decluttering-card
+            template: temperature_card
+            variables:
+              - temp_sensor: sensor.office_temp_temperature
+
+          - type: custom:decluttering-card
+            template: humidity_card
+            variables:
+              - humidity_sensor: sensor.office_temp_humidity
+
+          - type: custom:decluttering-card
+            template: temperature_graph
+            variables:
+              - temp_sensor: sensor.office_temp_temperature
+              - name: Office
+              - color: "#4caf50"
+
+      # =========================================================================
+      # OFFICE LIGHTING
+      # =========================================================================
+      - type: grid
+        title: Office Lighting
+        cards:
+          - type: custom:decluttering-card
+            template: light_group_card
+            variables:
+              - light_entity: light.office
+              - name: All Lights
+              - show_color: false
+
+          - type: custom:decluttering-card
+            template: light_card
+            variables:
+              - light_entity: light.office_spotlights
+              - name: Spotlights
+              - icon: mdi:spotlight-beam
+
+          - type: custom:decluttering-card
+            template: device_switch
+            variables:
+              - switch_entity: switch.office_edison_light
+              - name: Edison Light
+              - icon: mdi:lightbulb-variant
+
+          - type: horizontal-stack
+            cards:
+              - type: custom:decluttering-card
+                template: scene_button
+                variables:
+                  - name: Bright
+                  - icon: mdi:brightness-7
+                  - color: yellow
+                  - scene_entity: scene.office_bright
+
+              - type: custom:decluttering-card
+                template: scene_button
+                variables:
+                  - name: Dimmed
+                  - icon: mdi:brightness-4
+                  - color: orange
+                  - scene_entity: scene.office_dimmed
+
+      # =========================================================================
+      # OFFICE DEVICES
+      # =========================================================================
+      - type: grid
+        title: Office Devices
+        cards:
+          - type: custom:decluttering-card
+            template: device_switch
+            variables:
+              - switch_entity: switch.unnamed_p304m_echo_hub
+              - name: Echo Hub
+              - icon: mdi:tablet-dashboard
+
+          - type: custom:decluttering-card
+            template: device_switch
+            variables:
+              - switch_entity: switch.unnamed_p304m_multi_usb_c_charger
+              - name: USB-C Charger
+              - icon: mdi:usb-c-port
+
+          - type: custom:decluttering-card
+            template: device_switch
+            variables:
+              - switch_entity: switch.unnamed_p304m_macbook_charger
+              - name: MacBook Charger
+              - icon: mdi:laptop
+
+          - type: custom:decluttering-card
+            template: device_switch
+            variables:
+              - switch_entity: switch.unnamed_p304m_sonos_speaker
+              - name: Sonos Speaker
+              - icon: mdi:speaker

@@ -96,7 +96,7 @@ lucas_morning_routine:
     # Play wake-up music on Echo Show
     - service: media_player.play_media
       target:
-        entity_id: media_player.lucas_s_room_echo_show
+        entity_id: media_player.lucas_s_echo_show
       data:
         media_content_type: SPOTIFY
         media_content_id: "spotify:playlist:XXXXX"  # Replace with Lucas Morning playlist URI
@@ -198,12 +198,12 @@ lucas_wind_down:
     # Play calm music (low volume)
     - service: media_player.volume_set
       target:
-        entity_id: media_player.lucas_s_room_echo_show
+        entity_id: media_player.lucas_s_echo_show
       data:
         volume_level: 0.3
     - service: media_player.play_media
       target:
-        entity_id: media_player.lucas_s_room_echo_show
+        entity_id: media_player.lucas_s_echo_show
       data:
         media_content_type: SPOTIFY
         media_content_id: "spotify:playlist:XXXXX"  # Replace with calm/lullaby playlist
@@ -238,12 +238,12 @@ lucas_bedtime:
     # Play lullaby (will fade out)
     - service: media_player.volume_set
       target:
-        entity_id: media_player.lucas_s_room_echo_show
+        entity_id: media_player.lucas_s_echo_show
       data:
         volume_level: 0.25
     - service: media_player.play_media
       target:
-        entity_id: media_player.lucas_s_room_echo_show
+        entity_id: media_player.lucas_s_echo_show
       data:
         media_content_type: SPOTIFY
         media_content_id: "spotify:playlist:XXXXX"  # Replace with Lucas Lullaby playlist
@@ -253,14 +253,14 @@ lucas_bedtime:
         minutes: 15
     - service: media_player.volume_set
       target:
-        entity_id: media_player.lucas_s_room_echo_show
+        entity_id: media_player.lucas_s_echo_show
       data:
         volume_level: 0.1
     - delay:
         minutes: 5
     - service: media_player.media_stop
       target:
-        entity_id: media_player.lucas_s_room_echo_show
+        entity_id: media_player.lucas_s_echo_show
 
 # ---------------------------------------------------------------------------
 lucas_nightlight:
