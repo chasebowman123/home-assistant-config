@@ -3,6 +3,9 @@
 ###############################################################################
 
 
+# Load decluttering templates
+decluttering_templates: !include ../decluttering_templates.yaml
+
 views:
   - title: Bedroom
     path: bedroom

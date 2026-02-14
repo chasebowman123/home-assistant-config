@@ -4,6 +4,9 @@
 ###############################################################################
 
 
+# Load decluttering templates
+decluttering_templates: !include ../decluttering_templates.yaml
+
 views:
   - title: Lounge
     path: lounge
@@ -12,8 +15,6 @@ views:
     type: sections
     max_columns: 3
 
-    # Load decluttering templates
-    decluttering_templates: !include ../decluttering_templates.yaml
 
     sections:
       # =========================================================================
