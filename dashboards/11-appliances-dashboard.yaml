@@ -153,7 +153,7 @@ views:
                 }
 
           - type: custom:mushroom-entity-card
-            entity: binary_sensor.dishwasher_door
+            entity: sensor.dishwasher_door
             name: Door
             icon: mdi:door
 
@@ -208,7 +208,7 @@ views:
                 }
 
           - type: custom:mushroom-entity-card
-            entity: binary_sensor.oven_door
+            entity: sensor.oven_door
             name: Door
             icon: mdi:door
 
@@ -260,11 +260,7 @@ views:
             name: Door
             icon: mdi:door
 
-          - type: custom:mushroom-entity-card
-            entity: switch.refrigerator_light
-            name: Light
-            tap_action:
-              action: toggle
+
 
       # ===========================================================================
       # MAINTENANCE ALERTS
