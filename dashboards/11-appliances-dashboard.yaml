@@ -208,7 +208,7 @@ views:
                 }
 
           - type: custom:mushroom-entity-card
-            entity: sensor.oven_door
+            entity: binary_sensor.oven_door
             name: Door
             icon: mdi:door
 

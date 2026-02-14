@@ -130,27 +130,27 @@ views:
           - type: custom:decluttering-card
             template: device_switch
             variables:
-              - switch_entity: switch.unnamed_p304m_tv
+              - switch_entity: switch.bedroom_av_strip_lg_tv
               - name: TV Power
               - icon: mdi:television
 
           - type: custom:decluttering-card
             template: device_switch
             variables:
-              - switch_entity: switch.unnamed_p304m_fire_cube
+              - switch_entity: switch.bedroom_av_strip_fire_cube
               - name: Fire Cube
               - icon: mdi:fire
 
           - type: custom:decluttering-card
             template: device_switch
             variables:
-              - switch_entity: switch.unnamed_p304m_sonos
+              - switch_entity: switch.bedroom_av_strip_sonos_beam
               - name: Sonos Beam
               - icon: mdi:speaker
 
           - type: custom:decluttering-card
             template: device_switch
             variables:
-              - switch_entity: switch.unnamed_p304m_bedroom_marshall_speaker
+              - switch_entity: switch.bedroom_av_strip_marshall
               - name: Marshall Speaker
               - icon: mdi:speaker-bluetooth
