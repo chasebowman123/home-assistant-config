@@ -1,0 +1,22 @@
+# Lucas Room → Napping
+- id: lucas_room_napping
+  alias: "Lucas Room - State Napping"
+  trigger:
+    - platform: state
+      entity_id: input_select.lucas_room
+      to: "Napping"
+  action:
+    - service: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.lucas_napping
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.lucass_room_spotlights
+          - light.lucas_s_room_go
+    - service: light.turn_on
+      target:
+        entity_id: light.lucas_s_room_go
+      data:
+        brightness_pct: 5
+        color_temp_kelvin: 2200

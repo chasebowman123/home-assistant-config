@@ -1,0 +1,612 @@
+#################################################
+#                                               
+#  Kohbo Button Card Templates                  
+#  Matching reference exactly                   
+#                                               
+#################################################
+
+# Base template - applied to all kohbo cards
+kohbo_base:
+  styles:
+    card:
+      - "--mdc-ripple-color": transparent
+      - "-webkit-tap-highlight-color": transparent
+      - position: relative
+
+# Entity base template
+kohbo_entity:
+  template:
+    - kohbo_base
+  show_state: true
+  styles:
+    card:
+      - padding: 20px
+    name:
+      - color: var(--primary-text-color)
+      - font-size: 16px
+      - font-weight: 600
+      - justify-self: start
+      - margin-bottom: 5px
+    state:
+      - color: var(--primary-text-color)
+      - font-size: 14px
+      - justify-self: start
+      - font-weight: 700
+      - opacity: 0.8
+    img_cell:
+      - width: 30px
+      - height: 30px
+      - background: transparent
+      - justify-self: start
+    icon:
+      - justify-self: start
+      - width: 100%
+      - height: 100%
+
+# Section title
+section_title:
+  styles:
+    card:
+      - padding: 0 4px
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - margin: 0
+      - padding: 0
+      - border-radius: 0
+    name:
+      - font-weight: 700
+      - font-size: 16px
+      - text-align: left
+      - justify-self: start
+
+# Chip card - the rounded pill buttons
+kohbo_chip_card:
+  size: 22px
+  show_icon: true
+  show_state: true
+  show_name: false
+  layout: icon_state
+  tap_action:
+    action: more-info
+  styles:
+    grid:
+      - grid-template-areas: '"i s"'
+      - grid-template-columns: auto auto
+    card:
+      - padding: 0 14px
+      - display: inline-flex
+      - align-items: center
+      - height: 45px
+      - width: auto
+      - box-sizing: border-box
+      - min-width: 45px
+      - border-radius: 23px
+      - flex-direction: row
+      - align-items: center
+      - justify-content: center
+    img_cell:
+      - width: 22px
+    icon:
+      - color: var(--primary-text-color)
+      - width: 22px
+      - height: 22px
+    state:
+      - color: var(--primary-text-color)
+      - font-size: 14px
+      - font-weight: 600
+      - justify-self: start
+      - margin-left: 8px
+      - line-height: 15px
+
+# Header chip card - for the fixed toolbar
+kohbo_header_chip_card:
+  template: kohbo_chip_card
+  tap_action:
+    haptic: light
+  styles:
+    card:
+      - display: flex
+      - justify-content: center
+      - align-items: center
+      - padding: 0
+      - background-color: var(--darker-primary-color)
+      - height: 40px
+      - min-width: 40px
+    grid:
+      - grid-template-areas: '"i"'
+      - grid-template-columns: auto
+      - justify-content: center
+      - align-items: center
+
+# Page title base
+kohbo_page_title:
+  styles:
+    card:
+      - height: 50px
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - margin: 0
+      - padding: 0
+    name:
+      - color: '#F8F9FA'
+      - justify-self: start
+      - font-size: 26px
+      - font-weight: 500
+      - letter-spacing: -.7px
+
+# Header page title - centered
+kohbo_header_page_title:
+  template: kohbo_page_title
+  styles:
+    name:
+      - justify-self: center
+      - font-size: 26px
+      - font-weight: 500
+      - letter-spacing: -.7px
+
+# Device entity card - for overview grid items
+kohbo_device_entity:
+  template: kohbo_entity
+  layout: vertical
+  show_state: true
+  size: 100%
+  tap_action:
+    action: more-info
+    haptic: light
+  variables:
+    last_changed: >
+      [[[
+        const last = new Date(entity.last_changed);
+        const now = new Date();
+        const diff = Math.floor((now - last) / 1000);
+        if (diff < 3600) {
+          return Math.floor(diff / 60) + "m";
+        } else if (diff < 86400) {
+          return Math.floor(diff / 3600) + "h";
+        } else {
+          return Math.floor(diff / 86400) + "d";
+        }
+      ]]]
+  state_display: >
+    [[[
+      function titleCase(str) {
+        return str
+          .replace(/_/g, " ")
+          .toLowerCase()
+          .split(" ")
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+      }
+      const state = hass.formatEntityState ? hass.formatEntityState(entity): titleCase(entity.state);
+      return state + ' - ' + variables.last_changed;
+    ]]]
+  styles:
+    card:
+      - height: 155px
+      - margin: 0
+      - "--mdc-ripple-color": var(--darker-primary-color)
+      - "--mdc-ripple-press-opacity": 0.8
+    name:
+      - margin-bottom: 8px
+    state:
+      - color: "#CED4DA"
+      - font-size: 12px
+      - font-weight: normal
+      - opacity: 1
+    img_cell:
+      - height: 40px
+      - width: 40px
+      - margin-bottom: 15px
+
+# Smart plug entity
+kohbo_device_smart_plug_entity:
+  template: kohbo_device_entity
+  icon: mdi:power-plug
+
+# Door entity
+kohbo_device_door_entity:
+  template: kohbo_device_entity
+  icon: >
+    [[[
+      if (entity.state == "on")
+        return "mdi:door-open"
+      else
+        return "mdi:door-closed"
+    ]]]
+
+# Light entity card
+kohbo_light_entity:
+  template: kohbo_entity
+  layout: vertical
+  show_state: true
+  size: 100%
+  tap_action:
+    action: more-info
+    haptic: light
+  styles:
+    card:
+      - height: 155px
+      - margin: 0
+    name:
+      - margin-bottom: 8px
+    state:
+      - color: "#CED4DA"
+      - font-size: 12px
+      - font-weight: normal
+      - opacity: 1
+    img_cell:
+      - height: 40px
+      - width: 40px
+      - margin-bottom: 15px
+
+# Climate entity card
+kohbo_climate_entity:
+  template: kohbo_entity
+  layout: vertical
+  show_state: true
+  size: 100%
+  tap_action:
+    action: more-info
+    haptic: light
+  styles:
+    card:
+      - height: 155px
+      - margin: 0
+    name:
+      - margin-bottom: 8px
+    state:
+      - color: "#CED4DA"
+      - font-size: 12px
+      - font-weight: normal
+      - opacity: 1
+    img_cell:
+      - height: 40px
+      - width: 40px
+      - margin-bottom: 15px
+
+# Person entity - avatar with status dot
+kohbo_person_entity:
+  show_state: false
+  show_name: false
+  show_entity_picture: true
+  size: 45px
+  icon: mdi:account
+  styles:
+    card:
+      - height: 45px
+      - width: 45px
+      - padding: 0
+      - background: transparent
+      - border: none
+      - border-radius: 0
+    img_cell:
+      - border-radius: 50%
+    custom_fields:
+      occupancy_state:
+        - background-color: >
+            [[[
+              if (entity.state == "home") {
+                return "var(--success-color)";
+              } else {
+                return "var(--text-light-primary-color)";
+              }
+            ]]]
+        - border-radius: 50%
+        - position: absolute
+        - bottom: 0
+        - right: 0
+        - height: 10px
+        - width: 10px
+        - box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.5)
+  custom_fields:
+    occupancy_state: >
+      [[[
+        return "";
+      ]]]
+
+# Chip card room mode
+kohbo_chip_card_room_mode:
+  template: kohbo_chip_card
+  state:
+    - value: "Home"
+      icon: mdi:home
+      color: var(--primary-color)
+    - value: "Away"
+      icon: mdi:home-export-outline
+      color: var(--light-grey-color)
+    - value: "Night"
+      icon: mdi:weather-night
+      color: var(--primary-color)
+    - value: "Guest"
+      icon: mdi:account-group
+      color: var(--success-color)
+    - value: "Quiet"
+      icon: mdi:volume-off
+      color: var(--orange-color)
+    - value: "Meeting"
+      icon: mdi:briefcase
+      color: var(--error-color)
+
+# Room occupancy chip
+kohbo_chip_card_room_occupancy:
+  template: kohbo_chip_card
+  show_state: true
+  show_icon: true
+
+# Popup page title
+kohbo_popup_page_title:
+  styles:
+    card:
+      - background: transparent
+      - border: none
+      - box-shadow: none
+      - padding: 0 0 10px 0
+    name:
+      - font-size: 22px
+      - font-weight: 600
+      - justify-self: start
+
+# Scene button
+kohbo_scene_button:
+  show_state: false
+  show_name: true
+  layout: icon_name
+  tap_action:
+    action: toggle
+    haptic: light
+  styles:
+    card:
+      - padding: 15px 8px
+      - border-radius: 12px
+    icon:
+      - width: 28px
+      - height: 28px
+      - color: var(--primary-text-color)
+      - margin-bottom: 8px
+    name:
+      - font-size: 11px
+      - color: var(--secondary-text-color)
+      - font-weight: 500
+
+# Empty column spacer
+empty_column:
+  color: transparent
+  show_icon: false
+  show_name: false
+  show_state: false
+  styles:
+    card:
+      - background-color: transparent
+      - box-shadow: none
+      - border: none
+      - padding: 0
+      - margin: 0
+      - height: 1px
+
+# Thermostat entity
+kohbo_thermostat_entity:
+  template: kohbo_device_entity
+  icon: >
+    [[[
+      if (entity.state == "unavailable")
+        return "mdi:thermostat"
+      else if (entity.attributes.preset_mode === 'eco')
+        return "mdi:leaf"
+      else if (entity.state == "heat_cool")
+        return "mdi:sun-snowflake-variant"
+      else if (entity.state == "heat")
+        return "mdi:heat-wave"
+      else if (entity.state == "cool")
+        return "mdi:snowflake"
+      else
+        return "mdi:thermostat"
+    ]]]
+  state_display: >
+    [[[
+      if (entity.state == "unavailable")
+        return "Unavailable"
+      else if (entity.attributes.preset_mode === 'eco')
+        return "Eco Mode"
+      else if (entity.state == "heat_cool")
+        return "Heat/Cool: " + entity.attributes.target_temp_low + " - " + entity.attributes.target_temp_high
+      else if (entity.state == "heat")
+        return "Heat - " + entity.attributes.temperature + "°"
+      else if (entity.state == "cool")
+        return "Cool - " + entity.attributes.temperature + "°"
+      else
+        return "Off"
+    ]]]
+  styles:
+    icon:
+      - color: >
+          [[[
+            if (entity.state == "unavailable")
+              return "var(--light-grey-color)";
+            else if (entity.attributes.preset_mode === 'eco')
+              return "var(--success-color)";
+            else if (entity.state == "heat_cool")
+              return "var(--state-climate-heat_cool-color)";
+            else if (entity.state == "heat")
+              return "var(--state-climate-heat-color)";
+            else if (entity.state == "cool")
+              return "var(--state-climate-cool-color)";
+            else
+              return "var(--light-grey-color)";
+          ]]]
+
+# Stacked card top - for security overview header
+kohbo_stacked_card_top:
+  show_state: true
+  show_icon: true
+  show_name: false
+  show_label: true
+  layout: icon_name_state
+  tap_action:
+    action: nothing
+  styles:
+    card:
+      - background: transparent
+      - backdrop-filter: none
+      - -webkit-backdrop-filter: none
+      - padding: 20px 20px 0 20px
+      - box-shadow: none
+      - display: flex
+      - align-items: center
+      - justify-content: flex-start
+      - gap: 12px
+      - border: none
+    grid:
+      - grid-template-areas: '"i n" "i l"'
+      - grid-template-columns: min-content 1fr
+      - align-items: center
+    icon:
+      - width: 38px
+      - height: 38px
+      - margin-right: 15px
+    name:
+      - font-size: 20px
+      - font-weight: regular
+      - color: white
+      - justify-self: start
+      - margin-bottom: 4px
+    label:
+      - font-size: 12px
+      - color: "#CED4DA"
+      - justify-self: start
+
+# Security overview header
+security_overview_header:
+  template: kohbo_stacked_card_top
+  styles:
+    grid:
+      - grid-template-areas: '"i n score" "i l score"'
+
+# Security item - alarm/locks/garage
+kohbo_security_item:
+  show_state: true
+  styles:
+    card:
+      - background: transparent
+      - box-shadow: none
+      - padding: 20px 10px
+      - border: none
+      - backdrop-filter: none
+      - -webkit-backdrop-filter: none
+    icon:
+      - height: 24px
+      - margin-bottom: 15px
+    name:
+      - font-size: 11px
+      - color: "#ADB5BD"
+    state:
+      - font-weight: bold
+      - color: "#F8F9FA"
+      - font-size: 13px
+      - margin-top: 2px
+
+# AQI base item
+kohbo_aqi_item:
+  show_state: true
+  show_icon: false
+  styles:
+    grid:
+      - grid-template-areas: '"n n" "s s" "unit unit"'
+      - grid-template-rows: 1fr
+    card:
+      - background: transparent
+      - box-shadow: none
+      - padding: 15px 10px 20px 10px
+      - border: none
+      - backdrop-filter: none
+      - -webkit-backdrop-filter: none
+      - height: 120px
+    name:
+      - font-size: 11px
+      - font-weight: 500
+      - color: "#ADB5BD"
+    state:
+      - font-weight: normal
+      - color: "#F8F9FA"
+      - font-size: 16px
+      - margin: 4px 0
+    custom_fields:
+      unit:
+        - font-size: 11px
+        - color: "#ADB5BD"
+  custom_fields:
+    unit: >
+      [[[
+        return variables.unit;
+      ]]]
+
+# AQI Humidity
+kohbo_aqi_humidity_item:
+  template: kohbo_aqi_item
+  name: Humidity
+  icon: mdi:water-percent
+  state_display: |
+    [[[
+      var humidity = entity.state.replace("%", "").trim();
+      humidity = Math.round(humidity).toString();
+      return humidity;
+    ]]]
+  show_state: true
+  custom_fields:
+    unit: "%"
+
+# AQI CO2
+kohbo_aqi_co2_item:
+  template: kohbo_aqi_item
+  name: "CO\u2082"
+  icon: mdi:molecule-co2
+  state_display: |
+    [[[
+      var co2 = parseFloat(entity.state.replace("ppm", "").trim());
+      co2 = co2.toLocaleString();
+      return co2;
+    ]]]
+  show_state: true
+  custom_fields:
+    unit: "ppm"
+
+# AQI TVOCs
+kohbo_aqi_tvocs_item:
+  template: kohbo_aqi_item
+  name: Chemicals
+  state_display: |
+    [[[
+      var voc = parseFloat(entity.state.replace("ppb", "").trim());
+      voc = voc.toLocaleString();
+      return voc;
+    ]]]
+  show_state: true
+  custom_fields:
+    unit: "ppb"
+
+# AQI PM2.5
+kohbo_aqi_pm25_item:
+  template: kohbo_aqi_item
+  name: PM2.5
+  state_display: |
+    [[[
+      return entity.state.replace("µg/m³", "").trim().toString();
+    ]]]
+  show_state: true
+  custom_fields:
+    unit: "µg/m³"
+
+# Small header for stacked cards
+kohbo_card_small_header:
+  styles:
+    card:
+      - padding: 20px 20px 0 20px
+      - background: transparent
+      - border: none
+      - box-shadow: none
+    name:
+      - font-weight: 700
+      - font-size: 16px
+      - text-align: left
+      - justify-self: start

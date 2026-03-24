@@ -1,0 +1,25 @@
+# Auto Movie Detection
+# When Samsung TV starts playing, switch to Movie mode.
+- id: lounge_auto_movie_on
+  alias: "Lounge - Auto Movie Detection On"
+  trigger:
+    - platform: state
+      entity_id: media_player.55_oled
+      to: "playing"
+  condition:
+    - condition: state
+      entity_id: input_select.lounge
+      state: "Auto"
+    - condition: state
+      entity_id: input_boolean.lighting_automations
+      state: "on"
+    - condition: numeric_state
+      entity_id: sun.sun
+      attribute: elevation
+      below: 5
+  action:
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.lounge
+      data:
+        option: Movie

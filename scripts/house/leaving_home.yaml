@@ -1,0 +1,20 @@
+# Leaving Home
+leaving_home:
+  alias: "Leaving Home"
+  description: "Departure checklist"
+  icon: mdi:home-export-outline
+  mode: single
+  sequence:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🏠 Leaving Home"
+        message: "Have a good day! Checking house status..."
+    - service: climate.set_temperature
+      target:
+        entity_id:
+          - climate.hallway
+          - climate.lounge
+          - climate.kitchen
+          - climate.office
+      data:
+        temperature: 18

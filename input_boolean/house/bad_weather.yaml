@@ -1,0 +1,6 @@
+# Bad Weather
+# Triggered by weather automations when conditions are poor.
+# Various rooms respond: hallway lights turn on, lounge piano lamp activates.
+bad_weather:
+  name: "Bad Weather"
+  icon: mdi:weather-pouring

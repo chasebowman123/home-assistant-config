@@ -1,0 +1,10 @@
+# Bedtime Window
+# True between adult_bedtime and household_morning
+- platform: template
+  sensors:
+    bedtime:
+      friendly_name: "Bedtime"
+      value_template: >
+        {% set now_time = now().strftime('%H:%M') %}
+        {{ now_time >= '22:00' or now_time < '07:00' }}
+      icon_template: mdi:weather-night

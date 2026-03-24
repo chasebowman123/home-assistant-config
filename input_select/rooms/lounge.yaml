@@ -1,0 +1,10 @@
+# Lounge State
+lounge:
+  name: "Lounge"
+  options:
+    - "Auto"
+    - "Movie"
+    - "Music"
+    - "Off"
+  initial: Auto
+  icon: mdi:sofa

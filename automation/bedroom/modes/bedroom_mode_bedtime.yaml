@@ -1,0 +1,18 @@
+# Bedroom → Bedtime
+- id: bedroom_state_bedtime
+  alias: "Bedroom - State Bedtime"
+  trigger:
+    - platform: state
+      entity_id: input_select.bedroom
+      to: "Bedtime"
+  action:
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.bedroom_spot_lights
+          - light.bedroom_signe_light
+          - light.bedroom_tv_strip_light
+          - light.bedroom_colour_lamp
+    - service: media_player.media_pause
+      target:
+        entity_id: media_player.lg_webos_tv_oled55g54lw

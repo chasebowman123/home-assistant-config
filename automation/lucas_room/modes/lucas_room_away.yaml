@@ -1,0 +1,16 @@
+# Lucas Room → Away
+- id: lucas_room_away
+  alias: "Lucas Room - State Away"
+  trigger:
+    - platform: state
+      entity_id: input_select.lucas_room
+      to: "Away"
+  action:
+    - service: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.lucas_napping
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.lucass_room_spotlights
+          - light.lucas_s_room_go

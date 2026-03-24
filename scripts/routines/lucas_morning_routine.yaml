@@ -1,0 +1,23 @@
+# Lucas Morning Routine
+lucas_morning_routine:
+  alias: "Lucas Morning Routine"
+  description: "Wake up routine for Lucas's room"
+  icon: mdi:baby-face
+  mode: single
+  sequence:
+    - service: scene.turn_on
+      target:
+        entity_id: scene.lucass_room_arise
+    - service: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.lucas_napping
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.lucas_s_echo_show
+      data:
+        media_content_type: SPOTIFY
+        media_content_id: !secret spotify_lucas_morning
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "Lucas is awake"
+        message: "Good morning! Lucas's room lights are on."

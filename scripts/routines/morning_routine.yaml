@@ -1,0 +1,57 @@
+# Morning Routine
+# Household wake-up: lights, heating boost, weather announcement.
+morning_routine:
+  alias: "Morning Routine"
+  description: "Household wake-up routine"
+  icon: mdi:weather-sunset-up
+  mode: single
+  sequence:
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.hallway_lamp_post
+          - light.hallway_signe_light
+          - light.hue_color_lamp_1
+      data:
+        brightness_pct: 80
+        transition: 5
+    - service: light.turn_on
+      target:
+        entity_id: light.kitchen_spotlights
+      data:
+        brightness_pct: 100
+        transition: 3
+    - service: scene.turn_on
+      target:
+        entity_id: scene.lounge_rolling_hills
+    - service: scene.turn_on
+      target:
+        entity_id: scene.bedroom_rolling_hills
+    - service: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.goodnight_active
+    - if:
+        - condition: numeric_state
+          entity_id: sensor.hallway_temp_temperature
+          below: 22
+      then:
+        - service: climate.set_temperature
+          target:
+            entity_id:
+              - climate.hallway
+              - climate.lounge
+              - climate.kitchen
+          data:
+            temperature: 24
+    - delay:
+        seconds: 3
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.kitchen
+        message: >
+          Good morning! Today's weather:
+          {{ state_attr('weather.home', 'temperature') }} degrees
+          and {{ states('weather.home') }}.
+        data:
+          type: announce

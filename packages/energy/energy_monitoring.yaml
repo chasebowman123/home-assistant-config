@@ -1,0 +1,60 @@
+# Energy Monitoring
+# Template sensors for per-room power tracking and daily costs.
+
+template:
+  - sensor:
+      - name: "Total Home Power"
+        unique_id: total_home_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: >
+          {% set lounge = states('sensor.lounge_usage') | float(0) %}
+          {% set bedroom = states('sensor.bedroom_usage') | float(0) %}
+          {% set lucas_nanit = states('sensor.unnamed_p304m_nanit_current_consumption') | float(0) %}
+          {% set lucas_echo = states('sensor.unnamed_p304m_echo_hub_current_consumption') | float(0) %}
+          {% set lucas_air_filter = states('sensor.unnamed_p304m_air_filter_current_consumption') | float(0) %}
+          {% set lucas_humidifier = states('sensor.unnamed_p304m_humidifier_current_consumption') | float(0) %}
+          {% set office_macbook = states('sensor.unnamed_p304m_macbook_charger_current_consumption') | float(0) %}
+          {% set office_usbc = states('sensor.unnamed_p304m_multi_usb_c_charger_current_consumption') | float(0) %}
+          {% set office_sonos = states('sensor.unnamed_p304m_sonos_speaker_current_consumption') | float(0) %}
+          {% set kitchen = states('sensor.kitchen_appliances_current_consumption') | float(0) %}
+          {{ (lounge + bedroom + lucas_nanit + lucas_echo + lucas_air_filter + lucas_humidifier + office_macbook + office_usbc + office_sonos + kitchen) | round(1) }}
+
+      - name: "Lounge Total Power"
+        unique_id: lounge_total_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: "{{ states('sensor.lounge_usage') | float(0) | round(1) }}"
+
+      - name: "Bedroom Total Power"
+        unique_id: bedroom_total_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: "{{ states('sensor.bedroom_usage') | float(0) | round(1) }}"
+
+      - name: "Lucas Room Total Power"
+        unique_id: lucas_room_total_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: >
+          {% set nanit = states('sensor.unnamed_p304m_nanit_current_consumption') | float(0) %}
+          {% set echo = states('sensor.unnamed_p304m_echo_hub_current_consumption') | float(0) %}
+          {% set air_filter = states('sensor.unnamed_p304m_air_filter_current_consumption') | float(0) %}
+          {% set humidifier = states('sensor.unnamed_p304m_humidifier_current_consumption') | float(0) %}
+          {{ (nanit + echo + air_filter + humidifier) | round(1) }}
+
+      - name: "Office Total Power"
+        unique_id: office_total_power
+        unit_of_measurement: "W"
+        device_class: power
+        state: >
+          {% set macbook = states('sensor.unnamed_p304m_macbook_charger_current_consumption') | float(0) %}
+          {% set usbc = states('sensor.unnamed_p304m_multi_usb_c_charger_current_consumption') | float(0) %}
+          {% set sonos = states('sensor.unnamed_p304m_sonos_speaker_current_consumption') | float(0) %}
+          {{ (macbook + usbc + sonos) | round(1) }}
+
+      - name: "Daily Energy Cost"
+        unique_id: daily_energy_cost
+        unit_of_measurement: "£"
+        state: >
+          {{ (states('sensor.daily_home_energy') | float(0) * 0.30) | round(2) }}

@@ -1,0 +1,18 @@
+# House Mode → Quiet
+# Triggered when Lucas is napping. Suppresses noisy automations.
+- id: house_mode_quiet
+  alias: "House - Mode Quiet"
+  trigger:
+    - platform: state
+      entity_id: input_boolean.lucas_napping
+      to: "on"
+  condition:
+    - condition: state
+      entity_id: input_boolean.house_occupied
+      state: "on"
+  action:
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.house
+      data:
+        option: "Quiet"

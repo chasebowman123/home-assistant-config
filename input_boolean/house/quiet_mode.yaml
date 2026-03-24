@@ -1,0 +1,6 @@
+# Quiet Mode
+# Activated when Lucas is sleeping. Suppresses TTS announcements,
+# lowers doorbell volume, and adjusts motion lighting behavior.
+quiet_mode:
+  name: "Quiet Mode"
+  icon: mdi:volume-off

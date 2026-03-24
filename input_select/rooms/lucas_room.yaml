@@ -1,0 +1,10 @@
+# Lucas Room State
+lucas_room:
+  name: "Lucas Room"
+  options:
+    - "Awake"
+    - "Napping"
+    - "Bedtime"
+    - "Away"
+  initial: Awake
+  icon: mdi:baby-face-outline

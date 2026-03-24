@@ -1,0 +1,11 @@
+# Office → Off
+- id: office_state_off
+  alias: "Office - State Off"
+  trigger:
+    - platform: state
+      entity_id: input_select.office
+      to: "Off"
+  action:
+    - service: light.turn_off
+      target:
+        entity_id: light.office_spotlights

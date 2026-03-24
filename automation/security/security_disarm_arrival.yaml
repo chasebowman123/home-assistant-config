@@ -1,0 +1,19 @@
+# Disarm on Arrival
+- id: security_disarm_arrival
+  alias: "Security - Disarm on Arrival"
+  trigger:
+    - platform: state
+      entity_id:
+        - person.edward_eidam
+        - person.loretta_eidam
+      to: "home"
+  condition:
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id: alarm_control_panel.home_alarm
+          state: "disarmed"
+  action:
+    - service: alarm_control_panel.alarm_disarm
+      target:
+        entity_id: alarm_control_panel.home_alarm

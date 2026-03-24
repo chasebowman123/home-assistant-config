@@ -1,0 +1,24 @@
+- platform: template
+  sensors:
+    weather_condition_text:
+      friendly_name: "Weather Condition"
+      value_template: >
+        {% set condition = states('weather.forecast_home') %}
+        {% set conditions = {
+          'clear-night': 'Clear',
+          'cloudy': 'Cloudy',
+          'fog': 'Foggy',
+          'hail': 'Hail',
+          'lightning': 'Lightning',
+          'lightning-rainy': 'Thunderstorm',
+          'partlycloudy': 'Partly Cloudy',
+          'pouring': 'Heavy Rain',
+          'rainy': 'Rain',
+          'snowy': 'Snow',
+          'snowy-rainy': 'Sleet',
+          'sunny': 'Sunny',
+          'windy': 'Windy',
+          'windy-variant': 'Windy',
+          'exceptional': 'Exceptional'
+        } %}
+        {{ conditions.get(condition, condition | title) }}

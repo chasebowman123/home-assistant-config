@@ -1,0 +1,3 @@
+kitchen_occupied:
+  name: "Kitchen Occupied"
+  icon: mdi:stove

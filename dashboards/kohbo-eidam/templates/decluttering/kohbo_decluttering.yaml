@@ -1,0 +1,479 @@
+#################################################
+#                                               #
+#       KOHBO DECLUTTERING TEMPLATES            #
+#       Adapted for Eidam Smart Home            #
+#                                               #
+#################################################
+
+#################################################
+#           TOP TOOLBAR                         #
+#################################################
+
+top_toolbar:
+  card:
+    type: custom:mod-card
+    card_mod:
+      style: |
+        ha-card {
+          background: transparent;
+          box-shadow: none;
+          padding: 8px 16px;
+        }
+    card:
+      type: horizontal-stack
+      cards: '[[cards]]'
+
+#################################################
+#           ROOM PAGE TOP TOOLBAR               #
+#################################################
+
+room_page_top_toolbar:
+  card:
+    type: custom:mod-card
+    card_mod:
+      style: |
+        ha-card {
+          background: transparent;
+          box-shadow: none;
+          padding: 8px 0;
+        }
+    card:
+      type: horizontal-stack
+      cards:
+        # Back button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:arrow-left
+          tap_action:
+            action: navigate
+            navigation_path: '[[navigation_path]]'
+            haptic: light
+        
+        # Room Name
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: '[[name]]'
+          
+        # Settings button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:dots-horizontal
+          tap_action:
+            action: navigate
+            navigation_path: '[[settings_path]]'
+            haptic: light
+
+#################################################
+#           ROOM STATUS CHIPS                   #
+#################################################
+
+room_status_chips:
+  card:
+    type: horizontal-stack
+    cards:
+      # Room Mode Chip
+      - type: custom:button-card
+        template: kohbo_chip_card_room_mode
+        entity: '[[mode_entity]]'
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Temperature Chip
+      - type: custom:button-card
+        template: kohbo_chip_card
+        entity: '[[temp_entity]]'
+        icon: mdi:thermometer
+        state_display: >
+          [[[ return Math.round(parseFloat(entity.state)) + '°C'; ]]]
+        styles:
+          icon:
+            - color: >
+                [[[
+                  const temp = parseFloat(entity.state);
+                  if (temp < 17) return 'var(--info-color)';
+                  if (temp > 24) return 'var(--error-color)';
+                  return 'var(--success-color)';
+                ]]]
+
+      # Humidity Chip (optional)
+      - type: conditional
+        conditions:
+          - entity: '[[humidity_entity]]'
+            state_not: 'unavailable'
+        card:
+          type: custom:button-card
+          template: kohbo_chip_card
+          entity: '[[humidity_entity]]'
+          icon: mdi:water-percent
+          state_display: >
+            [[[ return Math.round(parseFloat(entity.state)) + '%'; ]]]
+          styles:
+            icon:
+              - color: >
+                  [[[
+                    const h = parseFloat(entity.state);
+                    if (h < 40 || h > 60) return 'var(--warning-color)';
+                    return 'var(--success-color)';
+                  ]]]
+
+#################################################
+#           CLIMATE CARD                        #
+#################################################
+
+climate_card:
+  card:
+    type: custom:stack-in-card
+    mode: vertical
+    cards:
+      # Climate Entity
+      - type: custom:mushroom-climate-card
+        entity: '[[climate_entity]]'
+        name: '[[name]]'
+        show_temperature_control: true
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              background: transparent;
+              box-shadow: none;
+            }
+      
+      # Temperature Graph (optional)
+      - type: conditional
+        conditions:
+          - entity: '[[temp_sensor]]'
+            state_not: 'unavailable'
+        card:
+          type: custom:mini-graph-card
+          entities:
+            - entity: '[[temp_sensor]]'
+              name: Temperature
+          hours_to_show: 24
+          points_per_hour: 2
+          line_width: 2
+          height: 80
+          show:
+            name: false
+            icon: false
+            state: false
+            legend: false
+          color_thresholds:
+            - value: 16
+              color: '#3B82F6'
+            - value: 20
+              color: '#22C55E'
+            - value: 24
+              color: '#EF4444'
+
+#################################################
+#           LIGHT GROUP CARD                    #
+#################################################
+
+light_group_card:
+  card:
+    type: custom:stack-in-card
+    mode: vertical
+    cards:
+      # Main Light Control
+      - type: custom:mushroom-light-card
+        entity: '[[light_entity]]'
+        name: '[[name]]'
+        show_brightness_control: true
+        use_light_color: true
+        card_mod:
+          style: |
+            ha-card {
+              background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, transparent 100%);
+              border: 1px solid rgba(255, 193, 7, 0.2);
+            }
+
+#################################################
+#           MEDIA PLAYER CARD                   #
+#################################################
+
+media_player_card:
+  card:
+    type: custom:mushroom-media-player-card
+    entity: '[[media_player]]'
+    name: '[[name]]'
+    use_media_info: true
+    show_volume_level: true
+    volume_controls:
+      - volume_mute
+      - volume_set
+    media_controls:
+      - play_pause_stop
+    collapsible_controls: true
+    card_mod:
+      style: |
+        ha-card {
+          {% if is_state(config.entity, 'playing') %}
+          background: linear-gradient(135deg, rgba(var(--rgb-primary-color), 0.15) 0%, transparent 100%);
+          border: 1px solid rgba(var(--rgb-primary-color), 0.3);
+          {% endif %}
+        }
+
+#################################################
+#           SCENE GRID                          #
+#################################################
+
+scene_grid:
+  card:
+    type: grid
+    columns: 4
+    square: false
+    cards: '[[scenes]]'
+
+#################################################
+#           QUICK SETTINGS                      #
+#################################################
+
+quick_settings:
+  card:
+    type: entities
+    card_mod:
+      style: |
+        ha-card {
+          background: var(--card-background-color);
+          border-radius: 12px;
+        }
+    entities: '[[entities]]'
+
+#################################################
+#           CAMERA CARD                         #
+#################################################
+
+camera_card:
+  card:
+    type: picture-entity
+    entity: '[[camera_entity]]'
+    name: '[[name]]'
+    show_state: false
+    camera_view: live
+    card_mod:
+      style: |
+        ha-card {
+          border-radius: 12px;
+          overflow: hidden;
+          border: 2px solid var(--divider-color);
+        }
+
+#################################################
+#           ROUTINE BUTTONS                     #
+#################################################
+
+routine_buttons:
+  card:
+    type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: '[[routine1_name]]'
+        icon: '[[routine1_icon]]'
+        styles:
+          icon:
+            - color: '[[routine1_color]]'
+          card:
+            - background: '[[routine1_bg]]'
+        tap_action:
+          action: call-service
+          service: '[[routine1_service]]'
+          service_data: '[[routine1_data]]'
+
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: '[[routine2_name]]'
+        icon: '[[routine2_icon]]'
+        styles:
+          icon:
+            - color: '[[routine2_color]]'
+          card:
+            - background: '[[routine2_bg]]'
+        tap_action:
+          action: call-service
+          service: '[[routine2_service]]'
+          service_data: '[[routine2_data]]'
+
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: '[[routine3_name]]'
+        icon: '[[routine3_icon]]'
+        styles:
+          icon:
+            - color: '[[routine3_color]]'
+          card:
+            - background: '[[routine3_bg]]'
+        tap_action:
+          action: call-service
+          service: '[[routine3_service]]'
+          service_data: '[[routine3_data]]'
+
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: '[[routine4_name]]'
+        icon: '[[routine4_icon]]'
+        styles:
+          icon:
+            - color: '[[routine4_color]]'
+          card:
+            - background: '[[routine4_bg]]'
+        tap_action:
+          action: call-service
+          service: '[[routine4_service]]'
+          service_data: '[[routine4_data]]'
+
+#################################################
+#           DEVICE GRID                         #
+#################################################
+
+device_grid:
+  card:
+    type: grid
+    columns: 2
+    square: false
+    cards: '[[devices]]'
+
+#################################################
+#           LUCAS ROUTINES                      #
+# Special template for Lucas's room routines    #
+#################################################
+
+lucas_routines:
+  card:
+    type: horizontal-stack
+    cards:
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: Morning
+        icon: mdi:weather-sunny
+        styles:
+          icon:
+            - color: '#F59E0B'
+          card:
+            - background: 'rgba(245, 158, 11, 0.15)'
+        tap_action:
+          action: call-service
+          service: script.lucas_morning_routine
+          haptic: success
+
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: Bathtime
+        icon: mdi:bathtub
+        styles:
+          icon:
+            - color: '#06B6D4'
+          card:
+            - background: 'rgba(6, 182, 212, 0.15)'
+        tap_action:
+          action: call-service
+          service: script.lucas_bathtime
+          haptic: success
+
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: Wind Down
+        icon: mdi:weather-sunset
+        styles:
+          icon:
+            - color: '#F97316'
+          card:
+            - background: 'rgba(249, 115, 22, 0.15)'
+        tap_action:
+          action: call-service
+          service: script.lucas_wind_down
+          haptic: success
+
+      - type: custom:button-card
+        template: kohbo_scene_button
+        name: Bedtime
+        icon: mdi:bed
+        styles:
+          icon:
+            - color: '#6366F1'
+          card:
+            - background: 'rgba(99, 102, 241, 0.15)'
+        tap_action:
+          action: call-service
+          service: script.lucas_bedtime
+          haptic: success
+
+#################################################
+# Climate Overview - from Kohbo reference
+#################################################
+
+climate_overview:
+  card:
+    type: custom:stack-in-card
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0;
+        }
+    cards:
+      - type: custom:mini-graph-card
+        points_per_hour: 2
+        line_width: 4
+        decimals: 0
+        smoothing: true
+        color_thresholds_transition: smooth
+        color_thresholds:
+          - color: "#59A5D8"
+            value: 14
+          - color: "#ADD2EB"
+            value: 18
+          - color: "#06D6A0"
+            value: 20
+          - color: "#FFD166"
+            value: 26
+          - color: "#ED4747"
+            value: 32
+        entities:
+          - entity: '[[temperature_sensor]]'
+            name: '[[room_name]] Climate'
+            icon: mdi:thermometer
+        card_mod:
+          style: |
+            ha-card {
+              border: none;
+              backdrop-filter: none;
+              -webkit-backdrop-filter: none;
+              box-shadow: none;
+            }
+            ha-card .header {
+              padding-bottom: 2px;
+            }
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+            ha-card {
+              background: var(--darker-primary-color);
+              border-top-right-radius: 0;
+              border-top-left-radius: 0;
+              backdrop-filter: none;
+              -webkit-backdrop-filter: none;
+              box-shadow: none;
+              border: none;
+              box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+            }
+        cards:
+          - type: custom:button-card
+            entity: '[[humidity_sensor]]'
+            template: kohbo_aqi_humidity_item
+          - type: custom:button-card
+            entity: '[[temperature_sensor]]'
+            template: kohbo_aqi_item
+            name: Temp
+            state_display: |
+              [[[
+                return Math.round(parseFloat(entity.state)).toString();
+              ]]]
+            custom_fields:
+              unit: "°C"

@@ -1,0 +1,27 @@
+# House Not Occupied
+# Sets house_occupied off when all tracked persons leave.
+- id: house_not_occupied
+  alias: "House - Not Occupied"
+  trigger:
+    - platform: state
+      entity_id:
+        - person.edward_eidam
+        - person.loretta_eidam
+      to: "not_home"
+      for:
+        minutes: 5
+  condition:
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id: person.edward_eidam
+          state: "home"
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id: person.loretta_eidam
+          state: "home"
+  action:
+    - service: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.house_occupied

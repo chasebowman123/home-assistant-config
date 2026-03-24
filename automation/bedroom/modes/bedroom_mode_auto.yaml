@@ -1,0 +1,8 @@
+# Bedroom → Auto
+- id: bedroom_state_auto
+  alias: "Bedroom - State Auto"
+  trigger:
+    - platform: state
+      entity_id: input_select.bedroom
+      to: "Auto"
+  action: []

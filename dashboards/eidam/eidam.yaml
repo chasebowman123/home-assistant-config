@@ -1,0 +1,19 @@
+# Eidam Dashboard
+# Main dashboard entry point
+# TODO: Migrate existing dashboards into this structure
+
+title: Eidam Home
+views:
+  - !include views/home.yaml
+  - !include views/security.yaml
+  - !include views/climate.yaml
+  - !include views/energy.yaml
+  - !include views/lighting.yaml
+  - !include views/lounge.yaml
+  - !include views/bedroom.yaml
+  - !include views/lucas_room.yaml
+  - !include views/kitchen_office.yaml
+  - !include views/bathrooms.yaml
+  - !include views/appliances.yaml
+  - !include views/media.yaml
+  - !include views/settings.yaml

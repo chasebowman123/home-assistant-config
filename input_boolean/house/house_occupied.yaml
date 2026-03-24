@@ -1,0 +1,6 @@
+# House Occupied
+# Tracks whether anyone is home. Triggered by person entity state changes.
+# Used by room automations to adjust behavior (lights, climate, security).
+house_occupied:
+  name: "House Occupied"
+  icon: mdi:home-account

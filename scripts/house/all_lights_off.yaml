@@ -1,0 +1,19 @@
+# All Lights Off
+all_lights_off:
+  alias: "All Lights Off"
+  description: "Emergency all lights off"
+  icon: mdi:lightbulb-off
+  mode: single
+  sequence:
+    - service: light.turn_off
+      target:
+        entity_id: all
+    - service: switch.turn_off
+      target:
+        entity_id:
+          - switch.bubble_light
+          - switch.banana_light
+          - switch.disco_lights
+          - switch.bar_light
+          - switch.office_edison_light
+          - switch.cloud_lamp

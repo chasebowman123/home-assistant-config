@@ -1,0 +1,11 @@
+# Work Hours
+# True between 09:00 and 17:30 on weekdays
+- platform: template
+  sensors:
+    work_hours:
+      friendly_name: "Work Hours"
+      value_template: >
+        {% set now_time = now().strftime('%H:%M') %}
+        {% set weekday = now().weekday() < 5 %}
+        {{ weekday and '09:00' <= now_time < '17:30' }}
+      icon_template: mdi:briefcase-clock

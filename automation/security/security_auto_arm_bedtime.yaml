@@ -1,0 +1,11 @@
+# Auto-Arm Home at Bedtime
+- id: security_auto_arm_bedtime
+  alias: "Security - Auto Arm Bedtime"
+  trigger:
+    - platform: state
+      entity_id: input_select.house
+      to: "Bedtime"
+  action:
+    - service: alarm_control_panel.alarm_arm_home
+      target:
+        entity_id: alarm_control_panel.home_alarm

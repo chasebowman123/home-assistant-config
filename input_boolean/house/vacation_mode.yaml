@@ -1,0 +1,6 @@
+# Vacation Mode
+# Extended away mode. Adjusts climate to minimum, enables security
+# monitoring, and can simulate presence with random lighting.
+vacation_mode:
+  name: "Vacation Mode"
+  icon: mdi:palm-tree

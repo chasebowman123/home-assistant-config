@@ -1,0 +1,31 @@
+# Sunset Routine
+sunset_routine:
+  alias: "Sunset Routine"
+  description: "Automatic evening ambiance"
+  icon: mdi:weather-sunset-down
+  mode: single
+  sequence:
+    - service: light.turn_on
+      target:
+        entity_id: light.hallway_lamp_post
+      data:
+        brightness_pct: 80
+        transition: 30
+    - service: light.turn_on
+      target:
+        entity_id: light.hallway_signe_light
+      data:
+        brightness_pct: 60
+        transition: 30
+    - service: light.turn_on
+      target:
+        entity_id: light.hue_color_lamp_1
+      data:
+        brightness_pct: 70
+        transition: 30
+    - service: scene.turn_on
+      target:
+        entity_id: scene.lounge_rolling_hills
+    - service: scene.turn_on
+      target:
+        entity_id: scene.bedroom_rolling_hills

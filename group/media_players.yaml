@@ -1,0 +1,7 @@
+media_players:
+  name: "Media Players"
+  entities:
+    - media_player.lounge
+    - media_player.55_oled
+    - media_player.lg_webos_tv_oled55g54lw
+    - media_player.lucas_s_echo_show

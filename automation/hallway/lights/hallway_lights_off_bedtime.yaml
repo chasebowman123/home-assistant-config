@@ -1,0 +1,11 @@
+# Hallway Lights Off at Bedtime
+- id: hallway_lights_off_bedtime
+  alias: "Hallway - Lights Off at Bedtime"
+  trigger:
+    - platform: state
+      entity_id: input_select.house
+      to: "Bedtime"
+  action:
+    - service: light.turn_off
+      target:
+        entity_id: light.hallway_spot_lights

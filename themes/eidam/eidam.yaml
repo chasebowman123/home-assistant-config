@@ -1,0 +1,63 @@
+# Eidam Dark Theme
+# Inspired by Kohbo — dark, clean, with accent gradients.
+eidam:
+  # Background
+  ha-card-background: "rgba(24, 26, 32, 0.9)"
+  card-background-color: "rgba(24, 26, 32, 0.9)"
+  primary-background-color: "#0d0e12"
+  secondary-background-color: "#14151a"
+  lovelace-background: "#0d0e12"
+
+  # Text
+  primary-text-color: "#e1e1e6"
+  secondary-text-color: "#8b8d97"
+  text-primary-color: "#e1e1e6"
+  disabled-text-color: "#4a4b52"
+
+  # Accent
+  primary-color: "#6C63FF"
+  accent-color: "#6C63FF"
+  light-primary-color: "#8B83FF"
+  dark-primary-color: "#4A42CC"
+
+  # States
+  state-icon-active-color: "#6C63FF"
+  state-icon-color: "#8b8d97"
+  switch-checked-color: "#6C63FF"
+  switch-unchecked-button-color: "#4a4b52"
+  switch-unchecked-track-color: "#2a2b32"
+
+  # Cards
+  ha-card-border-radius: "16px"
+  ha-card-border-width: "0px"
+  ha-card-box-shadow: "0px 2px 8px rgba(0, 0, 0, 0.3)"
+
+  # Header
+  app-header-background-color: "#0d0e12"
+  app-header-text-color: "#e1e1e6"
+
+  # Sidebar
+  sidebar-background-color: "#0d0e12"
+  sidebar-text-color: "#e1e1e6"
+  sidebar-icon-color: "#8b8d97"
+  sidebar-selected-icon-color: "#6C63FF"
+  sidebar-selected-text-color: "#6C63FF"
+
+  # Dividers
+  divider-color: "rgba(255, 255, 255, 0.05)"
+
+  # Mushroom overrides
+  mush-card-primary-color: "#e1e1e6"
+  mush-card-secondary-color: "#8b8d97"
+  mush-chip-background-color: "rgba(255, 255, 255, 0.06)"
+  mush-chip-border-radius: "12px"
+  mush-control-border-radius: "12px"
+
+  # Graphs
+  graph-color: "#6C63FF"
+
+  # Modes
+  modes:
+    dark:
+      primary-background-color: "#0d0e12"
+      secondary-background-color: "#14151a"

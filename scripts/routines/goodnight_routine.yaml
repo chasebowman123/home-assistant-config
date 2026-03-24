@@ -1,0 +1,64 @@
+# Goodnight Routine
+goodnight_routine:
+  alias: "Goodnight Routine"
+  description: "Household bedtime — triggered by Flic button"
+  icon: mdi:bed
+  mode: single
+  sequence:
+    - service: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.goodnight_active
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.kitchen_spotlights
+          - light.office_spotlights
+          - light.boudoir_spotlights
+          - light.bathroom_spotlights
+          - light.bathroom_strip_light
+          - light.lucass_bathroom_spotlights
+          - light.courtyard_light
+          - light.garden_lights
+      data:
+        transition: 5
+    - service: switch.turn_off
+      target:
+        entity_id:
+          - switch.bubble_light
+          - switch.banana_light
+          - switch.disco_lights
+          - switch.bar_light
+          - switch.office_edison_light
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.hallway_lamp_post
+          - light.hallway_signe_light
+      data:
+        brightness_pct: 40
+        transition: 10
+    - service: scene.turn_on
+      target:
+        entity_id: scene.lounge_rest
+    - service: scene.turn_on
+      target:
+        entity_id: scene.bedroom_sleepy
+    - service: climate.set_temperature
+      target:
+        entity_id:
+          - climate.hallway
+          - climate.lounge
+          - climate.kitchen
+          - climate.office
+      data:
+        temperature: 20
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.lucas_s_room
+      data:
+        temperature: 22
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.bedroom_2
+      data:
+        temperature: 20

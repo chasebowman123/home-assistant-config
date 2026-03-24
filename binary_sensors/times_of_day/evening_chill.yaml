@@ -1,0 +1,11 @@
+# Evening Chill
+# True after sunset until bedtime — used for ambient lighting decisions
+- platform: template
+  sensors:
+    evening_chill:
+      friendly_name: "Evening Chill"
+      value_template: >
+        {% set sun_below = state_attr('sun.sun', 'elevation') | float(0) < 3 %}
+        {% set not_bedtime = now().strftime('%H:%M') < '22:00' %}
+        {{ sun_below and not_bedtime }}
+      icon_template: mdi:weather-sunset

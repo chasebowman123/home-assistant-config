@@ -1,0 +1,6 @@
+# Work Hours Active
+# Tracks whether it's currently working hours. Used by office
+# automations and notification routing.
+work_hours_active:
+  name: "Work Hours Active"
+  icon: mdi:briefcase

@@ -1,0 +1,9 @@
+# Office State
+office:
+  name: "Office"
+  options:
+    - "Available"
+    - "DnD"
+    - "Off"
+  initial: Available
+  icon: mdi:desk

@@ -1,0 +1,12 @@
+# House State
+# Manages the overall house mode. Room automations respond to this.
+house:
+  name: "House"
+  options:
+    - "Auto"
+    - "Away"
+    - "Bedtime"
+    - "Quiet"
+    - "Vacation"
+  initial: Auto
+  icon: mdi:home

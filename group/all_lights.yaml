@@ -1,0 +1,26 @@
+all_lights:
+  name: "All Lights"
+  entities:
+    - light.hallway_lamp_post
+    - light.hallway_signe_light
+    - light.hallway_spot_lights
+    - light.hue_color_lamp_1
+    - light.lounge_spotlights
+    - light.lounge_pendant_lights
+    - light.lounge_piano_lamp
+    - light.lounge_strip_light
+    - light.lounge_iris
+    - light.lounge_signe_light
+    - light.bedroom_spot_lights
+    - light.bedroom_signe_light
+    - light.bedroom_tv_strip_light
+    - light.bedroom_colour_lamp
+    - light.lucass_room_spotlights
+    - light.lucass_room_iris
+    - light.lucass_room_pendant_light
+    - light.lucas_s_room_go
+    - light.kitchen_spotlights
+    - light.office_spotlights
+    - light.cloakroom_spotlights
+    - light.lucass_bathroom_spotlights
+    - light.garden_lights

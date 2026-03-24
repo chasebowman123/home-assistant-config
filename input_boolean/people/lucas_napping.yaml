@@ -1,0 +1,6 @@
+# Lucas Napping
+# Tracks whether Lucas is asleep. Activates quiet mode behaviors:
+# suppresses loud notifications, dims hallway lighting, lowers volumes.
+lucas_napping:
+  name: "Lucas Napping"
+  icon: mdi:sleep

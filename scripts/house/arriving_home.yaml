@@ -1,0 +1,22 @@
+# Arriving Home
+arriving_home:
+  alias: "Arriving Home"
+  description: "Welcome home sequence"
+  icon: mdi:home-import-outline
+  mode: single
+  sequence:
+    - service: alarm_control_panel.alarm_disarm
+      target:
+        entity_id: alarm_control_panel.home_alarm
+    - if:
+        - condition: sun
+          after: sunset
+      then:
+        - service: light.turn_on
+          target:
+            entity_id:
+              - light.hallway_lamp_post
+              - light.hallway_signe_light
+          data:
+            brightness_pct: 100
+            transition: 2

@@ -1,0 +1,44 @@
+# Lucas Bedtime
+lucas_bedtime:
+  alias: "Lucas Bedtime"
+  description: "Lights off and lullaby"
+  icon: mdi:moon-waning-crescent
+  mode: single
+  sequence:
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.lucass_room_spot_lights
+          - light.lucass_room_pendant_light
+          - light.lucass_room_iris
+      data:
+        transition: 10
+    - service: switch.turn_off
+      target:
+        entity_id: switch.cloud_lamp
+    - service: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.lucas_napping
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.lucas_s_echo_show
+      data:
+        volume_level: 0.25
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.lucas_s_echo_show
+      data:
+        media_content_type: SPOTIFY
+        media_content_id: !secret spotify_lucas_lullaby
+    - delay:
+        minutes: 15
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.lucas_s_echo_show
+      data:
+        volume_level: 0.1
+    - delay:
+        minutes: 5
+    - service: media_player.media_stop
+      target:
+        entity_id: media_player.lucas_s_echo_show

@@ -1,0 +1,22 @@
+# Kitchen Motion Lights On
+# Night-only dim lighting when motion is detected.
+- id: kitchen_lights_motion_on
+  alias: "Kitchen - Motion Lights On"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.hallway_kitchen_motion_sensor_occupancy
+      to: "on"
+  condition:
+    - condition: time
+      after: "00:00:00"
+      before: "07:00:00"
+    - condition: state
+      entity_id: input_boolean.lighting_automations
+      state: "on"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.kitchen_spotlights
+      data:
+        brightness_pct: 20
+  mode: single

@@ -1,0 +1,6 @@
+# Loretta Meeting Mode
+# Indicates Loretta is in a video call. Suppresses TTS and
+# adjusts office-adjacent automations.
+loretta_meeting_mode:
+  name: "Loretta Meeting Mode"
+  icon: mdi:video

@@ -1,0 +1,6 @@
+# Dogs Are Out
+# Used to modify security alarm behavior — prevents auto-arming
+# when dogs are in the garden.
+dogs_are_out:
+  name: "Dogs Are Out"
+  icon: mdi:dog

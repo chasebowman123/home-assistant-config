@@ -1,0 +1,10 @@
+# Bedroom State
+bedroom:
+  name: "Bedroom"
+  options:
+    - "Auto"
+    - "Relaxing"
+    - "Bedtime"
+    - "Off"
+  initial: Auto
+  icon: mdi:bed-king

@@ -1,0 +1,10 @@
+# Lucas Sleep Window
+# True between 19:30 and 07:00 — when Lucas should be asleep
+- platform: template
+  sensors:
+    lucas_sleep_window:
+      friendly_name: "Lucas Sleep Window"
+      value_template: >
+        {% set now_time = now().strftime('%H:%M') %}
+        {{ now_time >= '19:30' or now_time < '07:00' }}
+      icon_template: mdi:baby-face

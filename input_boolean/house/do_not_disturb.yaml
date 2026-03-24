@@ -1,0 +1,6 @@
+# Do Not Disturb
+# Global DnD mode. Suppresses all non-critical notifications and
+# TTS announcements throughout the house.
+do_not_disturb:
+  name: "Do Not Disturb"
+  icon: mdi:bell-off

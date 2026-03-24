@@ -1,0 +1,40 @@
+# Eidam Smart Home — Home Assistant Configuration
+# https://github.com/chasebowman123/home-assistant-config
+default_config:
+
+homeassistant:
+  packages: !include_dir_named packages/
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+# Entity includes
+group: !include_dir_merge_named group/
+automation: !include automations.yaml
+automation mine: !include_dir_list automation/
+script: !include scripts.yaml
+script mine: !include_dir_named scripts/
+scene: !include scenes.yaml
+
+binary_sensor: !include_dir_merge_list binary_sensors/
+sensor: !include_dir_merge_list sensors/
+input_boolean: !include_dir_named input_boolean/
+input_select: !include_dir_named input_select/
+input_number: !include_dir_named input_number/
+
+frontend:
+  themes: !include_dir_merge_named themes/
+
+lovelace:
+  mode: storage
+  dashboards:
+    dashboard-eidam:
+      mode: yaml
+      title: "Eidam"
+      icon: mdi:home-assistant
+      show_in_sidebar: true
+      filename: dashboards/eidam/eidam.yaml
+
+logger:
+  default: info

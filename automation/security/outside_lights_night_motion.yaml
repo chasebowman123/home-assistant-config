@@ -1,0 +1,25 @@
+# Outside Lights - Night Motion
+- id: outside_lights_night_motion
+  alias: "Outside Lights - Night Motion & Door Activated"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.outside_door_contact
+      to: "on"
+    - platform: event
+      event_type: state_changed
+      event_data:
+        entity_id: event.garden_motion
+  condition:
+    - condition: sun
+      after: sunset
+      before: sunrise
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.garden_lights
+    - delay:
+        minutes: 5
+    - service: light.turn_off
+      target:
+        entity_id: light.garden_lights
+  mode: restart
