@@ -1,0 +1,22 @@
+- id: ring_battery_critical
+  alias: "Ring - Battery Critical Alert"
+  description: "Critical alert when Ring battery drops below 5%."
+  trigger:
+    - platform: numeric_state
+      entity_id:
+        - sensor.basement_door_battery
+        - sensor.basement_stairs_battery
+        - sensor.garden_battery
+        - sensor.upstairs_battery
+      below: 5
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🚨 Ring Battery Critical"
+        message: "{{ trigger.to_state.name }} is at {{ trigger.to_state.state }}%! Charge immediately."
+        data:
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 1.0

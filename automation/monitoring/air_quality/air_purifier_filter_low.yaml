@@ -1,0 +1,12 @@
+- id: air_purifier_filter_low
+  alias: "Air Quality - Purifier Filter Low"
+  description: "Air purifier filter lifetime below 10%."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.core_400s_filter_lifetime
+      below: 10
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🌬️ Air Purifier Filter Low"
+        message: "Core 400S filter is at {{ states('sensor.core_400s_filter_lifetime') }}%. Order a replacement soon."

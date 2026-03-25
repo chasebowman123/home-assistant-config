@@ -1,0 +1,25 @@
+- id: hallway_ambient_dark
+  alias: "Hallway - Ambient After Dark"
+  description: "Sun below 3 degrees: warm dim hallway spots."
+  trigger:
+    - platform: numeric_state
+      entity_id: sun.sun
+      attribute: elevation
+      below: 3
+  condition:
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id: input_select.house
+          state: "Away"
+        - condition: state
+          entity_id: input_select.house
+          state: "All Out"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.hallway_spots
+      data:
+        brightness_pct: 30
+        color_temp_kelvin: 2200
+        transition: 10

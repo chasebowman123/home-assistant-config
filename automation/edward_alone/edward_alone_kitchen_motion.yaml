@@ -1,0 +1,43 @@
+- id: edward_alone_kitchen_motion
+  alias: "Edward Alone - Kitchen Motion Lights"
+  description: "Motion activates kitchen spots when Edward is alone. Dim at night."
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.kitchen_motion
+      to: "on"
+  condition:
+    - condition: state
+      entity_id: input_boolean.edward_alone
+      state: "on"
+  action:
+    - choose:
+        - conditions:
+            - condition: time
+              after: "22:00:00"
+              before: "07:00:00"
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: light.kitchen_spotlights
+              data:
+                brightness_pct: 20
+                color_temp_kelvin: 2200
+      default:
+        - service: light.turn_on
+          target:
+            entity_id: light.kitchen_spotlights
+          data:
+            brightness_pct: 80
+            color_temp_kelvin: 3000
+    - wait_for_trigger:
+        - platform: state
+          entity_id: binary_sensor.kitchen_motion
+          to: "off"
+          for:
+            minutes: 10
+    - service: light.turn_off
+      target:
+        entity_id: light.kitchen_spotlights
+      data:
+        transition: 5
+  mode: restart

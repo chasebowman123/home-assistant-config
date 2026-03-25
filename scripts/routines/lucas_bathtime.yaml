@@ -1,23 +1,11 @@
-# Lucas Bathtime
 lucas_bathtime:
   alias: "Lucas Bathtime"
-  description: "Start Lucas's bathtime routine"
+  description: "Set up Lucas bathtime scene."
   icon: mdi:bathtub
   mode: single
   sequence:
-    - service: scene.turn_on
+    - service: input_select.select_option
       target:
-        entity_id: scene.lucass_bathroom_relax
-    - service: light.turn_on
-      target:
-        entity_id: light.lucass_room_iris
+        entity_id: input_select.lucas_room
       data:
-        brightness_pct: 40
-        rgb_color: [100, 149, 237]
-        transition: 2
-    - service: media_player.play_media
-      target:
-        entity_id: media_player.lucas_s_echo_show
-      data:
-        media_content_type: SPOTIFY
-        media_content_id: !secret spotify_lucas_bathtime
+        option: "Bathtime"

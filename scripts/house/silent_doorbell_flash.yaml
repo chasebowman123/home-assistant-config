@@ -1,52 +1,45 @@
-# Silent Doorbell Flash
 silent_doorbell_flash:
   alias: "Silent Doorbell Flash"
-  description: "Flash lights blue for silent doorbell alert"
+  description: "Flash Iris and Signe lights for visual doorbell alert."
   icon: mdi:bell-ring
   mode: single
   sequence:
-    - repeat:
-        count: 3
-        sequence:
-          - service: light.turn_on
-            target:
-              entity_id:
-                - light.lounge_iris
-                - light.lounge_signe_light
-                - light.bedroom_signe_light
-                - light.hallway_signe_light
-            data:
-              rgb_color: [0, 100, 255]
-              brightness_pct: 100
-              transition: 0.2
-          - delay:
-              milliseconds: 500
-          - service: light.turn_off
-            target:
-              entity_id:
-                - light.lounge_iris
-                - light.lounge_signe_light
-                - light.bedroom_signe_light
-                - light.hallway_signe_light
-            data:
-              transition: 0.2
-          - delay:
-              milliseconds: 300
+    - service: light.turn_on
+      target:
+        entity_id: light.lounge_iris
+      data:
+        color_name: blue
+        brightness_pct: 100
+    - service: light.turn_on
+      target:
+        entity_id: light.hallway_signe_light
+      data:
+        color_name: blue
+        brightness_pct: 100
     - delay:
         seconds: 2
-    - if:
-        - condition: state
-          entity_id: input_boolean.goodnight_active
-          state: "on"
-      then:
-        - service: scene.turn_on
-          target:
-            entity_id: scene.lounge_rest
-      else:
-        - if:
-            - condition: sun
-              after: sunset
-          then:
-            - service: scene.turn_on
-              target:
-                entity_id: scene.lounge_rolling_hills
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.lounge_iris
+          - light.hallway_signe_light
+      data:
+        color_name: red
+        brightness_pct: 100
+    - delay:
+        seconds: 2
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.lounge_iris
+          - light.hallway_signe_light
+      data:
+        color_name: blue
+        brightness_pct: 100
+    - delay:
+        seconds: 2
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.lounge_iris
+          - light.hallway_signe_light

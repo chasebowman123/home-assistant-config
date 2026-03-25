@@ -1,0 +1,30 @@
+- id: office_arriving_guests
+  alias: "Office - Arriving Guests"
+  description: "Welcoming lighting and heating for guests."
+  trigger:
+    - platform: state
+      entity_id: input_select.office
+      to: "Arriving Guests"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.office_spots
+      data:
+        brightness_pct: 80
+        color_temp_kelvin: 3000
+    - service: light.turn_on
+      target:
+        entity_id: light.hallway_spots
+      data:
+        brightness_pct: 80
+        color_temp_kelvin: 3000
+    - service: light.turn_on
+      target:
+        entity_id: light.hallway_lamp_post
+      data:
+        brightness_pct: 80
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.office
+      data:
+        temperature: 22

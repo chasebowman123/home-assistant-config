@@ -1,9 +1,9 @@
-# Office State
+# Office Sub-Mode
 office:
   name: "Office"
   options:
-    - "Available"
-    - "DnD"
-    - "Off"
-  initial: Available
+    - "Standard Work"
+    - "Standard Evening"
+    - "Arriving Guests"
+  initial: "Standard Work"
   icon: mdi:desk

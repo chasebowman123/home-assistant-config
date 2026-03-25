@@ -1,9 +1,0 @@
-# Kitchen State
-kitchen:
-  name: "Kitchen"
-  options:
-    - "Auto"
-    - "Cooking"
-    - "Off"
-  initial: Auto
-  icon: mdi:stove

@@ -1,0 +1,5 @@
+# Lucas Sleeping
+# Suppress TTS, doorbell silent, dim hallway, door monitoring, lower volumes
+lucas_sleeping:
+  name: "Lucas Sleeping"
+  icon: mdi:sleep

@@ -1,85 +1,117 @@
 # Rooms
 
-[Back to main README](../README.md)
+Room-by-room configuration and sub-modes.
 
-This document explains how rooms work in the Eidam Smart Home.
+## Hallway
 
-## Overview
+**Automations:**
+- Ambient warm dim lighting when sun drops below 3° elevation
+- All lights off when Night Time activates
 
-Every room is treated as an independent unit with its own state machine. Rooms have:
-- An `input_select` that manages the current **mode** (Auto, Off, etc.)
-- An `input_boolean` that tracks **occupancy** (where applicable)
-- Automations that respond to mode and occupancy changes
-
-This approach allows granular control and avoids complex, monolithic automations.
-
----
-
-## Room Modes
-
-| Room | Modes | Description |
-|------|-------|-------------|
-| **House** | Auto, Away, Bedtime, Quiet, Vacation | Global state — rooms respond to this |
-| **Lounge** | Auto, Movie, Music, Off | Auto-detects TV playing for Movie mode |
-| **Bedroom** | Auto, Relaxing, Bedtime, Off | Gradual wind-down with Relaxing → Bedtime |
-| **Lucas Room** | Awake, Napping, Bedtime, Away | Tied to lucas_napping boolean for quiet mode |
-| **Kitchen** | Auto, Cooking, Off | Cooking mode = full brightness, no auto-off |
-| **Office** | Available, DnD, Off | DnD dims lights and suppresses TTS |
+**Edward Alone additions:**
+- Motion-activated lights (dim at night, normal during day)
+- Front door sensor activates lights
 
 ---
 
-## House State Cascade
+## Lounge
 
-When the house state changes, rooms respond:
+**Sub-modes** (`input_select.lounge`):
 
-| House State | Effect |
-|-------------|--------|
-| **Auto** | Normal operation — all room automations active |
-| **Away** | Lights off, climate to eco, security armed |
-| **Bedtime** | Triggered by Goodnight routine. Dims everything, arms home security |
-| **Quiet** | Triggered by Lucas napping. Suppresses TTS, dims hallway |
-| **Vacation** | Extended away — minimal climate, full security |
+| Mode | Lighting | Sync Box | Media |
+|---|---|---|---|
+| Standard | Spots 80%, play bar + strip 50% @ 3000K | Off | — |
+| Movie with Sync | Spots off, strip + play 15% @ 2200K | On | — |
+| Movie without Sync | Spots off, strip + play 15% @ 2200K | Off | — |
+| Music | Piano lamp + strip 60% @ 2700K | Off | — |
+| Off | All off | Off | Sonos paused |
 
----
-
-## Key Booleans
-
-| Boolean | Purpose | Triggered By |
-|---------|---------|-------------|
-| `house_occupied` | Anyone home? | Person tracking |
-| `guest_mode` | Guests visiting | Manual toggle |
-| `quiet_mode` | Suppress noise | Lucas napping |
-| `lighting_automations` | Global light auto toggle | Manual toggle |
-| `bad_weather` | Weather is poor | Weather automation |
-| `goodnight_active` | Bedtime sequence active | Goodnight routine |
-| `dogs_are_out` | Dogs in garden | Manual toggle |
-| `lucas_napping` | Lucas sleeping | Room state change |
+**Other automations:**
+- Bad weather → piano lamp on (cosy ambiance)
+- Doorbell → Iris + Signe flash blue/red
 
 ---
 
-## Anatomy of a Room: The Lounge
+## Bedroom
 
-The Lounge demonstrates the full room lifecycle.
+**Sub-modes** (`input_select.bedroom`):
 
-### Entities
+| Mode | Lighting | Media |
+|---|---|---|
+| Relaxing | Signe 30% + TV strip 20% @ 2200K | — |
+| Bedtime | All off | TV paused |
+| Off | All off | — |
 
-| Entity | Purpose |
-|--------|---------|
-| `input_select.lounge` | Mode: Auto, Movie, Music, Off |
-| `input_boolean.lounge_occupied` | Is someone in the lounge? |
-| `media_player.55_oled` | Samsung OLED TV |
-| `media_player.lounge` | Sonos Arc |
+---
 
-### A Day in the Life
+## Lucas Room
 
-**7:15 AM — Morning Routine fires**
-The morning script sets the Rolling Hills scene. Lounge is in Auto mode.
+**Sub-modes** (`input_select.lucas_room`):
 
-**6:30 PM — TV starts playing**
-The auto-movie-detection automation notices `media_player.55_oled` is "playing" after dark. It switches the lounge to Movie mode: spotlights off, strip light at 30%, Hue Play at 20%.
+| Mode | Lighting | Music |
+|---|---|---|
+| Standard | Spots 80% @ 3500K | — |
+| Bathtime | Spots 50%, Iris blue, bathroom lights on | Bathtime playlist |
+| Wind Down | Iris + spots dim @ 2200K, cloud lamp | Calm music |
+| Bedtime | Go nightlight 3% only | Lullaby (fades out over 30 min) |
+| Night Time | Everything off | — |
 
-**9:00 PM — TV off for 5 minutes**
-Auto-movie-off fires, returning the lounge to Auto mode.
+**Triggers:**
+- Night wake alert: door opens 10pm–7am → phone notification + lounge light flash
+- Morning: first door open after 7am → morning routine
 
-**10:30 PM — Goodnight Routine**
-House state changes to Bedtime. The goodnight script sets the lounge to the "Rest" scene.
+**Environment monitoring:**
+- Bath temperature > 38°C → critical alert
+- Room too hot (> 24°C) / too cold (< 18°C)
+- Nanit lost power → critical alert + Alexa announcement
+- Poor air quality (IAQ < 50)
+
+---
+
+## Office
+
+**Sub-modes** (`input_select.office`):
+
+| Mode | Lighting | Other |
+|---|---|---|
+| Standard Work | Spots 100% @ 4000K | — |
+| Standard Evening | Spots 40% @ 2700K | — |
+| Arriving Guests | Office + hallway 80% @ 3000K | Heating boost to 22°C |
+
+---
+
+## Kitchen
+
+No automations (per requirement). Lights manually controlled.
+
+**Edward Alone additions:**
+- Motion-activated spots (dim at night, normal during day)
+
+---
+
+## Cloakroom
+
+- Motion sensor activates light
+- Auto-off after 5 minutes of no motion
+- Uses motion sensor (not door sensor) — handles cases where door is already open
+
+---
+
+## Lucas Bathroom
+
+- Motion sensor activates lights
+- **No auto-off** (per requirement)
+
+---
+
+## Main Bathroom
+
+- Zigbee door contact sensor activates lights on open
+- Auto-off 5 minutes after door closes
+
+---
+
+## Outside
+
+- Garden lights on motion after sunset (5 minute timeout)
+- No courtyard automations

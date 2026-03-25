@@ -1,0 +1,17 @@
+- id: high_power_alert
+  alias: "Appliance - High Power Alert"
+  description: "Alert when any monitored plug draws unusually high power."
+  trigger:
+    - platform: numeric_state
+      entity_id:
+        - sensor.washing_machine_power
+        - sensor.dryer_power
+        - sensor.dishwasher_power
+      above: 3000
+      for:
+        minutes: 5
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "⚡ High Power Draw"
+        message: "{{ trigger.to_state.name }} is drawing {{ trigger.to_state.state }}W — unusually high."

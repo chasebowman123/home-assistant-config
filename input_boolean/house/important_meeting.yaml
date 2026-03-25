@@ -1,0 +1,5 @@
+# Important Meeting
+# Mainly Loretta. Suppress TTS + doorbell, office quiet
+important_meeting:
+  name: "Important Meeting"
+  icon: mdi:video

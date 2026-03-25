@@ -1,37 +1,14 @@
-# Cloud Integration Offline
-- id: alert_cloud_integration_offline
+- id: cloud_integration_offline
   alias: "Alert - Cloud Integration Offline"
+  description: "Notify if Home Assistant Cloud goes offline."
   trigger:
     - platform: state
-      entity_id: binary_sensor.alexa_devices_connected
+      entity_id: binary_sensor.remote_ui
       to: "off"
       for:
-        minutes: 2
-      id: alexa_offline
-    - platform: state
-      entity_id: binary_sensor.tado_connected
-      to: "off"
-      for:
-        minutes: 2
-      id: tado_offline
-    - platform: state
-      entity_id: binary_sensor.home_connect_connected
-      to: "off"
-      for:
-        minutes: 2
-      id: home_connect_offline
+        minutes: 5
   action:
-    - service: persistent_notification.create
-      data:
-        title: "⚠️ Cloud Integration Offline"
-        message: >
-          **{{ trigger.id | replace('_offline', '') | replace('_', ' ') | title }}**
-          has lost cloud connection.
-          Time: {{ now().strftime('%H:%M:%S') }}
-        notification_id: "cloud_{{ trigger.id }}"
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "Cloud Integration Offline"
-        message: "{{ trigger.id | replace('_offline', '') | title }} disconnected"
-  mode: queued
-  max: 10
+        title: "⚠️ HA Cloud Offline"
+        message: "Home Assistant Cloud has been offline for 5 minutes. Remote access may be unavailable."

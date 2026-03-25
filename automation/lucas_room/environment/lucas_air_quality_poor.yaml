@@ -1,0 +1,14 @@
+- id: lucas_air_quality_poor
+  alias: "Lucas - Air Quality Poor"
+  description: "IAQ score below 50: notification to check air quality."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.lucass_room_air_quality_monitor_indoor_air_quality
+      below: 50
+      for:
+        minutes: 15
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🌬️ Poor Air Quality - Lucas Room"
+        message: "Air quality index is {{ states('sensor.lucass_room_air_quality_monitor_indoor_air_quality') }}. Consider opening a window or running the purifier."

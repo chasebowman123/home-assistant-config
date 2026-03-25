@@ -1,0 +1,36 @@
+- id: lucas_room_bathtime
+  alias: "Lucas - Bathtime"
+  description: "Bathroom scene, calming room lights, bathtime playlist."
+  trigger:
+    - platform: state
+      entity_id: input_select.lucas_room
+      to: "Bathtime"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.lucas_room_spots
+      data:
+        brightness_pct: 50
+        color_temp_kelvin: 2700
+    - service: light.turn_on
+      target:
+        entity_id: light.lucas_room_iris
+      data:
+        brightness_pct: 40
+        color_name: blue
+    - service: light.turn_on
+      target:
+        entity_id: light.lucas_bathroom_lights
+      data:
+        brightness_pct: 80
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.lucas_room_sonos
+      data:
+        volume_level: 0.25
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.lucas_room_sonos
+      data:
+        media_content_id: "Bathtime Playlist"
+        media_content_type: playlist

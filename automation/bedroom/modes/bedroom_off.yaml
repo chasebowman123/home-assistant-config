@@ -1,0 +1,14 @@
+- id: bedroom_off
+  alias: "Bedroom - Off"
+  description: "All bedroom lights off."
+  trigger:
+    - platform: state
+      entity_id: input_select.bedroom
+      to: "Off"
+  action:
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.bedroom_spots
+          - light.bedroom_signe
+          - light.bedroom_tv_strip

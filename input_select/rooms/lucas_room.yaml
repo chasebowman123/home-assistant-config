@@ -1,10 +1,11 @@
-# Lucas Room State
+# Lucas Room Sub-Mode
 lucas_room:
   name: "Lucas Room"
   options:
-    - "Awake"
-    - "Napping"
+    - "Standard"
+    - "Bathtime"
+    - "Wind Down"
     - "Bedtime"
-    - "Away"
-  initial: Awake
+    - "Night Time"
+  initial: "Standard"
   icon: mdi:baby-face-outline

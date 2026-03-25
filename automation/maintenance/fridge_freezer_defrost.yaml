@@ -1,0 +1,14 @@
+- id: fridge_freezer_defrost
+  alias: "Maintenance - Fridge/Freezer Defrost"
+  description: "Quarterly reminder to defrost/clean fridge-freezer."
+  trigger:
+    - platform: time
+      at: "10:00:00"
+  condition:
+    - condition: template
+      value_template: "{{ now().day == 1 and now().month in [3, 6, 9, 12] }}"
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🔧 Fridge/Freezer"
+        message: "Quarterly reminder: defrost and clean the fridge-freezer."

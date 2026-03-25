@@ -1,0 +1,25 @@
+- id: washing_machine_done
+  alias: "Appliance - Washing Machine Done"
+  description: "Notify when washing machine cycle completes (power drops below 5W after being above 10W)."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.washing_machine_power
+      below: 5
+      for:
+        minutes: 3
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.washing_machine_energy_today
+      above: 0.1
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "👕 Washing Machine Done"
+        message: "The washing machine has finished its cycle."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.kitchen
+        message: "The washing machine has finished."
+        data:
+          type: announce

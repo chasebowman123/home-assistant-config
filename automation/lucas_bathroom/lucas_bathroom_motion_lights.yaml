@@ -1,0 +1,11 @@
+- id: lucas_bathroom_motion_lights
+  alias: "Lucas Bathroom - Motion Lights"
+  description: "Motion activates Lucas bathroom lights. No auto-off per requirement."
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.lucas_bathroom_motion
+      to: "on"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.lucas_bathroom_lights

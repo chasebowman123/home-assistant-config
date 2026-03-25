@@ -1,8 +1,0 @@
-# Lounge → Auto
-- id: lounge_state_auto
-  alias: "Lounge - State Auto"
-  trigger:
-    - platform: state
-      entity_id: input_select.lounge
-      to: "Auto"
-  action: []

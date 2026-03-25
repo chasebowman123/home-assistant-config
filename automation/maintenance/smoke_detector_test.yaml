@@ -1,0 +1,14 @@
+- id: smoke_detector_test
+  alias: "Maintenance - Smoke Detector Test"
+  description: "Monthly reminder to test smoke detectors."
+  trigger:
+    - platform: time
+      at: "10:00:00"
+  condition:
+    - condition: template
+      value_template: "{{ now().day == 1 }}"
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🔧 Smoke Detector Test"
+        message: "Monthly reminder: test all smoke detectors today."

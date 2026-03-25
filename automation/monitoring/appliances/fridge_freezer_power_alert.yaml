@@ -1,0 +1,20 @@
+- id: fridge_freezer_power_alert
+  alias: "Appliance - Fridge Freezer Power Alert"
+  description: "Alert if fridge/freezer loses power (stops drawing any watts)."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.fridge_freezer_power
+      below: 1
+      for:
+        minutes: 30
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🧊 Fridge Freezer Alert"
+        message: "Fridge/freezer has had no power draw for 30 minutes. Check if it's been unplugged or tripped."
+        data:
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 1.0

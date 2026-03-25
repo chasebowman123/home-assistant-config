@@ -1,10 +1,11 @@
-# Lounge State
+# Lounge Sub-Mode
 lounge:
   name: "Lounge"
   options:
-    - "Auto"
-    - "Movie"
+    - "Standard"
+    - "Movie with Sync"
+    - "Movie without Sync"
     - "Music"
     - "Off"
-  initial: Auto
+  initial: "Standard"
   icon: mdi:sofa

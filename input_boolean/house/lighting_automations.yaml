@@ -1,7 +1,0 @@
-# Lighting Automations
-# Global toggle for all lighting automations. When off, no motion-triggered
-# or state-triggered lighting changes will fire. Manual control only.
-lighting_automations:
-  name: "Lighting Automations"
-  icon: mdi:lightbulb-auto
-  initial: true

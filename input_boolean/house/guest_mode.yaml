@@ -1,6 +1,0 @@
-# Guest Mode
-# Enable when guests are visiting. Modifies automations to be less intrusive
-# and prevents automatic lockdown sequences.
-guest_mode:
-  name: "Guest Mode"
-  icon: mdi:account-group

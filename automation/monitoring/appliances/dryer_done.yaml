@@ -1,0 +1,25 @@
+- id: dryer_done
+  alias: "Appliance - Dryer Done"
+  description: "Notify when dryer cycle completes."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.dryer_power
+      below: 5
+      for:
+        minutes: 3
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.dryer_energy_today
+      above: 0.1
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "👔 Dryer Done"
+        message: "The dryer has finished its cycle."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.kitchen
+        message: "The dryer has finished."
+        data:
+          type: announce

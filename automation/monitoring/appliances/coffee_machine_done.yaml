@@ -1,0 +1,18 @@
+- id: coffee_machine_done
+  alias: "Appliance - Coffee Machine Done"
+  description: "Coffee machine idle: turn off plug to save standby power."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.coffee_machine_power
+      below: 5
+      for:
+        minutes: 30
+  condition:
+    - condition: state
+      entity_id: switch.coffee_machine
+      state: "on"
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "☕ Coffee Machine Idle"
+        message: "Coffee machine has been idle for 30 minutes."

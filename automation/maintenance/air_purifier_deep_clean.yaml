@@ -1,0 +1,14 @@
+- id: air_purifier_deep_clean
+  alias: "Maintenance - Air Purifier Clean"
+  description: "Quarterly reminder to deep clean air purifier."
+  trigger:
+    - platform: time
+      at: "10:00:00"
+  condition:
+    - condition: template
+      value_template: "{{ now().day == 15 and now().month in [2, 5, 8, 11] }}"
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🔧 Air Purifier"
+        message: "Quarterly reminder: deep clean the Core 400S pre-filter and check the HEPA filter."

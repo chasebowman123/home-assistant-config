@@ -1,21 +1,11 @@
-# Lucas Nightlight
 lucas_nightlight:
   alias: "Lucas Nightlight"
-  description: "Gentle nightlight using Iris"
+  description: "Toggle Lucas Go nightlight at low brightness."
   icon: mdi:lightbulb-night
   mode: single
   sequence:
-    - service: light.turn_off
+    - service: light.toggle
       target:
-        entity_id:
-          - light.lucass_room_spot_lights
-          - light.lucass_room_pendant_light
-    - service: switch.turn_off
-      target:
-        entity_id: switch.cloud_lamp
-    - service: light.turn_on
-      target:
-        entity_id: light.lucass_room_iris
+        entity_id: light.lucas_go_nightlight
       data:
-        brightness_pct: 2
-        rgb_color: [255, 100, 50]
+        brightness_pct: 3

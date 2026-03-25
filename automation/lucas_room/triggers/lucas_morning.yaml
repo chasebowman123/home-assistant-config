@@ -1,0 +1,24 @@
+- id: lucas_morning
+  alias: "Lucas - Morning"
+  description: "First door open after 7am triggers Lucas morning routine."
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.lucas_room_door
+      to: "on"
+  condition:
+    - condition: time
+      after: "07:00:00"
+      before: "10:00:00"
+    - condition: state
+      entity_id: input_boolean.lucas_sleeping
+      state: "on"
+  action:
+    - service: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.lucas_sleeping
+    - service: input_select.select_option
+      target:
+        entity_id: input_select.lucas_room
+      data:
+        option: "Standard"
+    - service: script.lucas_morning_routine

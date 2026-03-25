@@ -1,0 +1,12 @@
+- id: high_daily_usage_alert
+  alias: "Energy - High Daily Usage Alert"
+  description: "Alert if daily usage exceeds 30 kWh."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.energy_daily
+      above: 30
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "⚡ High Energy Usage"
+        message: "Daily usage has exceeded 30 kWh ({{ states('sensor.energy_daily') | float | round(1) }} kWh / £{{ (states('sensor.energy_daily') | float * 0.27) | round(2) }}). Check for any appliances running unnecessarily."

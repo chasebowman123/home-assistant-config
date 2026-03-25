@@ -1,6 +1,0 @@
-# Goodnight Active
-# Set by the Goodnight Routine script. Indicates the household is
-# winding down for bed. Dims hallway, adjusts climate, arms security.
-goodnight_active:
-  name: "Goodnight Active"
-  icon: mdi:weather-night

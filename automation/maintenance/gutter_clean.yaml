@@ -1,0 +1,14 @@
+- id: gutter_clean
+  alias: "Maintenance - Gutter Clean"
+  description: "Bi-annual gutter cleaning reminder."
+  trigger:
+    - platform: time
+      at: "10:00:00"
+  condition:
+    - condition: template
+      value_template: "{{ now().day == 1 and now().month in [4, 10] }}"
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🔧 Gutter Cleaning"
+        message: "Time for a bi-annual gutter clean. Book a professional or DIY this weekend."

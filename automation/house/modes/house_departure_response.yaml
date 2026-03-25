@@ -1,0 +1,45 @@
+- id: house_departure_response
+  alias: "House - Departure Response"
+  description: "Handle departure notification button press."
+  trigger:
+    - platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: "SET_ALL_OUT"
+    - platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: "SET_DOGS_ALONE"
+    - platform: event
+      event_type: mobile_app_notification_action
+      event_data:
+        action: "SET_AWAY"
+  action:
+    - choose:
+        - conditions:
+            - condition: template
+              value_template: "{{ trigger.event.data.action == 'SET_ALL_OUT' }}"
+          sequence:
+            - service: input_select.select_option
+              target:
+                entity_id: input_select.house
+              data:
+                option: "All Out"
+        - conditions:
+            - condition: template
+              value_template: "{{ trigger.event.data.action == 'SET_DOGS_ALONE' }}"
+          sequence:
+            - service: input_select.select_option
+              target:
+                entity_id: input_select.house
+              data:
+                option: "Dogs Alone"
+        - conditions:
+            - condition: template
+              value_template: "{{ trigger.event.data.action == 'SET_AWAY' }}"
+          sequence:
+            - service: input_select.select_option
+              target:
+                entity_id: input_select.house
+              data:
+                option: "Away"

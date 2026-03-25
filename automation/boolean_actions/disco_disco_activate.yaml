@@ -1,0 +1,40 @@
+- id: disco_disco_activate
+  alias: "Disco Disco - Activate"
+  description: "Disco lights on, colour cycling, party playlist."
+  trigger:
+    - platform: state
+      entity_id: input_boolean.disco_disco
+      to: "on"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.lounge_iris
+      data:
+        brightness_pct: 100
+        color_name: purple
+    - service: light.turn_on
+      target:
+        entity_id: light.lounge_play_light_bar
+      data:
+        brightness_pct: 100
+        color_name: blue
+    - service: light.turn_on
+      target:
+        entity_id: light.lounge_light_strip
+      data:
+        brightness_pct: 100
+        color_name: red
+    - service: light.turn_off
+      target:
+        entity_id: light.lounge_spots
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.lounge_sonos
+      data:
+        volume_level: 0.5
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.lounge_sonos
+      data:
+        media_content_id: "Party Playlist"
+        media_content_type: playlist

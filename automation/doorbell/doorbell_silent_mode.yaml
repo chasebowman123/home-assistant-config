@@ -1,0 +1,23 @@
+- id: doorbell_silent_mode_on
+  alias: "Doorbell - Silent Mode On"
+  description: "Suppress doorbell physical ring in quiet modes."
+  trigger:
+    - platform: state
+      entity_id: input_select.house
+      to:
+        - "Evening Time"
+        - "Night Time"
+        - "Dogs Alone"
+    - platform: state
+      entity_id: input_boolean.lucas_sleeping
+      to: "on"
+    - platform: state
+      entity_id: input_boolean.important_meeting
+      to: "on"
+  action:
+    - service: siren.turn_off
+      target:
+        entity_id:
+          - siren.basement_door_siren
+          - siren.upstairs_siren
+          - siren.lobby_siren

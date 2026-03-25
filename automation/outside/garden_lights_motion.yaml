@@ -1,0 +1,29 @@
+- id: outside_garden_lights_motion
+  alias: "Outside - Garden Lights Night Motion"
+  description: "Motion detected after sunset turns on garden lights for 5 minutes."
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.garden_motion
+      to: "on"
+  condition:
+    - condition: state
+      entity_id: sun.sun
+      state: "below_horizon"
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id: input_select.house
+          state: "Away"
+        - condition: state
+          entity_id: input_select.house
+          state: "All Out"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.garden_lights
+    - delay:
+        minutes: 5
+    - service: light.turn_off
+      target:
+        entity_id: light.garden_lights
+  mode: restart

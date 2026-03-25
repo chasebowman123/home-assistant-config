@@ -1,114 +1,112 @@
-# Eidam Smart Home — Home Assistant Configuration
+# 🏠 Eidam Smart Home
 
-[Home Assistant](https://home-assistant.io/) is the core of the Eidam household smart home. This repo includes all custom packages, sensors, automations, scripts, and dashboards.
+Home Assistant configuration for the Eidam household — Edward, Loretta, Lucas, three dogs, and nanny Ankii.
 
-## Deployment
+## Hardware
 
-Home Assistant runs on a [Home Assistant Green](https://www.home-assistant.io/green/) with a [Synology DS224+](https://www.synology.com/) NAS for Docker containers, media serving (Plex), and backups. [Nabu Casa](https://www.nabucasa.com/) provides remote access.
-
-## Key Software
-
-- [Home Assistant](https://home-assistant.io/)
-- [Philips Hue](https://www.philips-hue.com/) for lighting
-- [Tado](https://www.tado.com/) for climate control
-- [Ring](https://ring.com/) for security
-- [Sonos](https://www.sonos.com/) for audio
-- [TP-Link Tapo](https://www.tp-link.com/) for smart plugs
-
----
-
-## Documentation
-
-| Document | Description |
-|----------|-------------|
-| [Rooms](docs/ROOMS.md) | Room modes, state management, and occupancy |
-| [People](docs/PEOPLE.md) | Person entities, presence detection, notifications |
-| [Automations](docs/AUTOMATIONS.md) | Automation architecture and highlights |
-| [Devices](docs/DEVICES.md) | Complete hardware inventory |
-
----
+| Component | Details |
+|---|---|
+| Hub | Home Assistant Green |
+| NAS | Synology DS224+ |
+| Lighting | Philips Hue (spots, Iris, Signe, Go, Play bars, strips, piano lamp, cloud lamp) |
+| Heating | Tado smart radiator valves (6 zones) |
+| Security | Ring alarm, 4 cameras, 3 doorbells |
+| Power | 16+ TP-Link Tapo P304M smart plugs |
+| Media | Sonos (lounge, kitchen, Lucas room, bedroom), Samsung TV (lounge), LG TV (bedroom) |
+| Appliances | Miele washing machine, Bosch dishwasher, dryer, oven, fridge-freezer, coffee machine |
+| Air Quality | Levoit Core 400S purifier, Lucas room air quality monitor, humidifier |
+| Sensors | Zigbee2MQTT door/motion sensors, Hue motion sensors, Nanit baby monitor |
+| Buttons | ~20 Flic buttons (including Duo models) |
+| Sync | Philips Hue Sync Box (lounge) |
 
 ## Architecture
 
-The configuration follows a modular, room-centric approach inspired by [johnkoht/hassio-config](https://github.com/johnkoht/hassio-config). Instead of large monolithic automations, each room is an independent state machine with its own modes, occupancy tracking, and automations.
-
-### Room State Machines
-
-Every room has an `input_select` that manages its current mode. Automations respond to mode changes, creating a clean separation of concerns.
-
 ```
-House State (Auto/Away/Bedtime/Quiet/Vacation)
-  ├── Lounge (Auto/Movie/Music/Off)
-  ├── Bedroom (Auto/Relaxing/Bedtime/Off)
-  ├── Lucas Room (Awake/Napping/Bedtime/Away)
-  ├── Kitchen (Auto/Cooking/Off)
-  └── Office (Available/DnD/Off)
-```
-
-### Key Booleans
-
-| Boolean | Purpose |
-|---------|---------|
-| `house_occupied` | Person tracking — is anyone home? |
-| `guest_mode` | Guests visiting — less aggressive automations |
-| `quiet_mode` | Lucas sleeping — suppress TTS, dim hallway |
-| `lighting_automations` | Global toggle for motion-triggered lighting |
-| `bad_weather` | Weather is poor — add warm ambient lighting |
-| `goodnight_active` | Bedtime routine has fired |
-
-### File Structure
-
-```
-├── automation/              # Individual automation files by room/category
-│   ├── alerts/              # System alerts and notifications
-│   ├── bedroom/modes/       # Bedroom state automations
-│   ├── hallway/lights/      # Hallway motion lighting
-│   ├── house/modes/         # House-level mode changes
-│   ├── house/occupancy/     # Presence-based house state
-│   ├── kitchen/             # Kitchen modes + lighting
-│   ├── lounge/              # Lounge modes + auto-movie detection
-│   ├── lucas_room/          # Lucas room + door alerts
-│   ├── office/              # Office modes + motion lighting
-│   ├── security/            # Alarm, doorbell, outside lights
-│   └── weather/             # Bad weather detection
-├── binary_sensors/          # Template binary sensors (time-of-day)
-├── dashboards/              # Lovelace dashboard YAML
-├── docs/                    # Documentation
-├── group/                   # Entity groups
-├── input_boolean/           # House and room booleans
-│   ├── house/               # House-level toggles
-│   ├── people/              # Person-specific booleans
-│   └── rooms/               # Room occupancy booleans
-├── input_number/            # Volume levels, thresholds
-├── input_select/            # Room state machines
-│   ├── house/               # House mode
-│   └── rooms/               # Per-room modes
-├── packages/                # Complex packages (energy monitoring)
-├── scripts/                 # Reusable action sequences
-│   ├── house/               # House-level scripts
-│   └── routines/            # Morning, bedtime, Lucas routines
-├── sensors/                 # Template sensors (weather, time)
-├── themes/                  # Custom themes
-└── www/                     # Static assets
+configuration.yaml          # Main config with includes
+├── automation/             # 78 automations organised by area
+│   ├── house/modes/        # 8 — house mode activations + departure
+│   ├── doorbell/           # 3 — visual alerts + silent mode
+│   ├── outside/            # 1 — garden lights
+│   ├── hallway/            # 2 — ambient + night off
+│   ├── lounge/modes/       # 5 — movie sync/no-sync, music, standard, off
+│   ├── lounge/other/       # 1 — bad weather ambient
+│   ├── bedroom/modes/      # 3 — relaxing, bedtime, off
+│   ├── lucas_room/modes/   # 5 — standard, bathtime, wind down, bedtime, night
+│   ├── lucas_room/triggers/# 2 — night wake alert, morning
+│   ├── lucas_room/environment/ # 5 — bath temp, room temp, nanit, air quality
+│   ├── office/modes/       # 3 — work, evening, guests
+│   ├── cloakroom/          # 1 — motion lights
+│   ├── lucas_bathroom/     # 1 — motion lights (no auto-off)
+│   ├── bathroom/           # 1 — door sensor lights
+│   ├── edward_alone/       # 4 — motion + door sensor lights
+│   ├── weather/            # 2 — bad weather on/off
+│   ├── alerts/             # 2 — cloud offline, daily energy
+│   ├── boolean_actions/    # 4 — disco disco, evening entertaining
+│   ├── monitoring/         # 16 — appliances, ring batteries, air quality, energy
+│   └── maintenance/        # 9 — scheduled reminders
+├── scripts/                # 10 scripts
+│   ├── house/              # all lights off, silent doorbell flash
+│   └── routines/           # morning, sunset, goodnight, lucas routines
+├── input_select/           # House mode + 4 room sub-modes
+├── input_boolean/          # 6 overlay booleans
+├── input_number/           # Media player volumes
+├── binary_sensors/         # Time-of-day sensors
+├── sensors/                # Sun elevation, time, weather
+├── packages/               # Energy monitoring package
+├── dashboards/             # Lovelace YAML dashboards
+├── group/                  # Light + media player groups
+└── themes/                 # Eidam custom theme
 ```
 
----
+## House Modes
 
-## Highlights
+All modes are **manually triggered** via dashboard or Flic buttons — no automatic mode switching.
 
-Some favourite automations:
+| Mode | Description |
+|---|---|
+| Away | Holiday. Alarm armed, frost protection (14°C), presence simulation |
+| All Out | Everyone + dogs out. No alarm, heating lowered, all off |
+| Dogs Alone | People out, dogs home. Calming music, doorbell silent, comfortable heat |
+| Day Time | Standard operation. Normal heating and lighting |
+| Evening Time | Lucas in bed, adults up. Mood lighting, doorbell silent |
+| Night Time | Everyone in bed. Arm home, nightlights, monitoring active |
 
-- **Auto Movie Detection** — Lounge auto-switches to Movie mode when the TV plays after dark
-- **Lucas Door Night Alert** — Lounge lights flash red if Lucas's door opens between 10pm–7am
-- **Quiet Mode Cascade** — Lucas napping triggers house-wide quiet behavior
-- **Goodnight Routine** — One button: dims lights, sets climate, arms security, sets scenes
-- **Bad Weather Ambient** — Warm lighting automatically activates when weather deteriorates
-- **Security Auto-Arm** — Arms when nobody's home, arms home at bedtime, disarms on arrival
+A **smart departure notification** fires when both phones leave home, offering an actionable notification to select All Out, Dogs Alone, or Away.
 
----
+## Overlay Booleans
 
-## Devices
+These can be toggled independently of house modes:
 
-Extensive device ecosystem including Hue lighting (20+ bulbs), Tado climate (6 zones), Ring security (7 cameras), Sonos audio, Samsung/LG TVs, Tapo smart plugs (~40), and Miele/Bosch appliances.
+| Boolean | Effect |
+|---|---|
+| Lucas Sleeping | Suppress TTS, doorbell silent, dim hallway, door monitoring |
+| Important Meeting | Suppress TTS + doorbell, office quiet |
+| Evening Entertaining | Mood lighting, relaxed automations, music-friendly |
+| Disco Disco | Disco lights + colour cycling + party playlist |
+| Bad Weather | Auto-triggered. Piano lamp, hallway lights, cosy scene |
+| Edward Alone | Full motion/door automation, Hue Sync Box enabled |
 
-For the complete inventory, see [Devices](docs/DEVICES.md).
+## Room Sub-Modes
+
+| Room | Modes |
+|---|---|
+| Lounge | Standard, Movie with Sync, Movie without Sync, Music, Off |
+| Bedroom | Relaxing, Bedtime, Off |
+| Lucas Room | Standard, Bathtime, Wind Down, Bedtime, Night Time |
+| Office | Standard Work, Standard Evening, Arriving Guests |
+
+## Monitoring
+
+- **Appliance cycle completion** — washing machine, dryer, dishwasher (power-based detection)
+- **Safety alerts** — oven left on, fridge/freezer power loss, high power draw
+- **Ring battery** — low (20%) and critical (5%) alerts for all 4 cameras
+- **Air quality** — PM2.5 monitoring, purifier filter life, humidifier water level
+- **Energy** — daily summary, weekly/monthly reports, high usage alerts (27p/kWh)
+- **Maintenance** — 9 scheduled reminders (HVAC, smoke detectors, boiler, appliances, gutters)
+
+## Docs
+
+- [AUTOMATIONS.md](docs/AUTOMATIONS.md) — Complete automation reference
+- [DEVICES.md](docs/DEVICES.md) — Hardware inventory
+- [ROOMS.md](docs/ROOMS.md) — Room-by-room setup
+- [PEOPLE.md](docs/PEOPLE.md) — Household members

@@ -1,0 +1,14 @@
+- id: lucas_room_too_hot
+  alias: "Lucas - Room Too Hot"
+  description: "Room temperature exceeds 24°C."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.lucas_room_temperature
+      above: 24
+      for:
+        minutes: 10
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🌡️ Lucas Room Too Hot"
+        message: "Lucas's room is {{ states('sensor.lucas_room_temperature') }}°C."

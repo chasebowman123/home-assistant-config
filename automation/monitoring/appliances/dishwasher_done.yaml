@@ -1,0 +1,25 @@
+- id: dishwasher_done
+  alias: "Appliance - Dishwasher Done"
+  description: "Notify when dishwasher cycle completes."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.dishwasher_power
+      below: 5
+      for:
+        minutes: 3
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.dishwasher_energy_today
+      above: 0.1
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🍽️ Dishwasher Done"
+        message: "The dishwasher has finished its cycle."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.kitchen
+        message: "The dishwasher has finished."
+        data:
+          type: announce

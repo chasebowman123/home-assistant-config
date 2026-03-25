@@ -1,0 +1,30 @@
+- id: edward_alone_office_motion
+  alias: "Edward Alone - Office Motion Lights"
+  description: "Motion activates office spots when Edward is alone. 15 min timeout."
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.office_motion
+      to: "on"
+  condition:
+    - condition: state
+      entity_id: input_boolean.edward_alone
+      state: "on"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.office_spots
+      data:
+        brightness_pct: 80
+        color_temp_kelvin: 3500
+    - wait_for_trigger:
+        - platform: state
+          entity_id: binary_sensor.office_motion
+          to: "off"
+          for:
+            minutes: 15
+    - service: light.turn_off
+      target:
+        entity_id: light.office_spots
+      data:
+        transition: 5
+  mode: restart

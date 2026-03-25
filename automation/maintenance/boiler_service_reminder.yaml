@@ -1,0 +1,14 @@
+- id: boiler_service_reminder
+  alias: "Maintenance - Boiler Service"
+  description: "Annual boiler service reminder in September."
+  trigger:
+    - platform: time
+      at: "10:00:00"
+  condition:
+    - condition: template
+      value_template: "{{ now().day == 1 and now().month == 9 }}"
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🔧 Boiler Service Due"
+        message: "Annual boiler service reminder. Book a Gas Safe engineer."

@@ -1,0 +1,12 @@
+- id: humidifier_water_low
+  alias: "Humidifier - Water Level Low"
+  description: "Lucas humidifier water level low."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.lucas_strip_humidifier_water_level
+      below: 15
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "💧 Humidifier Water Low"
+        message: "Lucas's humidifier water level is {{ states('sensor.lucas_strip_humidifier_water_level') }}%. Refill soon."

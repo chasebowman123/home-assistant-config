@@ -1,0 +1,20 @@
+- id: oven_left_on
+  alias: "Appliance - Oven Left On"
+  description: "Oven drawing power for over 2 hours: safety alert."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.oven_power
+      above: 50
+      for:
+        hours: 2
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🔥 Oven Still On"
+        message: "The oven has been running for over 2 hours. Is everything OK?"
+        data:
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 1.0

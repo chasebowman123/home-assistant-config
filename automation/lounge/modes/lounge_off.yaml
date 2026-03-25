@@ -1,0 +1,22 @@
+- id: lounge_off
+  alias: "Lounge - Off"
+  description: "All lounge lights off, pause media."
+  trigger:
+    - platform: state
+      entity_id: input_select.lounge
+      to: "Off"
+  action:
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.lounge_spots
+          - light.lounge_play_light_bar
+          - light.lounge_light_strip
+          - light.lounge_piano_lamp
+          - light.lounge_iris
+    - service: switch.turn_off
+      target:
+        entity_id: switch.lounge_hue_sync_box
+    - service: media_player.media_pause
+      target:
+        entity_id: media_player.lounge_sonos

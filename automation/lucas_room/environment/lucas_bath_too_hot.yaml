@@ -1,0 +1,18 @@
+- id: lucas_bath_too_hot
+  alias: "Lucas - Bath Too Hot"
+  description: "Bath temperature exceeds 38°C: critical mobile notification."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.lucas_bath_temp_sensor_temperature
+      above: 38
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🚨 Bath Too Hot!"
+        message: "Lucas's bath is {{ states('sensor.lucas_bath_temp_sensor_temperature') }}°C — above safe limit of 38°C!"
+        data:
+          push:
+            sound:
+              name: default
+              critical: 1
+              volume: 1.0

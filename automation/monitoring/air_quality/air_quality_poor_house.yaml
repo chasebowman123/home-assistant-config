@@ -1,0 +1,17 @@
+- id: air_quality_poor_house
+  alias: "Air Quality - PM2.5 High"
+  description: "Alert when PM2.5 readings are high."
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.core_400s_pm2_5
+      above: 50
+      for:
+        minutes: 15
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🌬️ High PM2.5 Detected"
+        message: "PM2.5 is {{ states('sensor.core_400s_pm2_5') }}μg/m³. Consider running the air purifier on high."
+    - service: fan.turn_on
+      target:
+        entity_id: fan.core_400s

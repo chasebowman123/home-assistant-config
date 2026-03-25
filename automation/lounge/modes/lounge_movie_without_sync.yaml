@@ -1,0 +1,26 @@
+- id: lounge_movie_without_sync
+  alias: "Lounge - Movie without Sync"
+  description: "Spots off, strip/play dim ambiance, Sync Box OFF."
+  trigger:
+    - platform: state
+      entity_id: input_select.lounge
+      to: "Movie without Sync"
+  action:
+    - service: light.turn_off
+      target:
+        entity_id: light.lounge_spots
+    - service: switch.turn_off
+      target:
+        entity_id: switch.lounge_hue_sync_box
+    - service: light.turn_on
+      target:
+        entity_id: light.lounge_light_strip
+      data:
+        brightness_pct: 15
+        color_temp_kelvin: 2200
+    - service: light.turn_on
+      target:
+        entity_id: light.lounge_play_light_bar
+      data:
+        brightness_pct: 15
+        color_temp_kelvin: 2200

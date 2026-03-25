@@ -1,0 +1,17 @@
+- id: weekly_energy_report
+  alias: "Energy - Weekly Report"
+  description: "Weekly energy usage summary every Sunday at 9pm."
+  trigger:
+    - platform: time
+      at: "21:00:00"
+  condition:
+    - condition: time
+      weekday:
+        - sun
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "⚡ Weekly Energy Report"
+        message: >
+          This week's usage: {{ states('sensor.energy_weekly') | float | round(1) }} kWh
+          (£{{ (states('sensor.energy_weekly') | float * 0.27) | round(2) }}).

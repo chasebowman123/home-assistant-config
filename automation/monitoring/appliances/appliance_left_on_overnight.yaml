@@ -1,0 +1,27 @@
+- id: appliance_left_on_overnight
+  alias: "Appliance - Left On Overnight"
+  description: "Notify if washing machine, dryer, or dishwasher still drawing power at midnight."
+  trigger:
+    - platform: time
+      at: "00:00:00"
+  condition:
+    - condition: or
+      conditions:
+        - condition: numeric_state
+          entity_id: sensor.washing_machine_power
+          above: 10
+        - condition: numeric_state
+          entity_id: sensor.dryer_power
+          above: 10
+        - condition: numeric_state
+          entity_id: sensor.dishwasher_power
+          above: 10
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🌙 Appliance Still Running"
+        message: >
+          An appliance is still running at midnight.
+          {% if states('sensor.washing_machine_power') | float > 10 %}Washing Machine: {{ states('sensor.washing_machine_power') }}W. {% endif %}
+          {% if states('sensor.dryer_power') | float > 10 %}Dryer: {{ states('sensor.dryer_power') }}W. {% endif %}
+          {% if states('sensor.dishwasher_power') | float > 10 %}Dishwasher: {{ states('sensor.dishwasher_power') }}W. {% endif %}

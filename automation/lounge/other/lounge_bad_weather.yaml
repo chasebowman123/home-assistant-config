@@ -1,0 +1,23 @@
+- id: lounge_bad_weather
+  alias: "Lounge - Bad Weather Ambient"
+  description: "Bad weather detected: turn on piano lamp for cosy ambiance."
+  trigger:
+    - platform: state
+      entity_id: input_boolean.bad_weather
+      to: "on"
+  condition:
+    - condition: not
+      conditions:
+        - condition: state
+          entity_id: input_select.house
+          state: "Away"
+        - condition: state
+          entity_id: input_select.house
+          state: "All Out"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.lounge_piano_lamp
+      data:
+        brightness_pct: 50
+        color_temp_kelvin: 2200

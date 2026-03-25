@@ -1,0 +1,15 @@
+- id: dryer_lint_reminder
+  alias: "Maintenance - Dryer Lint"
+  description: "Weekly reminder to clean dryer lint filter."
+  trigger:
+    - platform: time
+      at: "10:00:00"
+  condition:
+    - condition: time
+      weekday:
+        - sun
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🔧 Dryer Lint Filter"
+        message: "Weekly reminder: clean the dryer lint filter for safety and efficiency."

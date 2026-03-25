@@ -1,42 +1,11 @@
-# Lucas Wind Down
 lucas_wind_down:
   alias: "Lucas Wind Down"
-  description: "Pre-bedtime calming routine"
-  icon: mdi:weather-sunset
+  description: "Begin Lucas wind-down routine."
+  icon: mdi:moon-waning-crescent
   mode: single
   sequence:
-    - service: light.turn_on
+    - service: input_select.select_option
       target:
-        entity_id: light.lucass_room_iris
+        entity_id: input_select.lucas_room
       data:
-        brightness_pct: 30
-        color_temp: 500
-        transition: 10
-    - service: light.turn_on
-      target:
-        entity_id: light.lucass_room_spot_lights
-      data:
-        brightness_pct: 20
-        transition: 10
-    - service: switch.turn_on
-      target:
-        entity_id: switch.cloud_lamp
-    - service: light.turn_off
-      target:
-        entity_id: light.lucass_room_pendant_light
-      data:
-        transition: 5
-    - service: input_boolean.turn_on
-      target:
-        entity_id: input_boolean.lucas_napping
-    - service: media_player.volume_set
-      target:
-        entity_id: media_player.lucas_s_echo_show
-      data:
-        volume_level: 0.3
-    - service: media_player.play_media
-      target:
-        entity_id: media_player.lucas_s_echo_show
-      data:
-        media_content_type: SPOTIFY
-        media_content_id: !secret spotify_lucas_calm
+        option: "Wind Down"

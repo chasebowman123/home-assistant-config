@@ -1,0 +1,26 @@
+- id: house_mode_day_time
+  alias: "House - Day Time Mode"
+  description: "Standard daytime operation. Normal heating and lighting."
+  trigger:
+    - platform: state
+      entity_id: input_select.house
+      to: "Day Time"
+  action:
+    - service: climate.set_preset_mode
+      target:
+        entity_id:
+          - climate.hallway
+          - climate.lounge
+          - climate.kitchen
+          - climate.bedroom
+          - climate.lucas_room
+          - climate.office
+      data:
+        preset_mode: "home"
+    - service: input_boolean.turn_off
+      target:
+        entity_id:
+          - input_boolean.lucas_sleeping
+          - input_boolean.edward_alone
+          - input_boolean.disco_disco
+          - input_boolean.evening_entertaining

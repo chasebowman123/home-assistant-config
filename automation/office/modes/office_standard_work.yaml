@@ -1,0 +1,14 @@
+- id: office_standard_work
+  alias: "Office - Standard Work"
+  description: "Work mode: spots 100% at 4000K cool white."
+  trigger:
+    - platform: state
+      entity_id: input_select.office
+      to: "Standard Work"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.office_spots
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 4000

@@ -1,0 +1,14 @@
+- id: dishwasher_salt_reminder
+  alias: "Maintenance - Dishwasher Salt"
+  description: "Monthly reminder to check dishwasher salt."
+  trigger:
+    - platform: time
+      at: "10:00:00"
+  condition:
+    - condition: template
+      value_template: "{{ now().day == 1 }}"
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🔧 Dishwasher Salt"
+        message: "Monthly check: top up dishwasher salt and rinse aid if needed."

@@ -1,12 +1,13 @@
-# House State
-# Manages the overall house mode. Room automations respond to this.
+# House Mode
+# All modes manually triggered via dashboard or Flic buttons.
 house:
   name: "House"
   options:
-    - "Auto"
     - "Away"
-    - "Bedtime"
-    - "Quiet"
-    - "Vacation"
-  initial: Auto
+    - "All Out"
+    - "Dogs Alone"
+    - "Day Time"
+    - "Evening Time"
+    - "Night Time"
+  initial: "Day Time"
   icon: mdi:home

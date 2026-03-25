@@ -1,10 +1,9 @@
-# Bedroom State
+# Bedroom Sub-Mode
 bedroom:
   name: "Bedroom"
   options:
-    - "Auto"
     - "Relaxing"
     - "Bedtime"
     - "Off"
-  initial: Auto
-  icon: mdi:bed-king
+  initial: "Off"
+  icon: mdi:bed

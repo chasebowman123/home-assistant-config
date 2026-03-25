@@ -1,0 +1,14 @@
+- id: washing_machine_clean
+  alias: "Maintenance - Washing Machine Clean"
+  description: "Monthly reminder to run a cleaning cycle."
+  trigger:
+    - platform: time
+      at: "10:00:00"
+  condition:
+    - condition: template
+      value_template: "{{ now().day == 15 }}"
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🔧 Washing Machine"
+        message: "Run a hot empty cycle with cleaning tablets to maintain the washing machine."

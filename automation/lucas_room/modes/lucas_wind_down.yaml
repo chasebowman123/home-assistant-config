@@ -1,0 +1,36 @@
+- id: lucas_room_wind_down
+  alias: "Lucas - Wind Down"
+  description: "Dim Iris warm, spots low, cloud lamp, calm music."
+  trigger:
+    - platform: state
+      entity_id: input_select.lucas_room
+      to: "Wind Down"
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.lucas_room_iris
+      data:
+        brightness_pct: 30
+        color_temp_kelvin: 2200
+    - service: light.turn_on
+      target:
+        entity_id: light.lucas_room_spots
+      data:
+        brightness_pct: 20
+        color_temp_kelvin: 2200
+    - service: light.turn_on
+      target:
+        entity_id: light.lucas_cloud_lamp
+      data:
+        brightness_pct: 30
+    - service: media_player.volume_set
+      target:
+        entity_id: media_player.lucas_room_sonos
+      data:
+        volume_level: 0.15
+    - service: media_player.play_media
+      target:
+        entity_id: media_player.lucas_room_sonos
+      data:
+        media_content_id: "Calm Kids Music"
+        media_content_type: playlist
