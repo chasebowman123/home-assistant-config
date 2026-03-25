@@ -12,7 +12,7 @@ tts:
 # Entity includes
 group: !include_dir_merge_named group/
 automation: !include automations.yaml
-automation mine: !include_dir_list automation/
+automation mine: !include_dir_merge_list automation/
 script: !include scripts.yaml
 script mine: !include_dir_merge_named scripts/
 scene: !include scenes.yaml

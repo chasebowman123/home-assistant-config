@@ -3,4 +3,3 @@
 nanny_last_session:
   name: "Nanny Last Session"
   icon: mdi:clipboard-text
-  max_length: 255
