@@ -1,0 +1,404 @@
+type: custom:vertical-layout
+title: Home
+path: home
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        - type: custom:button-card
+          template: empty_column
+
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Home
+
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:bell
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#notifications'
+
+
+  # 
+  # Quick Overview
+  # House mode, energy usage, and people
+  # 
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
+    card:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        grid-template-columns: 60% 40%
+        margin: 0px 0px 0px 0px
+        padding: 0px
+        card_margin: 0px
+        gap: 5px
+      cards:
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  gap: 5px !important;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              # 
+              # House Mode
+              # 
+              - type: custom:button-card
+                template: kohbo_chip_card
+                entity: input_select.house
+                state:
+                  - value: "Away"
+                    icon: mdi:home-export-outline
+                    color: var(--warning-color)
+                  - value: "All Out"
+                    icon: mdi:home-off-outline
+                    color: var(--error-color)
+                  - value: "Dogs Alone"
+                    icon: mdi:dog
+                    color: var(--orange-color)
+                  - value: "Day Time"
+                    icon: mdi:weather-sunny
+                    color: var(--primary-color)
+                  - value: "Evening Time"
+                    icon: mdi:weather-sunset
+                    color: var(--success-color)
+                  - value: "Night Time"
+                    icon: mdi:weather-night
+                    color: var(--secondary-text-color)
+                tap_action:
+                  action: navigate
+                  navigation_path: '#house_mode'
+                  haptic: light
+
+              # 
+              # Energy Usage (Daily)
+              # 
+              - type: custom:button-card
+                template: kohbo_chip_card
+                name: Energy
+                icon: mdi:lightning-bolt
+                entity: sensor.energy_daily
+                tap_action:
+                  action: navigate
+                  navigation_path: '/dashboard-kohbo-eidam/energy'
+                  haptic: light
+                show_state: true
+                styles:
+                  state:
+                    - margin-left: 3px
+
+        # 
+        # People
+        # 
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  display: flex;
+                  justify-content: flex-end;
+                  align-items: start;
+                }
+              .: |
+                ha-card {
+                  height: 100% !important;
+                  align-self: center !important;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: person.edward
+                template: kohbo_person_entity
+                tap_action:
+                  action: more-info
+                  haptic: light
+              - type: custom:button-card
+                entity: person.loretta
+                template: kohbo_person_entity
+                tap_action:
+                  action: more-info
+                  haptic: light
+
+
+  # 
+  # Security Overview
+  # 
+  - type: custom:stack-in-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_small_header
+        name: Security
+
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: horizontal-stack
+            cards:
+              # Ring Doorbell – Basement
+              - type: custom:button-card
+                entity: binary_sensor.basement_door_ding
+                name: Basement
+                template: kohbo_security_item
+                icon: mdi:doorbell
+                state:
+                  - value: 'on'
+                    icon: mdi:doorbell
+                    color: var(--warning-color)
+                    state_display: Ringing
+                  - value: 'off'
+                    icon: mdi:doorbell
+                    color: var(--success-color)
+                    state_display: Clear
+
+              # Ring Doorbell – Upstairs
+              - type: custom:button-card
+                entity: binary_sensor.upstairs_ding
+                name: Upstairs
+                template: kohbo_security_item
+                icon: mdi:doorbell
+                state:
+                  - value: 'on'
+                    icon: mdi:doorbell
+                    color: var(--warning-color)
+                    state_display: Ringing
+                  - value: 'off'
+                    icon: mdi:doorbell
+                    color: var(--success-color)
+                    state_display: Clear
+
+              # Ring Doorbell – Lobby
+              - type: custom:button-card
+                entity: binary_sensor.lobby_ding
+                name: Lobby
+                template: kohbo_security_item
+                icon: mdi:doorbell
+                state:
+                  - value: 'on'
+                    icon: mdi:doorbell
+                    color: var(--warning-color)
+                    state_display: Ringing
+                  - value: 'off'
+                    icon: mdi:doorbell
+                    color: var(--success-color)
+                    state_display: Clear
+
+          - type: horizontal-stack
+            cards:
+              # Cameras overview link
+              - type: custom:button-card
+                name: Cameras
+                icon: mdi:cctv
+                template: kohbo_security_item
+                tap_action:
+                  action: navigate
+                  navigation_path: '/dashboard-kohbo-eidam/security-cameras'
+                  haptic: light
+                state:
+                  - value: 'default'
+                    color: var(--secondary-text-color)
+
+              # Security page link
+              - type: custom:button-card
+                name: Security
+                icon: mdi:shield-home
+                template: kohbo_security_item
+                tap_action:
+                  action: navigate
+                  navigation_path: '/dashboard-kohbo-eidam/security'
+                  haptic: light
+
+
+  # 
+  # Climate Overview
+  # 
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - room_name: Indoor
+      - temperature_sensor: climate.hallway
+      - humidity_sensor: weather.home
+      - action_cards:
+        - type: custom:button-card
+          template: kohbo_chip_icon_action_card
+          icon: mdi:chevron-right
+          tap_action:
+            action: navigate
+            navigation_path: "/dashboard-kohbo-eidam/climate"
+            haptic: light
+
+
+  # 
+  # Overview section
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Overview
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Interior Lights
+      - type: custom:button-card
+        entity: light.lounge_spots
+        name: Interior Lights
+        template: kohbo_device_entity
+        icon: mdi:lightbulb-group
+        state_display: >
+          [[[
+            const lights = [
+              'light.lounge_spots','light.lounge_play_light_bar','light.lounge_light_strip',
+              'light.lounge_piano_lamp','light.lounge_iris','light.hallway_spots',
+              'light.hallway_lamp_post','light.hallway_signe_light','light.bedroom_spots',
+              'light.bedroom_signe','light.bedroom_tv_strip','light.lucas_room_spots',
+              'light.lucas_room_iris','light.lucas_cloud_lamp','light.lucas_go_nightlight',
+              'light.kitchen_spotlights','light.office_spots','light.cloakroom_light',
+              'light.bathroom_spots','light.lucas_bathroom_lights','light.garden_lights'
+            ];
+            const onCount = lights.filter(id => states[id]?.state === 'on').length;
+            return onCount > 0 ? `${onCount} On` : 'Off';
+          ]]]
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-kohbo-eidam/rooms-active'
+          haptic: light
+
+      # Lounge Climate
+      - type: custom:button-card
+        entity: climate.lounge
+        name: Lounge
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Bedroom Climate
+      - type: custom:button-card
+        entity: climate.bedroom
+        name: Bedroom
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Lucas Room Climate
+      - type: custom:button-card
+        entity: climate.lucas_room
+        name: Lucas's Room
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Office Climate
+      - type: custom:button-card
+        entity: climate.office
+        name: Office
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Air Purifier
+      - type: custom:button-card
+        entity: fan.core_400s
+        name: Air Purifier
+        template: kohbo_device_entity
+        icon: mdi:air-purifier
+        tap_action:
+          action: more-info
+          haptic: light
+
+
+  # 
+  # Quick Settings
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack.yaml
+    entities:
+      - entity: input_boolean.lucas_sleeping
+        name: Lucas Sleeping
+        icon: mdi:baby-face-outline
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: input_boolean.evening_entertaining
+        name: Evening Entertaining
+        icon: mdi:party-popper
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: input_boolean.edward_alone
+        name: Edward Alone
+        icon: mdi:account
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: input_boolean.important_meeting
+        name: Important Meeting
+        icon: mdi:briefcase
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: input_boolean.disco_disco
+        name: Disco Disco
+        icon: mdi:disco
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: input_boolean.nanny_present
+        name: Nanny Present
+        icon: mdi:account-child
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      - entity: input_boolean.bad_weather
+        name: Bad Weather
+        icon: mdi:weather-pouring
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/kohbo-eidam/includes/navbar.yaml
+
+
+  # 
+  # House Mode Popup
+  # 
+  - !include /config/dashboards/kohbo-eidam/home/house_mode_popup.yaml
+
+
+  # 
+  # Weather Popup
+  # 
+  - !include /config/dashboards/kohbo-eidam/climate/weather_popup.yaml
+
+
+  # 
+  # Notifications Popup
+  # 
+  - !include /config/dashboards/kohbo-eidam/shared/kohbo_notification_popup.yaml

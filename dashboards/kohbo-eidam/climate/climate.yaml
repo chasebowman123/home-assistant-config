@@ -1,0 +1,256 @@
+type: custom:vertical-layout
+title: Climate
+path: climate
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
+        - type: custom:button-card
+          template: empty_column
+            
+        # Page Title
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Climate
+
+        # Settings button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:dots-horizontal
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#climate_settings_popup'
+            haptic: light
+
+  # 
+  # Current Weather
+  # 
+  - type: weather-forecast
+    show_current: true
+    show_forecast: true
+    forecast_type: daily
+    name: Current Weather
+    entity: weather.home
+    tap_action:
+      action: navigate
+      navigation_path: "#weather"
+      haptic: light
+
+  # 
+  # Tado Zone Controls
+  # 
+  - type: custom:button-card
+    name: Tado Zones
+    template: section_title
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Hallway
+      - type: custom:button-card
+        entity: climate.hallway
+        name: Hallway
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Lounge
+      - type: custom:button-card
+        entity: climate.lounge
+        name: Lounge
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Kitchen
+      - type: custom:button-card
+        entity: climate.kitchen
+        name: Kitchen
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Bedroom
+      - type: custom:button-card
+        entity: climate.bedroom
+        name: Bedroom
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Lucas's Room
+      - type: custom:button-card
+        entity: climate.lucas_room
+        name: "Lucas's Room"
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Office
+      - type: custom:button-card
+        entity: climate.office
+        name: Office
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+
+  # 
+  # Room Temperatures
+  # 
+  - type: custom:button-card
+    name: Room Temperatures
+    template: section_title
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Hallway
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Hallway
+          - entity: climate.hallway
+          - icon: mdi:home
+
+      # Lounge
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Lounge
+          - entity: climate.lounge
+          - icon: mdi:sofa
+
+      # Kitchen
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Kitchen
+          - entity: climate.kitchen
+          - icon: mdi:silverware-fork-knife
+
+      # Bedroom
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Bedroom
+          - entity: climate.bedroom
+          - icon: mdi:bed-king
+
+      # Lucas's Room
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: "Lucas's Room"
+          - entity: climate.lucas_room
+          - icon: mdi:baby-face-outline
+
+      # Office
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Office
+          - entity: climate.office
+          - icon: mdi:laptop
+
+      # Lucas Room (sensor)
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Lucas Sensor
+          - entity: sensor.lucas_room_temperature
+          - icon: mdi:thermometer
+
+
+  # 
+  # Air Quality
+  # 
+  - type: custom:button-card
+    name: Air Quality
+    template: section_title
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Air Purifier PM2.5
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: PM2.5 (Core 400S)
+          - entity: sensor.core_400s_pm2_5
+          - icon: mdi:weather-dust
+
+      # Lucas Room Air Quality
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: "Lucas's Room IAQ"
+          - entity: sensor.lucass_room_air_quality_monitor_indoor_air_quality
+          - icon: mdi:air-filter
+
+      # Air Purifier Filter
+      - type: custom:decluttering-card
+        template: kohbo_room_temperature_card
+        variables:
+          - name: Filter Life
+          - entity: sensor.core_400s_filter_lifetime
+          - icon: mdi:air-filter
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/kohbo-eidam/includes/navbar.yaml
+
+
+  # 
+  # Weather Popup
+  # 
+  - !include /config/dashboards/kohbo-eidam/climate/weather_popup.yaml
+
+
+  # 
+  # Climate Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#climate_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+      # Title
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Climate Settings
+
+      # Bad Weather toggle
+      - type: custom:button-card
+        template: section_title
+        name: Flags
+      - type: entities
+        entities:
+          - entity: input_boolean.bad_weather
+            name: Bad Weather
+            icon: mdi:weather-pouring
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true

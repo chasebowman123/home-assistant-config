@@ -1,0 +1,37 @@
+button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
+decluttering_templates: !include_dir_merge_named /config/dashboards/templates/decluttering
+
+kiosk_mode:
+  hide_header: true
+
+# swipe_nav:
+#   enable_mouse_swipe: true
+#   animate: swipe
+#   skip_subviews: false
+#   prevent_default: true
+
+views:
+
+    # Home
+    - !include /config/dashboards/kohbo-eidam/home/home.yaml
+
+    # Climate
+    - !include /config/dashboards/kohbo-eidam/climate/climate.yaml
+
+    # Security
+    - !include /config/dashboards/kohbo-eidam/security/security.yaml
+    - !include /config/dashboards/kohbo-eidam/security/cameras/cameras.yaml
+
+    # Rooms – Active Rooms Overview
+    - !include /config/dashboards/kohbo-eidam/rooms/eidam/active_rooms.yaml
+
+    # Room Detail Views
+    - !include /config/dashboards/kohbo-eidam/rooms/eidam/lounge.yaml
+    - !include /config/dashboards/kohbo-eidam/rooms/eidam/bedroom.yaml
+    - !include /config/dashboards/kohbo-eidam/rooms/eidam/lucas_room.yaml
+    - !include /config/dashboards/kohbo-eidam/rooms/eidam/kitchen.yaml
+    - !include /config/dashboards/kohbo-eidam/rooms/eidam/office.yaml
+    - !include /config/dashboards/kohbo-eidam/rooms/eidam/hallway.yaml
+
+    # Energy
+    - !include /config/dashboards/kohbo-eidam/energy/eidam_energy.yaml

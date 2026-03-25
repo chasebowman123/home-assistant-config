@@ -3,7 +3,7 @@
   description: "Motion activates kitchen spots when Edward is alone. Dim at night."
   trigger:
     - platform: state
-      entity_id: binary_sensor.kitchen_motion
+      entity_id: binary_sensor.hallway_kitchen_motion_sensor_occupancy
       to: "on"
   condition:
     - condition: state
@@ -31,7 +31,7 @@
             color_temp_kelvin: 3000
     - wait_for_trigger:
         - platform: state
-          entity_id: binary_sensor.kitchen_motion
+          entity_id: binary_sensor.hallway_kitchen_motion_sensor_occupancy
           to: "off"
           for:
             minutes: 10

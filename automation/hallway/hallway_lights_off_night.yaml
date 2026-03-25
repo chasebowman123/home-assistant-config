@@ -9,7 +9,7 @@
     - service: light.turn_off
       target:
         entity_id:
-          - light.hallway_spots
+          - light.hallway_spot_lights
           - light.hallway_lamp_post
           - light.hallway_signe_light
       data:

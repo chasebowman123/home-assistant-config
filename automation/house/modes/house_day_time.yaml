@@ -12,8 +12,8 @@
           - climate.hallway
           - climate.lounge
           - climate.kitchen
-          - climate.bedroom
-          - climate.lucas_room
+          - climate.bedroom_2
+          - climate.lucas_s_room
           - climate.office
       data:
         preset_mode: "home"

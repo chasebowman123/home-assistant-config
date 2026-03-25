@@ -1,0 +1,148 @@
+type: custom:vertical-layout
+title: Cameras
+path: security-cameras
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - !include /config/dashboards/templates/includes/security/security_header.yaml
+
+  # 
+  # Basement Door Camera
+  # 
+  - type: custom:decluttering-card
+    template: camera_card
+    variables:
+      - hash: '#basement_door_camera'
+      - name: Basement Door
+      - camera_entity: camera.basement_door
+      - motion_entity: binary_sensor.basement_door_ding
+
+  # 
+  # Basement Stairs Camera
+  # 
+  - type: custom:decluttering-card
+    template: camera_card
+    variables:
+      - hash: '#basement_stairs_camera'
+      - name: Basement Stairs
+      - camera_entity: camera.basement_stairs
+      - motion_entity: binary_sensor.basement_door_ding
+
+  # 
+  # Garden Camera
+  # 
+  - type: custom:decluttering-card
+    template: camera_card
+    variables:
+      - hash: '#garden_camera'
+      - name: Garden
+      - camera_entity: camera.garden
+      - motion_entity: binary_sensor.lobby_ding
+
+  # 
+  # Upstairs Camera
+  # 
+  - type: custom:decluttering-card
+    template: camera_card
+    variables:
+      - hash: '#upstairs_camera'
+      - name: Upstairs
+      - camera_entity: camera.upstairs
+      - motion_entity: binary_sensor.upstairs_ding
+
+
+  # 
+  # Basement Door Camera Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#basement_door_camera'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Basement Door
+
+      - type: picture-entity
+        entity: camera.basement_door
+        show_name: false
+        show_state: false
+        camera_view: live
+
+
+  # 
+  # Basement Stairs Camera Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#basement_stairs_camera'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Basement Stairs
+
+      - type: picture-entity
+        entity: camera.basement_stairs
+        show_name: false
+        show_state: false
+        camera_view: live
+
+
+  # 
+  # Garden Camera Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#garden_camera'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Garden
+
+      - type: picture-entity
+        entity: camera.garden
+        show_name: false
+        show_state: false
+        camera_view: live
+
+
+  # 
+  # Upstairs Camera Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#upstairs_camera'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Upstairs
+
+      - type: picture-entity
+        entity: camera.upstairs
+        show_name: false
+        show_state: false
+        camera_view: live
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/kohbo-eidam/includes/navbar.yaml

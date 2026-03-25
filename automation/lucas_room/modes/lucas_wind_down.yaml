@@ -8,29 +8,27 @@
   action:
     - service: light.turn_on
       target:
-        entity_id: light.lucas_room_iris
+        entity_id: light.lucass_room_iris
       data:
         brightness_pct: 30
         color_temp_kelvin: 2200
     - service: light.turn_on
       target:
-        entity_id: light.lucas_room_spots
+        entity_id: light.lucass_room_spot_lights
       data:
         brightness_pct: 20
         color_temp_kelvin: 2200
-    - service: light.turn_on
+    - service: switch.turn_on
       target:
-        entity_id: light.lucas_cloud_lamp
-      data:
-        brightness_pct: 30
+        entity_id: switch.cloud_lamp
     - service: media_player.volume_set
       target:
-        entity_id: media_player.lucas_room_sonos
+        entity_id: media_player.lucass_room
       data:
         volume_level: 0.15
     - service: media_player.play_media
       target:
-        entity_id: media_player.lucas_room_sonos
+        entity_id: media_player.lucass_room
       data:
         media_content_id: "Calm Kids Music"
         media_content_type: playlist

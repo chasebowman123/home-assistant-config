@@ -1,0 +1,78 @@
+#------------------------------------------------------------------------------
+# Energy Stat Comparison Card Template
+#
+# Extends: kohbo_energy_stat_card
+# Adds: Value display (v) + Percentage comparison (c)
+#
+# Additional Variables:
+#   - comparison_type: 'daily' | 'weekly' | 'monthly'
+#   - comparison_label: Text after percentage (default: "vs avg")
+#------------------------------------------------------------------------------
+kohbo_energy_stat_comparison:
+  template: kohbo_energy_stat_card
+  variables:
+    comparison_type: 'daily'
+    comparison_label: 'vs avg'
+  styles:
+    grid:
+      - grid-template-areas: '"n" "v" "c"'
+      - grid-template-rows: auto auto auto
+    custom_fields:
+      v:
+        - justify-self: start
+      c:
+        - justify-self: start
+        - margin-top: 2px
+  custom_fields:
+    v: |
+      [[[
+        const value = parseFloat(entity?.state || 0);
+        const unit = variables.unit_label || 'kWh';
+        const type = variables.comparison_type || 'daily';
+        // Round up for weekly/monthly (larger numbers), keep decimal for daily
+        const displayValue = (type === 'weekly' || type === 'monthly') ? Math.ceil(value) : value.toFixed(1);
+        return `<span style="font-size:26px;font-weight:600;color:var(--primary-text-color);">${displayValue}</span><span style="font-size:12px;color:var(--secondary-text-color);margin-left:4px;">${unit}</span>`;
+      ]]]
+    c: |
+      [[[
+        const type = variables.comparison_type || 'daily';
+        const label = variables.comparison_label || 'vs avg';
+        let pct = 0;
+        
+        // Use energy_expected_full_day as the baseline - this sums hourly baselines
+        // and is consistent with what the chart shows. DO NOT use whole_home_daily_energy_stats
+        // as that incorrectly averages intermediate utility meter values throughout each day.
+        const dailyBaseline = parseFloat(states['sensor.energy_expected_full_day']?.state || 0);
+        
+        if (type === 'daily') {
+          // Compare today's forecast to the baseline expected for today
+          const forecast = parseFloat(states['sensor.energy_forecast_end_of_day']?.state || 0);
+          if (dailyBaseline > 0) pct = Math.round((forecast - dailyBaseline) / dailyBaseline * 100);
+        } else if (type === 'weekly') {
+          // Compare this week's usage to expected baseline for the same period
+          const thisWeek = parseFloat(states['sensor.whole_home_energy_weekly_usage']?.state || 0);
+          const now = new Date();
+          // Note: Utility meters typically reset on Monday (weekday 1), not Sunday
+          // getDay(): 0=Sunday, 1=Monday, ..., 6=Saturday
+          // Days elapsed since Monday: Mon=1, Tue=2, ..., Sun=7
+          const dayOfWeek = now.getDay();
+          const daysElapsed = dayOfWeek === 0 ? 7 : dayOfWeek; // Sunday = end of week (7 days)
+          
+          // Calculate expected usage for the elapsed days
+          const expectedForPeriod = dailyBaseline * daysElapsed;
+          if (expectedForPeriod > 0) pct = Math.round((thisWeek - expectedForPeriod) / expectedForPeriod * 100);
+        } else if (type === 'monthly') {
+          const thisMonth = parseFloat(states['sensor.whole_home_energy_monthly_usage']?.state || 0);
+          const now = new Date();
+          const dayOfMonth = now.getDate();
+          
+          // Calculate expected usage for the elapsed days
+          const expectedForPeriod = dailyBaseline * dayOfMonth;
+          if (expectedForPeriod > 0) pct = Math.round((thisMonth - expectedForPeriod) / expectedForPeriod * 100);
+        }
+        
+        const arrow = pct > 5 ? '↑' : pct < -5 ? '↓' : '→';
+        const color = pct > 10 ? 'var(--error-color)' : pct < -10 ? 'var(--success-color)' : 'var(--secondary-text-color)';
+        const sign = pct > 0 ? '+' : '';
+        return `<span style="font-size:11px;font-weight:500;color:${color};">${arrow} ${sign}${pct}% ${label}</span>`;
+      ]]]

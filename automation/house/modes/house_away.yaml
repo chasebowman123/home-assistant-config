@@ -12,17 +12,17 @@
     - service: media_player.media_stop
       target:
         entity_id:
-          - media_player.lounge_sonos
+          - media_player.lounge
           - media_player.kitchen
-          - media_player.lucas_room_sonos
+          - media_player.lucass_room
     - service: climate.set_temperature
       target:
         entity_id:
           - climate.hallway
           - climate.lounge
           - climate.kitchen
-          - climate.bedroom
-          - climate.lucas_room
+          - climate.bedroom_2
+          - climate.lucas_s_room
           - climate.office
       data:
         temperature: 14

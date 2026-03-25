@@ -21,7 +21,7 @@
               volume: 1.0
     - service: light.turn_on
       target:
-        entity_id: light.lounge_iris
+        entity_id: light.lounge_io
       data:
         color_name: blue
         brightness_pct: 100
@@ -36,7 +36,7 @@
     - service: light.turn_on
       target:
         entity_id:
-          - light.lounge_iris
+          - light.lounge_io
           - light.hallway_signe_light
       data:
         color_name: red
@@ -46,7 +46,7 @@
     - service: light.turn_on
       target:
         entity_id:
-          - light.lounge_iris
+          - light.lounge_io
           - light.hallway_signe_light
       data:
         color_name: blue
@@ -56,5 +56,5 @@
     - service: light.turn_off
       target:
         entity_id:
-          - light.lounge_iris
+          - light.lounge_io
           - light.hallway_signe_light

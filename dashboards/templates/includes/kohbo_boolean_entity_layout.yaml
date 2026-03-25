@@ -1,0 +1,84 @@
+style:
+  .: |
+    hui-generic-entity-row {
+      padding: 4px 0px !important;
+    }
+
+    hui-generic-entity-row:first-child {
+      padding-top: 0px !important;
+    }
+
+    hui-generic-entity-row:last-child {
+      padding-bottom: 0px !important;
+    }
+
+    ha-icon {
+      fill: white !important;
+    }
+  hui-generic-entity-row$: |
+      state-badge {
+        flex: 0 0 30px !important;
+      }
+      .info {
+        margin-left: 0 !important;
+        padding-left: 10px !important;
+        font-weight: 700 !important;
+        font-size: 15px !important;
+        line-height: 15px !important;
+        padding-top: 2px !important;
+
+        .secondary {
+          font-weight: 400 !important;
+          font-size: 12px !important;
+          color: #ADB5BD !important;
+          margin-top: 3px !important;
+          line-height: 12px !important;
+        }
+      }
+
+  hui-generic-entity-row:
+    ha-entity-toggle:
+      $:
+        ha-switch:
+          $: |
+            .mdc-switch__track  {
+              height: 32px !important;
+              width: 50px !important;
+              border-radius: 16px !important;
+              background: #484C51 !important;
+              opacity: 1 !important;
+              border: none !important;
+            }
+            .mdc-switch__thumb-underlay {
+              height: 32px !important;
+              width: 50px !important;
+              top: 0px !important;
+              left: -7px !important;
+            }
+            .mdc-switch__thumb {
+              height: 28px !important;
+              width: 28px !important;
+              border-radius: 14px !important;
+              background: #FFFFFF !important;
+              box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.04), 0px 3px 8px rgba(0, 0, 0, 0.15), 0px 3px 1px rgba(0, 0, 0, 0.06);
+              border: none !important;
+            }
+
+            .mdc-switch__native-control {
+              width: 58px !important;
+              height: 32px !important;
+            }
+
+            .mdc-switch--checked .mdc-switch__thumb-underlay {
+              left: -8px !important;
+            }
+
+            .mdc-switch--checked .mdc-switch__track {
+              background: #59A5D8 !important;
+            }
+          
+
+  ha-entity-toggle$: |
+    ha-switch {
+      padding: 6px 0px 6px 5px!important;
+    }

@@ -1,0 +1,381 @@
+type: custom:vertical-layout
+title: People
+path: people
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
+        - type: custom:button-card
+          template: empty_column
+
+        # Room Name
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: People
+
+        # Settings button
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:dots-horizontal
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#people_settings_popup'
+
+  
+  # 
+  # Overview Area for house mode and occupancy
+  # 
+  - type: custom:mod-card
+    style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        # 
+        # How many people are in the house
+        # 
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: sensor.people_home_count
+          name: People Home Count
+          icon: mdi:home-account
+          state_display: >
+            [[[
+              if (states['sensor.people_home_count'].state == 1) {
+                return "1 person";
+              } else if (states['sensor.people_home_count'].state == 0) {
+                return "Empty";
+              } else {
+                return states['sensor.people_home_count'].state + ' people';
+              }
+            ]]]
+          state:
+            - value: 0
+              color: var(--light-grey-color)
+            - operator: >
+              value: 6
+              color: var(--success-color)
+            - operator: default
+              color: var(--primary-color)
+
+        # Guest Mode
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: input_boolean.guest_mode
+          name: Guest Mode
+          icon: mdi:account-group
+          state_display: >
+            [[[
+              return states['input_boolean.guest_mode'].state == "on" ? "Guest Mode On" : "Guest Mode Off";
+            ]]]
+
+        # Entertainment Mode
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: input_boolean.entertainment_mode
+          name: Entertainment Mode
+          icon: mdi:party-popper
+  
+  # 
+  # Family
+  # 
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: person.john_koht
+        name: John
+        template: kohbo_person_card
+        show_entity_picture: true
+        show_icon: false
+        variables:
+          status: >
+            [[[
+              if (states['input_select.john_sleep_state'].state == "Sleep" || states['input_select.john_sleep_state'].state == "Just Laid Down") {
+                return "sleeping";
+              } else if (states['input_boolean.john_dnd'].state == "on") {
+                return "dnd";
+              }
+            ]]]
+          battery_level: >
+            [[[
+              return states['sensor.jk_iphone_14_battery_level'].state + '%';
+            ]]]
+          proximity: >
+            [[[
+              const distance = parseFloat(states['sensor.home_john_distance'].state);
+              return Math.round((distance + Number.EPSILON) * 100) / 100 + 'mi';
+            ]]]
+        state_display: >
+          [[[
+            if (states['person.john_koht'].state == "home") {
+              if (states['input_select.john_sleep_state'].state == "Sleep" || states['input_select.john_sleep_state'].state == "Just Laid Down") {
+                return "Home - Sleeping"
+              } else if (states['input_boolean.john_dnd'].state == "on") {
+                return "Home - Do Not Disturb"
+              } else {
+                var location = states['sensor.john_room_presence'].state.replace('_', ' ');
+                location = location.charAt(0).toUpperCase() + location.slice(1);
+                return "Home - " + location;
+              }
+            } else {
+              if (states['person.john_koht'].state == "not_home") {
+                return "Away";
+              } else {
+                return "Away - " + states['person.john_koht'].state;
+              }
+            }
+          ]]]
+        tap_action:
+          haptic: light
+          action: navigate
+          navigation_path: '#john'
+
+      - type: custom:button-card
+        entity: person.cristina_falbo
+        name: Cristina
+        template: kohbo_person_card
+        show_entity_picture: true
+        show_icon: false
+        variables:
+          status: >
+            [[[
+              if (states['input_select.cristina_sleep_state'].state == "Sleep" || states['input_select.cristina_sleep_state'].state == "Just Laid Down") {
+                return "sleeping";
+              }
+            ]]]
+          battery_level: >
+            [[[
+              return states['sensor.cfalb2_battery_level'].state + '%';
+            ]]]
+          proximity: >
+            [[[
+              const distance = parseFloat(states['sensor.home_cristina_distance'].state);
+              return Math.round((distance + Number.EPSILON) * 100) / 100 + 'mi';
+            ]]]
+        state_display: >
+          [[[
+            if (states['person.cristina_falbo'].state == "home") {
+              if (states['input_select.cristina_sleep_state'].state == "Sleep" || states['input_select.cristina_sleep_state'].state == "Just Laid Down") {
+                return "Home - Sleeping"
+              } else {
+                var location = states['sensor.cristina_room_presence'].state.replace('_', ' ');
+                location = location.charAt(0).toUpperCase() + location.slice(1);
+                return "Home - " + location;
+              }
+            } else {
+              if (states['person.cristina_falbo'].state == "not_home") {
+                return "Away";
+              } else {
+                var location = states['person.cristina_falbo'].state;
+                console.log(location);
+                if (location == "Cristina's Work") {
+                  return "Away - Work";
+                } else {
+                  return "Away - " + location;
+                }
+              }
+            }
+          ]]]
+        tap_action:
+          haptic: light
+          action: navigate
+          navigation_path: '#cristina'
+
+
+  # - type: custom:button-card
+  #   template: section_title
+  #   name: Family
+  - type: entities
+    entities:
+      # Nino
+      - type: custom:template-entity-row
+        name: Nino
+        entity: person.nino
+        state: >
+          {% if states.input_select.nino_sleep_state.state == "Sleep" or states.input_select.nino_sleep_state.state == "Just Laid Down" %}
+            Sleeping
+          {% else %}
+            Awake
+          {% endif %}
+        secondary: "{{ states.input_select.nino_sleep_state.last_changed | relative_time }}"
+        card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+        tap_action:
+          haptic: light
+          action: navigate
+          navigation_path: '#nino'
+
+      - type: custom:template-entity-row
+        name: Gianluca
+        entity: person.gianluca
+        state: >
+          {% if states.input_select.gianluca_sleep_state.state == "Sleep" or states.input_select.gianluca_sleep_state.state == "Just Laid Down" %}
+            Sleeping
+          {% else %}
+            Awake
+          {% endif %}
+        secondary: "{{ states.input_select.gianluca_sleep_state.last_changed | relative_time }}"
+        card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+        tap_action:
+          haptic: light
+          action: navigate
+          navigation_path: '#gianluca'
+
+    
+  - type: custom:button-card
+    template: section_title
+    name: Extended Family
+  - type: entities
+    entities:
+      # Nonna
+      - type: custom:template-entity-row
+        name: Nonna
+        entity: person.mary_falbo
+        state: >
+          {% if states[config.entity].state == "home" %}
+            Home
+          {% else %}
+            Away
+          {% endif %}
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+        tap_action:
+          haptic: light
+          action: navigate
+          navigation_path: '#nonna'
+
+      # Joe
+      - type: custom:template-entity-row
+        name: Joe
+        entity: person.joe_falbo
+        state: >
+          {% if states[config.entity].state == "home" %}
+            Home
+          {% else %}
+            Away
+          {% endif %}
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+        tap_action:
+          haptic: light
+          action: navigate
+          navigation_path: '#joe'    
+
+      # Tayta
+      - type: custom:template-entity-row
+        name: Tayta
+        entity: person.sonia_koht
+        state: >
+          {% if states[config.entity].state == "home" %}
+            Home
+          {% else %}
+            Away
+          {% endif %}
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+        tap_action:
+          haptic: light
+          action: navigate
+          navigation_path: '#tayta'  
+
+      # Jido
+      - type: custom:template-entity-row
+        name: Jido
+        entity: person.antoun_koht
+        state: >
+          {% if states[config.entity].state == "home" %}
+            Home
+          {% else %}
+            Away
+          {% endif %}
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+        tap_action:
+          haptic: light
+          action: navigate
+          navigation_path: '#jido'  
+
+      # Nonno
+      - type: custom:template-entity-row
+        name: Nonno
+        entity: person.nonno
+        state: >
+          {% if states[config.entity].state == "home" %}
+            Home
+          {% else %}
+            Away
+          {% endif %}
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+        tap_action:
+          haptic: light
+          action: navigate
+          navigation_path: '#nonno'
+
+
+
+  - type: custom:button-card
+    template: section_title
+    name: Guests
+  - type: entities
+    entities:
+      # Katia
+      - type: custom:template-entity-row
+        name: Katia
+        entity: person.katia
+        state: >
+          {% if states[config.entity].state == "home" %}
+            Home
+          {% else %}
+            Away
+          {% endif %}
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+        tap_action:
+          haptic: heavy
+          action: navigate
+          navigation_path: '#katia'
+
+      # Sylvia
+      - type: custom:template-entity-row
+        name: Sylvia
+        entity: person.sylvia
+        state: >
+          {% if states[config.entity].state == "home" %}
+            Home
+          {% else %}
+            Away
+          {% endif %}
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        card_mod: !include /config/dashboards/templates/includes/people/person_entity_row.yaml
+        color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+        tap_action:
+          haptic: light
+          action: navigate
+          navigation_path: '#sylvia'
+
+  # 
+  # People
+  # 
+  - type: vertical-stack
+    cards: !include /config/dashboards/kohbo/shared/people.yaml
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

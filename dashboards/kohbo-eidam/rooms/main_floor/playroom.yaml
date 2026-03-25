@@ -1,0 +1,292 @@
+type: custom:vertical-layout
+title: Playroom
+path: rooms-playroom
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Playroom
+      - navigation_path: /dashboard-kohbo/rooms-main-floor
+      - settings_path: '#playroom_settings_popup'
+
+  # 
+  # Room Overview
+  # 
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - occupancy: input_boolean.playroom_occupied
+      - mode: input_select.playroom
+      - ble_presence: sensor.playroom_people_list
+
+
+  # 
+  # Climate Overview
+  # 
+  - type: custom:decluttering-card
+    template: climate_temperature_only
+    variables:
+      - temperature_sensor: sensor.playroom_temperature
+      - room_name: Playroom
+
+
+  # 
+  # Lights
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  - type: tile
+    entity: light.playroom_lights
+    name: Ceiling Lights
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+    tap_action:
+      action: navigate
+      navigation_path: '#playroom_ceiling_lights'
+
+  - type: tile
+    entity: light.christmas_playroom_lights
+    name: Party Lights
+    icon: mdi:string-lights
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  # 
+  # Media Player
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Music
+
+  - type: custom:decluttering-card
+    template: media_player
+    variables:
+      - media_player: media_player.sonos_playroom
+      - room_name: Playroom
+      - navigation_path: '#playroom_media_player'
+
+  # 
+  # Devices
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: binary_sensor.playroom_window_sensor
+        name: North Window
+        template: kohbo_device_window_entity
+
+      - type: custom:button-card
+        entity: binary_sensor.playroom_window_west_left_opening
+        name: West Window
+        template: kohbo_device_window_entity
+
+      # Exterior Door
+      - type: custom:button-card
+        entity: binary_sensor.playroom_exterior_door
+        name: Exterior Door
+        template: kohbo_device_door_entity
+
+      - type: custom:button-card
+        entity: switch.smart_plug_15_switch
+        name: South Wall
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_15_power
+          confirmation: true
+
+      - type: custom:button-card
+        entity: switch.smart_plug_18_switch
+        name: Bay Window
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_16_power
+          confirmation: true
+
+      - type: custom:button-card
+        entity: switch.smart_plug_16_switch
+        name: North Wall Left
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_16_power
+          confirmation: true
+
+      - type: custom:button-card
+        entity: switch.smart_plug_17_switch
+        name: North Wall Right
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_17_power
+          confirmation: true
+
+      # Alexa Dot
+      - type: custom:button-card
+        entity: media_player.john_s_2nd_echo_dot
+        name: Alexa Dot
+        template: kohbo_device_entity
+        icon: phu:alexa-logo
+
+
+  # 
+  # Quick Settings
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    entities:
+      # # Speech Notifications Toggle
+      # - entity: input_boolean.family_room_speech_notifications
+      #   name: Speech Notifications
+      #   card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+      #   secondary_info: last-changed
+      #   state_color: true
+
+      # Lighting Automations Toggle
+      - entity: input_boolean.playroom_lighting_automations
+        name: Lighting Automations
+        icon: kohbo:kohbo-light-2
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_playroom
+        name: Adaptive Lighting
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_sleep_mode_playroom
+        name: Adaptive Lighting Sleep Mode
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+      
+
+  # 
+  # Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_playroom
+      - hash: '#playroom_media_player'
+
+
+  # 
+  # Ceiling Lights Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: light_popup
+    variables:
+      - light_entity: light.playroom_lights
+      - popup_hash: '#playroom_ceiling_lights'
+      - popup_title: 'Ceiling Lights'
+      - entity_id: 
+        - light.playroom_1
+        - light.playroom_2
+        - light.playroom_3
+        - light.playroom_4
+        - light.playroom_5
+        - light.playroom_6
+
+
+  # 
+  # Playroom Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#playroom_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 600px)
+        margin_top_desktop: calc(100vh - 600px)
+        
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          - entity: input_boolean.vacuum_playroom_at_night
+            name: Clean at Night
+            icon: mdi:robot-vacuum
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      # 
+      # Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Sensors
+      - type: entities
+        entities:
+          # Presence Sensor
+          - entity: binary_sensor.playroom_presence_sensor
+            icon: kohbo:kohbo-room-occupancy
+            name: Presence Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            
+          # Occupancy Sensor
+          - entity: binary_sensor.playroom_occupancy
+            icon: kohbo:kohbo-room-occupancy
+            name: Occupancy Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          # Motion Sensor
+          - entity: binary_sensor.playroom_motion
+            icon: mdi:motion-sensor
+            name: Motion Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml
+  

@@ -13,17 +13,17 @@
         brightness_pct: 40
     - service: light.turn_on
       target:
-        entity_id: light.lounge_play_light_bar
+        entity_id: light.lounge_wall_lights
       data:
         brightness_pct: 30
     - service: media_player.volume_set
       target:
-        entity_id: media_player.lounge_sonos
+        entity_id: media_player.lounge
       data:
         volume_level: 0.15
     - service: media_player.play_media
       target:
-        entity_id: media_player.lounge_sonos
+        entity_id: media_player.lounge
       data:
         media_content_id: "Calm Dog Music"
         media_content_type: playlist

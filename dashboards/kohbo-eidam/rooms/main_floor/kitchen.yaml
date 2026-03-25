@@ -1,0 +1,335 @@
+type: custom:vertical-layout
+title: Kitchen
+path: rooms-kitchen
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  #
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Kitchen
+      - navigation_path: /dashboard-kohbo/rooms-main-floor
+      - settings_path: '#kitchen_settings_popup'
+
+  # 
+  # Room Overview
+  # 
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - occupancy: input_boolean.kitchen_occupied
+      - mode: input_select.kitchen
+      - ble_presence: sensor.kitchen_people_list
+      
+
+  # 
+  # Climate Overview
+  # 
+
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - temperature_sensor: sensor.kitchen_awair_temperature
+      - humidity_sensor: sensor.kitchen_awair_humidity
+      - carbon_dioxide_sensor: sensor.kitchen_awair_carbon_dioxide
+      - vocs_sensor: sensor.kitchen_awair_vocs
+      - pm25_sensor: sensor.kitchen_awair_pm2_5
+      - room_name: Kitchen
+      - aqi_score_sensor: sensor.kitchen_awair_score
+      - action_cards:
+        - type: custom:button-card
+          template: empty_column
+
+
+  # 
+  # Lights
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  # Main Lights
+  - type: tile
+    entity: light.kitchen_main_light_switch
+    name: Main Light
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+    # tap_action:
+    #   action: navigate
+    #   navigation_path: '#office_ceiling_lights'
+
+  # Table Lights
+  - type: tile
+    entity: light.kitchen_table_light_switch
+    name: Table Light
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  # Island Pendant Lights
+  - type: tile
+    entity: light.kitchen_island_pendants
+    name: Island Pendants
+    icon: mdi:globe-light
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  
+
+
+  # 
+  # Media Player
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Music
+  
+  - type: custom:decluttering-card
+    template: media_player
+    variables:
+      - media_player: media_player.sonos_kitchen
+      - room_name: Kitchen
+      - navigation_path: '#kitchen_media_player'
+
+
+  # 
+  # Devices
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Air Purifier
+      - type: custom:button-card
+        entity: fan.kitchen_air_purifier
+        name: Air Purifier
+        template: kohbo_device_air_purifier_entity
+
+      # South Wall Outlet
+      - type: custom:button-card
+        entity: switch.smart_plug_8_switch
+        name: South Wall Outlet
+        template: kohbo_device_smart_plug_entity
+
+      # Air Fryer
+      - type: custom:button-card
+        entity: switch.tradfri_smart_plug_2_switch
+        name: Air Fryer
+        template: kohbo_device_smart_plug_entity
+
+      # Toaster Oven
+      - type: custom:button-card
+        entity: switch.tradfri_smart_plug_4_switch
+        name: Toaster Oven
+        template: kohbo_device_smart_plug_entity
+    
+      # Exterior Doors
+      - type: custom:button-card
+        entity: binary_sensor.kitchen_doors
+        name: Exterior Doors
+        template: kohbo_device_door_entity
+
+      # Windows
+      - type: custom:button-card
+        entity: binary_sensor.kitchen_windows
+        name: Windows
+        template: kohbo_device_window_entity
+
+      # Sink Leak Sensor
+      - type: custom:button-card
+        entity: binary_sensor.kitchen_sink_leak_sensor
+        name: Sink Leak Sensor
+        template: kohbo_device_entity
+
+      # Alexa Show
+      - type: custom:button-card
+        entity: media_player.john_s_echo_show
+        name: Alexa Show
+        template: kohbo_device_entity
+        icon: phu:alexa-logo
+
+
+  # 
+  # Quick Settings
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    entities:
+      # Speech Notifications Toggle
+      - entity: input_boolean.kitchen_speech_notifications
+        name: Speech Notifications
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Lighting Automations Toggle
+      - entity: input_boolean.kitchen_lighting_automations
+        name: Lighting Automations
+        icon: kohbo:kohbo-light-2
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_kitchen
+        name: Adaptive Lighting
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_sleep_mode_kitchen
+        name: Adaptive Lighting Sleep Mode
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+  
+
+  # 
+  # Kitchen Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#kitchen_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 825px)
+        margin_top_desktop: calc(100vh - 825px)
+        
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          # Air Quality Sensor Detections
+          - entity: automation.kitchen_air_quality_sensor_detections
+            name: Air Quality Automations
+            icon: mdi:air-filter
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Vacuum Clean Kitchen at Night
+          - entity: input_boolean.vacuum_kitchen_at_night
+            name: Clean at Night
+            icon: mdi:robot-vacuum
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Clean Kitchen When Unoccupied
+          - entity: input_boolean.vacuum_kitchen_when_house_empty
+            name: Clean When House Is Empty
+            icon: mdi:robot-vacuum
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          # Clean Kitchen During Nap
+          - entity: automation.vacuum_clean_kitchen_during_nap
+            name: Clean During Nap
+            icon: mdi:robot-vacuum
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+
+      # 
+      # Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Sensors
+      - type: entities
+        entities:
+          # Presence Sensor
+          - entity: binary_sensor.kitchen_presence_sensor
+            icon: kohbo:kohbo-room-occupancy
+            name: Presence Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+            
+          # Occupancy Sensor
+          - entity: binary_sensor.kitchen_motion_sensor_occupancy
+            icon: kohbo:kohbo-room-occupancy
+            name: Occupancy Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          # Motion Sensor
+          - entity: binary_sensor.kitchen_motion_sensor_status
+            icon: mdi:motion-sensor
+            name: Motion Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          - type: custom:template-entity-row
+            icon: mdi:air-filter
+            name: Air Purifier Filter Life
+            entity: sensor.kitchen_air_purifier_filter_life
+            state: "{{ states[config.entity].state }}%"
+            secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+            color: >
+              {% set filter_left = states[config.entity].state | int(0) %}
+              {% if filter_left < 20 %}
+                var(--error-color)
+              {% else %}
+                var(--success-color)
+              {% endif %}
+            
+
+  # 
+  # Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_kitchen
+      - hash: '#kitchen_media_player'
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

@@ -9,6 +9,6 @@
     - service: light.turn_off
       target:
         entity_id:
-          - light.bedroom_spots
-          - light.bedroom_signe
-          - light.bedroom_tv_strip
+          - light.bedroom_spot_lights
+          - light.bedroom_signe_light
+          - light.bedroom_tv_strip_light

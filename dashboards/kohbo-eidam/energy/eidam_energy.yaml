@@ -1,0 +1,112 @@
+type: custom:vertical-layout
+title: Energy
+path: energy
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: top_toolbar
+    variables:
+      - cards:
+        - type: custom:button-card
+          template: empty_column
+
+        # Page Title
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Energy
+
+        - type: custom:button-card
+          template: empty_column
+
+
+  #===========================================================================
+  # TODAY'S ENERGY OVERVIEW
+  #===========================================================================
+  - type: custom:stack-in-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_small_header
+        name: Today's Energy
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          # Daily energy usage
+          - type: custom:button-card
+            entity: sensor.energy_daily
+            name: Today's Usage
+            template: kohbo_device_entity
+            icon: mdi:lightning-bolt
+            show_state: true
+            tap_action:
+              action: more-info
+
+          # Estimated cost (27p/kWh)
+          - type: custom:button-card
+            entity: sensor.energy_daily
+            name: Est. Cost
+            template: kohbo_device_entity
+            icon: mdi:currency-gbp
+            show_state: true
+            state_display: >
+              [[[
+                const kwh = parseFloat(entity.state);
+                if (!isNaN(kwh)) {
+                  return `£${(kwh * 0.27).toFixed(2)}`;
+                }
+                return 'N/A';
+              ]]]
+            tap_action:
+              action: more-info
+
+  #===========================================================================
+  # ENERGY HISTORY
+  #===========================================================================
+  - !include /config/dashboards/kohbo-eidam/energy/partials/energy_history.yaml
+
+
+  #===========================================================================
+  # AIR QUALITY DEVICES
+  #===========================================================================
+  - type: custom:button-card
+    template: section_title
+    name: Air Quality Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Air Purifier
+      - type: custom:button-card
+        entity: fan.core_400s
+        name: Air Purifier
+        template: kohbo_device_entity
+        icon: mdi:air-purifier
+        show_state: true
+
+      # Filter lifetime
+      - type: custom:button-card
+        entity: sensor.core_400s_filter_lifetime
+        name: Filter Life
+        template: kohbo_device_entity
+        icon: mdi:air-filter
+        show_state: true
+
+      # Humidifier
+      - type: custom:button-card
+        entity: switch.lucas_strip_humidifier
+        name: Humidifier
+        template: kohbo_device_entity
+        icon: mdi:air-humidifier
+
+
+  #===========================================================================
+  # Navbar
+  #===========================================================================
+  - !include /config/dashboards/kohbo-eidam/includes/navbar.yaml

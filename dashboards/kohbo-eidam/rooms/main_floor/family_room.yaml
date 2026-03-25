@@ -1,0 +1,256 @@
+type: custom:vertical-layout
+title: Family Room
+path: rooms-family-room
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Family Room
+      - navigation_path: /dashboard-kohbo/rooms-main-floor
+      - settings_path: '#family_room_settings_popup'
+
+  # 
+  # Room Overview
+  # 
+  - type: custom:decluttering-card
+    template: room_overview
+    variables:
+      - occupancy: input_boolean.family_room_occupied
+      - mode: input_select.family_room
+      - ble_presence: sensor.family_room_people_list
+
+
+  # 
+  # Climate Overview
+  # 
+  - type: custom:decluttering-card
+    template: climate_overview
+    variables:
+      - temperature_sensor: sensor.kitchen_awair_temperature
+      - humidity_sensor: sensor.kitchen_awair_humidity
+      - carbon_dioxide_sensor: sensor.kitchen_awair_carbon_dioxide
+      - vocs_sensor: sensor.kitchen_awair_vocs
+      - pm25_sensor: sensor.kitchen_awair_pm2_5
+      - room_name: Family Room
+
+  # 
+  # Lights
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  - type: tile
+    entity: light.family_room_main_lights
+    name: Main Lights
+    icon: mdi:ceiling-light-multiple
+    show_entity_picture: false
+    hide_state: false
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+
+  # 
+  # Media Player
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Music
+
+  - type: custom:decluttering-card
+    template: media_player
+    variables:
+      - media_player: media_player.sonos_family_room
+      - room_name: Family Room
+      - navigation_path: '#family_room_media_player'
+
+
+  # 
+  # Devices
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Sony Bravia TV
+      - type: custom:button-card
+        entity: media_player.sony_bravia_tv
+        name: Sony Bravia
+        template: kohbo_device_entity
+
+      # Apple TV
+      - type: custom:button-card
+        entity: media_player.apple_tv_family_room
+        name: Apple TV
+        icon: mdi:apple
+        template: kohbo_device_entity
+
+      - type: custom:button-card
+        entity: switch.smart_plug_14_switch
+        name: South Wall Outlet
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_14_active_power
+          confirmation: true
+
+      - type: custom:button-card
+        entity: switch.smart_plug_4_switch
+        name: North Wall Outlet
+        template: kohbo_device_smart_plug_entity
+        variables:
+          power_sensor: sensor.smart_plug_4_family_room_power
+          confirmation: true
+
+      # Exterior Doors
+      - type: custom:button-card
+        entity: binary_sensor.family_room_doors
+        name: Exterior Doors
+        template: kohbo_device_door_entity
+
+
+  # 
+  # Quick Settings
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Quick Settings
+  - type: entities
+    entities:
+      # Speech Notifications Toggle
+      - entity: input_boolean.family_room_speech_notifications
+        name: Speech Notifications
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # # Lighting Automations Toggle
+      # - entity: input_boolean.kitchen_lighting_automations
+      #   name: Lighting Automations
+      #   icon: kohbo:kohbo-light-2
+      #   card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+      #   secondary_info: last-changed
+      #   state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_family_room
+        name: Adaptive Lighting
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      # Adaptive Lighting Toggle
+      - entity: switch.adaptive_lighting_sleep_mode_family_room
+        name: Adaptive Lighting Sleep Mode
+        icon: mdi:theme-light-dark
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+        
+
+  # 
+  # Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_family_room
+      - hash: '#family_room_media_player'
+
+
+  # 
+  # Family Room Settings Popup
+  # 
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#family_room_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 650px)
+        margin_top_desktop: calc(100vh - 650px)
+        
+      # 
+      # Title
+      # 
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Settings
+
+      # 
+      # Automations
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Automations
+      - type: entities
+        entities:
+          # Vacuum Clean Family Room at Night
+          - entity: input_boolean.vacuum_family_room_at_night
+            name: Clean at Night
+            icon: mdi:robot-vacuum
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+          
+          # Clean Family Room When Unoccupied
+          - entity: input_boolean.vacuum_family_room_when_house_empty
+            name: Clean When House Is Empty
+            icon: mdi:robot-vacuum
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+      # 
+      # Sensors
+      # 
+      - type: custom:button-card
+        template: section_title
+        name: Sensors
+      - type: entities
+        entities:
+          # # Presence Sensor
+          # - type: custom:template-entity-row
+          #   icon: kohbo:kohbo-room-occupancy
+          #   name: Presence Sensor
+          #   entity: binary_sensor.kitchen_presence_sensor
+          #   state: "{{ 'Detected' if states['binary_sensor.kitchen_presence_sensor'].state == 'on' else 'Clear' }}"
+          #   secondary: "{{ states['binary_sensor.kitchen_presence_sensor'].last_changed | relative_time }} ago"
+          #   card_mod: !include /config/dashboards/templates/includes/kohbo_entities_entity_row.yaml
+          #   color: !include /config/dashboards/templates/includes/kohbo_entities_entity_icon_color.yaml
+            
+          # Occupancy Sensor
+          - entity: binary_sensor.family_room_motion_sensor_occupancy
+            icon: kohbo:kohbo-room-occupancy
+            name: Occupancy Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          # Motion Sensor
+          - entity: binary_sensor.family_room_motion_sensor
+            icon: mdi:motion-sensor
+            name: Motion Sensor
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

@@ -1,0 +1,162 @@
+# 
+# House Mode Popup
+# 
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#house_mode'
+    close_by_clicking_outside: true
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+    margin_top_mobile: calc(100vh - 750px)
+    margin_top_desktop: calc(100vh - 750px)
+
+  # 
+  # Popup Title
+  # 
+  - type: custom:button-card
+    template: kohbo_popup_page_title
+    name: House Mode
+
+  # 
+  # House Mode Overview
+  # 
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 20px;
+          --vertical-stack-card-gap: 20px !important;
+        }
+    cards:
+      - type: custom:button-card
+        template: kohbo_stacked_card_top
+        entity: input_select.house
+        label: Current state of the house
+        state:
+          - value: "Away"
+            icon: mdi:home-export-outline
+            color: var(--warning-color)
+          - value: "All Out"
+            icon: mdi:home-off-outline
+            color: var(--error-color)
+          - value: "Dogs Alone"
+            icon: mdi:dog
+            color: var(--orange-color)
+          - value: "Day Time"
+            icon: mdi:weather-sunny
+            color: var(--primary-color)
+          - value: "Evening Time"
+            icon: mdi:weather-sunset
+            color: var(--success-color)
+          - value: "Night Time"
+            icon: mdi:weather-night
+            color: var(--secondary-text-color)
+        state_display: |
+          [[[
+            return `${entity.state} Mode`
+          ]]]
+
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            entity: input_boolean.evening_entertaining
+            name: Entertaining
+            icon: mdi:party-popper
+            template: kohbo_security_item
+            state_display: |
+              [[[
+                return entity.state == "on" ? "Active" : "Off";
+              ]]]
+          - type: custom:button-card
+            entity: input_boolean.disco_disco
+            name: Disco
+            icon: mdi:disco
+            template: kohbo_security_item
+            state_display: |
+              [[[
+                return entity.state == "on" ? "Active" : "Off";
+              ]]]
+          - type: custom:button-card
+            entity: input_boolean.bad_weather
+            name: Bad Weather
+            icon: mdi:weather-pouring
+            template: kohbo_security_item
+            state_display: |
+              [[[
+                return entity.state == "on" ? "Active" : "Off";
+              ]]]
+
+  # 
+  # House Mode Selector
+  # 
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      - entity: input_select.house
+        name: House Mode
+        card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+  # 
+  # Quick Toggles
+  # 
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      - entity: input_boolean.lucas_sleeping
+        name: Lucas Sleeping
+        icon: mdi:baby-face-outline
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.evening_entertaining
+        name: Evening Entertaining
+        icon: mdi:party-popper
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.edward_alone
+        name: Edward Alone
+        icon: mdi:account
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.important_meeting
+        name: Important Meeting
+        icon: mdi:briefcase
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.disco_disco
+        name: Disco Disco
+        icon: mdi:disco
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.nanny_present
+        name: Nanny Present
+        icon: mdi:account-child
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.nanny_expected_today
+        name: Nanny Expected Today
+        icon: mdi:account-clock
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true
+
+      - entity: input_boolean.bad_weather
+        name: Bad Weather
+        icon: mdi:weather-pouring
+        card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+        secondary_info: last-changed
+        state_color: true

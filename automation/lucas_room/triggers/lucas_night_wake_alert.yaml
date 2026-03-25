@@ -3,7 +3,7 @@
   description: "Lucas door opens at night: notify + flash lounge lights."
   trigger:
     - platform: state
-      entity_id: binary_sensor.lucas_room_door
+      entity_id: binary_sensor.lucas_room_door_contact
       to: "on"
   condition:
     - condition: time
@@ -25,7 +25,7 @@
               volume: 0.8
     - service: light.turn_on
       target:
-        entity_id: light.lounge_iris
+        entity_id: light.lounge_io
       data:
         color_name: yellow
         brightness_pct: 100
@@ -33,12 +33,12 @@
         seconds: 3
     - service: light.turn_off
       target:
-        entity_id: light.lounge_iris
+        entity_id: light.lounge_io
     - delay:
         seconds: 2
     - service: light.turn_on
       target:
-        entity_id: light.lounge_iris
+        entity_id: light.lounge_io
       data:
         color_name: yellow
         brightness_pct: 100
@@ -46,4 +46,4 @@
         seconds: 3
     - service: light.turn_off
       target:
-        entity_id: light.lounge_iris
+        entity_id: light.lounge_io

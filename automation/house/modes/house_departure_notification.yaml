@@ -3,19 +3,19 @@
   description: "Both phones left home. Actionable notification to select mode."
   trigger:
     - platform: state
-      entity_id: person.edward
+      entity_id: person.edward_eidam
       from: "home"
       to: "not_home"
     - platform: state
-      entity_id: person.loretta
+      entity_id: person.loretta_eidam
       from: "home"
       to: "not_home"
   condition:
     - condition: state
-      entity_id: person.edward
+      entity_id: person.edward_eidam
       state: "not_home"
     - condition: state
-      entity_id: person.loretta
+      entity_id: person.loretta_eidam
       state: "not_home"
     - condition: not
       conditions:

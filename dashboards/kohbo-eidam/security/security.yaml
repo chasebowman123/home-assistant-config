@@ -1,0 +1,225 @@
+type: custom:vertical-layout
+title: Security
+path: security
+theme: kohbo
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  # 
+  # Page Header
+  # 
+  - !include /config/dashboards/templates/includes/security/security_header.yaml
+
+
+  # 
+  # Security Overview – Doorbells
+  # 
+  - type: custom:stack-in-card
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 10px !important;
+          --vertical-stack-card-gap: 10px !important;
+        }
+    keep:
+      border_radius: true
+      background: true
+    cards:
+      - type: custom:button-card
+        name: Home Security
+        show_icon: false
+        show_state: false
+        styles:
+          grid:
+            - grid-template-areas: '"n n"'
+            - grid-template-columns: 1fr
+          card:
+            - justify-content: center
+            - padding-bottom: 0
+            - padding-top: 10px
+          name:
+            - justify-self: center
+            - font-size: 14px
+            - font-weight: 500
+            - color: var(--secondary-text-color)
+            - align-self: end
+            - margin-bottom: 2px
+
+      # 
+      # Security Items Row 1 – Ring Doorbells
+      # 
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: horizontal-stack
+            cards:
+              # Basement Door Bell
+              - type: custom:button-card
+                entity: binary_sensor.basement_door_ding
+                name: Basement
+                template: kohbo_security_item
+                icon: mdi:doorbell
+                state:
+                  - value: 'on'
+                    icon: mdi:doorbell
+                    color: var(--warning-color)
+                    state_display: Ringing
+                  - value: 'off'
+                    icon: mdi:doorbell
+                    color: var(--success-color)
+                    state_display: Clear
+
+              # Upstairs Doorbell
+              - type: custom:button-card
+                entity: binary_sensor.upstairs_ding
+                name: Upstairs
+                template: kohbo_security_item
+                icon: mdi:doorbell
+                state:
+                  - value: 'on'
+                    icon: mdi:doorbell
+                    color: var(--warning-color)
+                    state_display: Ringing
+                  - value: 'off'
+                    icon: mdi:doorbell
+                    color: var(--success-color)
+                    state_display: Clear
+
+              # Lobby Doorbell
+              - type: custom:button-card
+                entity: binary_sensor.lobby_ding
+                name: Lobby
+                template: kohbo_security_item
+                icon: mdi:doorbell
+                state:
+                  - value: 'on'
+                    icon: mdi:doorbell
+                    color: var(--warning-color)
+                    state_display: Ringing
+                  - value: 'off'
+                    icon: mdi:doorbell
+                    color: var(--success-color)
+                    state_display: Clear
+
+          # 
+          # Security Items Row 2 – Cameras link
+          # 
+          - type: horizontal-stack
+            cards:
+              # Link to cameras view
+              - type: custom:button-card
+                name: Cameras
+                icon: mdi:cctv
+                template: kohbo_security_item
+                tap_action:
+                  action: navigate
+                  navigation_path: '/dashboard-kohbo-eidam/security-cameras'
+                  haptic: light
+
+              # House mode
+              - type: custom:button-card
+                entity: input_select.house
+                name: Mode
+                template: kohbo_security_item
+                icon: mdi:home
+                state:
+                  - value: "Away"
+                    icon: mdi:home-export-outline
+                    color: var(--warning-color)
+                  - value: "All Out"
+                    icon: mdi:home-off-outline
+                    color: var(--error-color)
+                  - value: "Dogs Alone"
+                    icon: mdi:dog
+                    color: var(--orange-color)
+                  - value: "Day Time"
+                    icon: mdi:weather-sunny
+                    color: var(--primary-color)
+                  - value: "Evening Time"
+                    icon: mdi:weather-sunset
+                    color: var(--success-color)
+                  - value: "Night Time"
+                    icon: mdi:weather-night
+                    color: var(--secondary-text-color)
+                tap_action:
+                  action: navigate
+                  navigation_path: '#house_mode'
+                  haptic: light
+
+
+  # 
+  # Ring Camera Batteries
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: Camera Batteries
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: sensor.basement_door_battery
+        name: Basement Door
+        template: kohbo_device_entity
+        icon: mdi:battery
+        show_state: true
+
+      - type: custom:button-card
+        entity: sensor.basement_stairs_battery
+        name: Basement Stairs
+        template: kohbo_device_entity
+        icon: mdi:battery
+        show_state: true
+
+      - type: custom:button-card
+        entity: sensor.garden_battery
+        name: Garden
+        template: kohbo_device_entity
+        icon: mdi:battery
+        show_state: true
+
+      - type: custom:button-card
+        entity: sensor.upstairs_battery
+        name: Upstairs
+        template: kohbo_device_entity
+        icon: mdi:battery
+        show_state: true
+
+
+  # 
+  # People Location
+  # 
+  - type: custom:button-card
+    template: section_title
+    name: People
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: person.edward
+        template: kohbo_device_entity
+        name: Edward
+        icon: mdi:account
+        show_state: true
+
+      - type: custom:button-card
+        entity: person.loretta
+        template: kohbo_device_entity
+        name: Loretta
+        icon: mdi:account
+        show_state: true
+
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/kohbo-eidam/includes/navbar.yaml
+
+
+  # 
+  # House Mode Popup
+  # 
+  - !include /config/dashboards/kohbo-eidam/home/house_mode_popup.yaml

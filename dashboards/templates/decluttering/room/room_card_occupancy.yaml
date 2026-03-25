@@ -1,0 +1,137 @@
+# 
+# Room State & Occupancy
+# 
+room_card_occupancy:
+  card:
+    type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
+    card:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        grid-template-columns: 50% 50%
+        margin: 0px 0px 0px 0px
+        padding: 20px 20px 0px 20px
+        card_margin: 0px
+      cards:
+        # 
+        # Room State & Occupancy
+        # 
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  gap: 5px !important;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              # Room Mode
+              - type: custom:button-card
+                template: kohbo_chip_card_room_mode
+                entity: '[[mode]]'
+                tap_action:
+                  action: more-info
+                size: 12px
+                styles:
+                  card:
+                    - background: var(--divider-color)
+                    - height: 26px
+                    - border-radius: 13px
+                    - font-size: 11px
+                    - font-weight: 600
+                    - padding: 0 8px
+                  state:
+                    - margin-left: 4px
+                    - font-size: 11px
+                    - font-weight: 600
+                  img_cell:
+                    - width: 12px
+                    - height: 12px
+
+              # Room Occupancy              
+              - type: custom:button-card
+                template: kohbo_chip_card_room_occupancy
+                entity: '[[occupancy]]'
+                tap_action:
+                  action: more-info
+                size: 12px
+                styles:
+                  card:
+                    - background: var(--divider-color)
+                    - height: 26px
+                    - border-radius: 13px
+                    - font-size: 11px
+                    - font-weight: 600
+                    - padding: 0 8px
+                  state:
+                    - margin-left: 4px
+                    - font-size: 11px
+                    - font-weight: 600
+                  img_cell:
+                    - width: 12px
+                    - height: 12px
+
+        # 
+        # People in the room
+        # 
+        - type: custom:mod-card
+          # style: !include /config/dashboards/templates/includes/people/kohbo_people_stack_mod_card_styles.yaml
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  height: 100% !important;
+                }
+              hui-horizontal-stack-card$: |
+                #root {
+                  display: flex;
+                  justify-content: flex-end;
+                  align-items: center;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: person.john_koht
+                template: kohbo_room_card_person_entity
+                tap_action:
+                  action: navigate
+                  navigation_path: '#john'
+                visibility:
+                  - condition: state
+                    entity: sensor.john_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.cristina_falbo
+                template: kohbo_room_card_person_entity
+                tap_action:
+                  action: navigate
+                  navigation_path: '#cristina'
+                visibility:
+                  - condition: state
+                    entity: sensor.cristina_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.mary_falbo
+                template: kohbo_room_card_person_entity
+                visibility:
+                  - condition: state
+                    entity: sensor.mary_room_presence
+                    state: "[[room]]"
+              - type: custom:button-card
+                entity: person.katia
+                template: kohbo_room_card_person_entity
+                visibility:
+                  - condition: state
+                    entity: sensor.katia_room_presence
+                    state: "[[room]]"
+
+
+        # 
+        # People
+        # 
+        - !include /config/dashboards/templates/button_cards/people/john.yaml
+        - !include /config/dashboards/templates/button_cards/people/cristina.yaml
+        - !include /config/dashboards/templates/button_cards/people/nonna.yaml

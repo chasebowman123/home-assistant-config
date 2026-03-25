@@ -3,7 +3,7 @@
   description: "Motion activates hallway lights when Edward is alone. Dim at night."
   trigger:
     - platform: state
-      entity_id: binary_sensor.hallway_motion
+      entity_id: binary_sensor.hallway_kitchen_motion_sensor_occupancy
       to: "on"
   condition:
     - condition: state
@@ -18,26 +18,26 @@
           sequence:
             - service: light.turn_on
               target:
-                entity_id: light.hallway_spots
+                entity_id: light.hallway_spot_lights
               data:
                 brightness_pct: 20
                 color_temp_kelvin: 2200
       default:
         - service: light.turn_on
           target:
-            entity_id: light.hallway_spots
+            entity_id: light.hallway_spot_lights
           data:
             brightness_pct: 70
             color_temp_kelvin: 3000
     - wait_for_trigger:
         - platform: state
-          entity_id: binary_sensor.hallway_motion
+          entity_id: binary_sensor.hallway_kitchen_motion_sensor_occupancy
           to: "off"
           for:
             minutes: 10
     - service: light.turn_off
       target:
-        entity_id: light.hallway_spots
+        entity_id: light.hallway_spot_lights
       data:
         transition: 5
   mode: restart

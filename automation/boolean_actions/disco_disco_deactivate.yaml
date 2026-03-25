@@ -8,19 +8,19 @@
   action:
     - service: light.turn_on
       target:
-        entity_id: light.lounge_spots
+        entity_id: light.lounge_spotlights
       data:
         brightness_pct: 80
         color_temp_kelvin: 3000
     - service: light.turn_on
       target:
         entity_id:
-          - light.lounge_iris
-          - light.lounge_play_light_bar
-          - light.lounge_light_strip
+          - light.lounge_io
+          - light.lounge_wall_lights
+          - light.lounge_strip_light
       data:
         brightness_pct: 50
         color_temp_kelvin: 3000
     - service: media_player.media_stop
       target:
-        entity_id: media_player.lounge_sonos
+        entity_id: media_player.lounge

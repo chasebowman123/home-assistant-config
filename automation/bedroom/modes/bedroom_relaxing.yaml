@@ -8,16 +8,16 @@
   action:
     - service: light.turn_off
       target:
-        entity_id: light.bedroom_spots
+        entity_id: light.bedroom_spot_lights
     - service: light.turn_on
       target:
-        entity_id: light.bedroom_signe
+        entity_id: light.bedroom_signe_light
       data:
         brightness_pct: 30
         color_temp_kelvin: 2200
     - service: light.turn_on
       target:
-        entity_id: light.bedroom_tv_strip
+        entity_id: light.bedroom_tv_strip_light
       data:
         brightness_pct: 20
         color_temp_kelvin: 2200

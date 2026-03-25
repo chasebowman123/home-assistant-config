@@ -1,0 +1,131 @@
+type: custom:navbar-card
+routes:
+  # Home
+  - url: /dashboard-kohbo/home
+    icon: kohbo:kohbo-dashboard
+    label: Home
+
+  # Rooms
+  - url: /dashboard-kohbo/rooms-active
+    icon: kohbo:kohbo-rooms
+    label: Rooms
+    selected: '[[[ return window.location.pathname.startsWith("/dashboard-kohbo/rooms") ]]]'
+    hold_action:
+      action: open-popup
+    popup:
+      # Kitchen quick link
+      - url: /dashboard-kohbo/rooms-kitchen
+        icon: kohbo:kohbo-fridge
+        label: Kitchen
+      # Office quick link
+      - url: /dashboard-kohbo/rooms-office
+        icon: kohbo:kohbo-laptop
+        label: Office
+      # Main Bedroom quick link
+      - url: /dashboard-kohbo/rooms-main-bedroom
+        icon: kohbo:kohbo-bed-king
+        label: Main Bedroom
+      # Nino's Bedroom quick link
+      - url: /dashboard-kohbo/rooms-ninos-bedroom
+        icon: kohbo:kohbo-bed-single
+        label: Nino's Bedroom
+      # Gianluca's Bedroom quick link
+      - url: /dashboard-kohbo/rooms-gianlucas-bedroom
+        icon: kohbo:kohbo-bed-single
+        label: Gianluca's Bedroom
+
+
+
+  # Climate
+  - url: /dashboard-kohbo/climate
+    icon: kohbo:kohbo-climate
+    label: Climate
+
+  # Security
+  - url: /dashboard-kohbo/security
+    icon: kohbo:kohbo-security
+    label: Security
+    selected: '[[[ return window.location.pathname.startsWith("/dashboard-kohbo/security") ]]]'
+
+  # More
+  - icon: mdi:dots-horizontal
+    label: More
+    tap_action:
+      action: open-popup
+    popup:
+      # # Reload Page
+      - icon: mdi:refresh
+        name: Reload Dashboard
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.javascript
+            data:
+              browser_id: THIS
+              code: |
+                lovelace_reload();
+
+      # People
+      - icon: mdi:account-circle
+        url: /dashboard-kohbo/people
+        label: People
+
+      # School
+      - icon: mdi:school
+        url: /dashboard-kohbo/school
+        label: School
+
+      # Energy
+      - icon: mdi:lightning-bolt
+        url: /dashboard-kohbo/energy
+        label: Energy
+
+      # # Devices
+      # - icon: kohbo:kohbo-devices
+      #   url: /dashboard-kohbo/devices
+      #   label: Devices
+
+      # # Media
+      # - icon: kohbo:kohbo-media
+      #   url: /dashboard-kohbo/media
+      #   label: Media
+
+      # Holidays
+      - icon: mdi:holidays
+        url: /dashboard-kohbo/holidays
+        label: Holidays
+
+haptic:
+  url: true
+  tap_action: true
+  hold_action: true
+  double_tap_action: true
+mobile:
+  show_labels: true
+  show_popup_label_backgrounds: true
+styles: |
+  .navbar-card {
+    border: none;
+    background: rgb(33, 37, 41, .90);
+    backdrop-filter: blur(4px);
+    width: 100%;
+    max-width: 500px;
+    bottom: -1px;
+    padding-bottom: 40px;
+  }
+
+  .button.active {
+    background: transparent;
+  }
+
+  .icon {
+    fill: #AAAAAA !important;
+  }
+
+  .icon.active {
+    fill: white !important;
+  }
+
+  ha-ripple {
+    display: none !important;
+  }

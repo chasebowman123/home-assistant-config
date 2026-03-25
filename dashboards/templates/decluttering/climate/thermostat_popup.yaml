@@ -1,0 +1,181 @@
+thermostat_popup:
+  card:
+    type: vertical-stack
+    cards:
+      # Popup Bubble Card
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '[[hash]]'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml 
+        margin_top_mobile: calc(100vh - 860px)
+        margin_top_desktop: calc(100vh - 860px)
+
+      # Popup Title
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: '[[name]]'
+
+      # Thermostat Card
+      - type: thermostat
+        entity: '[[entity]]'
+        name: '[[name]]'
+        icon: mdi:thermometer
+        card_mod:
+          style: |
+            ha-card {
+              background: transparent !important;
+            }
+
+            ha-card .title {
+              display: none !important;
+            }
+
+      # 
+      # Indoor and outside temperature
+      # 
+      - type: entities
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+        entities:
+          - entity: '[[temperature_sensor]]'
+            icon: mdi:home-thermometer
+            name: '[[name]]'
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          - entity: '[[temperature_sensor]]'
+            icon: mdi:thermometer-lines
+            name: 'Outside Temperature'
+            entity: '[[outside_temperature_sensor]]'
+            secondary_info: last-changed
+            state_color: true
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_generic_styles.yaml
+
+          
+
+      # 
+      # Thermostat Actions
+      # 
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod:
+          style: |
+            :host {
+              --stack-card-gap: 0;
+              --vertical-stack-card-gap: 0 !important;
+            }
+            ha-card {
+              background: var(--darker-primary-color);
+              border-bottom-right-radius: 0;
+              border-bottom-left-radius: 0;
+              backdrop-filter: none;
+              -webkit-backdrop-filter: none;
+              box-shadow: none;
+              border: none;
+              box-shadow: inset 0 4px 8px 0 rgba(0, 0, 0, 0.05);
+
+              position: absolute;
+              bottom: 70px;
+              height: 110px;
+              width: 100%;
+              left: 0;
+            }
+
+        cards:
+          # 
+          # Heat
+          # 
+          - type: custom:button-card
+            entity: '[[entity]]'
+            name: Heat
+            template: kohbo_thermostat_action_item
+            show_icon: true
+            icon: mdi:heat-wave
+            color_type: icon
+            state:
+              - color: var(--light-grey-color)
+                operator: template
+                value: "[[[ return entity.state != 'heat' || entity.attributes.preset_mode === 'eco' ]]]"
+              - color: var(--state-climate-heat-color)
+                value: 'heat'
+            tap_action:
+              action: call-service
+              service: climate.set_hvac_mode
+              haptic: heavy
+              target:
+                entity_id: '[[entity]]'
+              data:
+                hvac_mode: heat
+
+          # 
+          # Cool
+          # 
+          - type: custom:button-card
+            entity: '[[entity]]'
+            name: Cool
+            template: kohbo_thermostat_action_item
+            icon: mdi:snowflake
+            color_type: icon
+            state:
+              - color: var(--light-grey-color)
+                operator: template
+                value: "[[[ return entity.state != 'cool' || entity.attributes.preset_mode === 'eco' ]]]"
+              - color: var(--state-climate-cool-color)
+                value: 'cool'
+            tap_action:
+              action: call-service
+              service: climate.set_hvac_mode
+              haptic: heavy
+              target:
+                entity_id: '[[entity]]'
+              data:
+                hvac_mode: cool
+
+          # 
+          # Heat/Cool
+          # 
+          - type: custom:button-card
+            entity: '[[entity]]'
+            name: Heat/Cool
+            template: kohbo_thermostat_action_item
+            icon: mdi:sun-snowflake-variant
+            state:
+              - color: var(--state-climate-heat_cool-color)
+                value: 'heat_cool'
+              - color: var(--light-grey-color)
+                operator: template
+                value: "[[[ return entity.state != 'heat_cool' || entity.attributes.preset_mode === 'eco' ]]]"
+            tap_action:
+              action: call-service
+              service: climate.set_hvac_mode
+              haptic: heavy
+              target:
+                entity_id: '[[entity]]'
+              data:
+                hvac_mode: heat_cool
+
+          # 
+          # Eco
+          # 
+          - type: custom:button-card
+            entity: '[[entity]]'
+            name: Eco
+            template: kohbo_thermostat_action_item
+            icon: mdi:leaf
+            state:
+              - color: var(--success-color)
+                operator: template
+                value: "[[[ return entity.attributes.preset_mode === 'eco' ]]]"
+              - color: var(--light-grey-color)
+                operator: default
+            tap_action:
+              action: call-service
+              service: climate.set_preset_mode
+              haptic: heavy
+              target:
+                entity_id: '[[entity]]'
+              data:
+                preset_mode: eco
+
+          

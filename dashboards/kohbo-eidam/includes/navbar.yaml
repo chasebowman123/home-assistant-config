@@ -1,0 +1,117 @@
+type: custom:navbar-card
+routes:
+  # Home
+  - url: /dashboard-kohbo-eidam/home
+    icon: mdi:home
+    label: Home
+
+  # Rooms
+  - url: /dashboard-kohbo-eidam/rooms-active
+    icon: mdi:floor-plan
+    label: Rooms
+    selected: '[[[ return window.location.pathname.startsWith("/dashboard-kohbo-eidam/rooms") ]]]'
+    hold_action:
+      action: open-popup
+    popup:
+      # Lounge quick link
+      - url: /dashboard-kohbo-eidam/rooms-lounge
+        icon: mdi:sofa
+        label: Lounge
+      # Bedroom quick link
+      - url: /dashboard-kohbo-eidam/rooms-bedroom
+        icon: mdi:bed-king
+        label: Bedroom
+      # Lucas's Room quick link
+      - url: /dashboard-kohbo-eidam/rooms-lucas-room
+        icon: mdi:baby-face-outline
+        label: "Lucas's Room"
+      # Kitchen quick link
+      - url: /dashboard-kohbo-eidam/rooms-kitchen
+        icon: mdi:silverware-fork-knife
+        label: Kitchen
+      # Office quick link
+      - url: /dashboard-kohbo-eidam/rooms-office
+        icon: mdi:laptop
+        label: Office
+      # Hallway quick link
+      - url: /dashboard-kohbo-eidam/rooms-hallway
+        icon: mdi:door
+        label: Hallway
+
+
+  # Climate
+  - url: /dashboard-kohbo-eidam/climate
+    icon: mdi:thermometer
+    label: Climate
+
+  # Security
+  - url: /dashboard-kohbo-eidam/security
+    icon: mdi:shield-home
+    label: Security
+    selected: '[[[ return window.location.pathname.startsWith("/dashboard-kohbo-eidam/security") ]]]'
+
+  # More
+  - icon: mdi:dots-horizontal
+    label: More
+    tap_action:
+      action: open-popup
+    popup:
+      # Reload Page
+      - icon: mdi:refresh
+        name: Reload Dashboard
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: browser_mod.javascript
+            data:
+              browser_id: THIS
+              code: |
+                lovelace_reload();
+
+      # Energy
+      - icon: mdi:lightning-bolt
+        url: /dashboard-kohbo-eidam/energy
+        label: Energy
+
+      # House Mode
+      - icon: mdi:home
+        name: House Mode
+        tap_action:
+          action: navigate
+          navigation_path: '#house_mode'
+
+
+haptic:
+  url: true
+  tap_action: true
+  hold_action: true
+  double_tap_action: true
+mobile:
+  show_labels: true
+  show_popup_label_backgrounds: true
+styles: |
+  .navbar-card {
+    border: none;
+    background: rgb(33, 37, 41, .90);
+    backdrop-filter: blur(4px);
+    width: 100%;
+    max-width: 500px;
+    bottom: -1px;
+    padding-bottom: 40px;
+  }
+
+  .button.active {
+    background: transparent;
+  }
+
+  .icon {
+    fill: #AAAAAA !important;
+  }
+
+  .icon.active {
+    fill: white !important;
+  }
+
+  ha-ripple {
+    display: none !important;
+  }

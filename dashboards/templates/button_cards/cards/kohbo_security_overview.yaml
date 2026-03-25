@@ -1,0 +1,132 @@
+type: custom:stack-in-card
+cards:
+  # 
+  # Security Status / Overview
+  # 
+  - type: custom:button-card
+    template: security_overview_header
+    entity: sensor.house_security_status
+    label: Security Overview
+    icon: "[[[ return entity.attributes.icon ]]]"
+    show_icon: true
+    show_name: false
+    show_label: true
+    layout: icon_name_state
+    tap_action:
+      action: navigate
+      navigation_path: '/dashboard-kohbo/security'
+      haptic: light
+    styles:
+      icon:
+        - color: >
+            [[[
+              return entity.attributes.color;
+            ]]]
+    custom_fields:
+      score:
+        card:
+          type: custom:button-card
+          entity: sensor.house_security_score
+          name: House Security
+          show_icon: false
+          show_state: true
+          show_name: false
+          variables:
+            level_color: "[[[ return entity.attributes.color ]]]"
+          styles:
+            card:
+              - padding: 20px
+              - background-color: var(--darker-primary-color);
+              - border-radius: 8px !important;
+              - padding: 10px 3px !important;
+              - width: 42px
+              - height: 42px
+              - align-items: center;
+              - display: flex;
+              - border-radius: 25px;
+              - background: >
+                  [[[[
+                    return `radial-gradient(var(--dark-primary-color) 60%,transparent calc(60% + 1px)), conic-gradient(${variables.level_color} ${entity.state}% 0%, var(--divider-color) 0% 100%)`;
+                  ]]]]
+              - position: relative
+            state:
+              - font-size: 14px;
+              - color: var(--primary-text-color);
+          tap_action:
+            action: navigate
+            navigation_path: '/dashboard-kohbo/security'
+            haptic: light
+
+  # 
+  # Security Items
+  # 
+  - type: custom:stack-in-card
+    mode: horizontal
+    card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+    cards:
+      # 
+      # Alarm
+      # 
+      - type: custom:button-card
+        entity: alarm_control_panel.alarmo
+        name: Alarm
+        template: kohbo_security_item
+        state:
+          - value: 'disarmed'
+            icon: kohbo:kohbo-alarm-disarmed
+          - value: 'armed_home'
+            icon: kohbo:kohbo-alarm-armed-home
+          - value: 'armed_away'
+            icon: kohbo:kohbo-alarm-armed-away
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-kohbo/security-alarm-panel'
+          haptic: light
+
+      # 
+      # Locks
+      # 
+      - type: custom:button-card
+        entity: lock.house_locks
+        name: Locks
+        template: kohbo_security_item
+        state_display: |
+          [[[
+            if (entity.state == "locked")
+              return "Locked";
+            else
+              return entity.attributes.entity_id.filter(id => states[id]?.state === 'unlocked').length + " Unlocked";
+          ]]]
+        state:
+          - value: 'unlocked'
+            icon: kohbo:kohbo-lock-unlocked
+          - value: 'locked'
+            icon: kohbo:kohbo-lock-locked
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-kohbo/security-house-locks'
+          haptic: light
+      # 
+      # Garage Doors
+      # 
+      - type: custom:button-card
+        entity: cover.garage_doors
+        name: Garage
+        template: kohbo_security_item
+        icon: kohbo:kohbo-garage-closed
+        state_display: |
+          [[[
+            if (entity.state == "closed")
+              return "Closed";
+            else
+              return entity.attributes.entity_id.filter(id => states[id]?.state === 'open').length + " Open";
+          ]]]
+        state:
+          - value: 'open'
+            icon: kohbo:kohbo-garage-open
+          - value: 'closed'
+            icon: kohbo:kohbo-garage-closed
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-kohbo/security-garage-doors'
+          haptic: light

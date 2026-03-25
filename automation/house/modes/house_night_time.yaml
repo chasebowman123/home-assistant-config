@@ -12,10 +12,10 @@
     - service: media_player.media_stop
       target:
         entity_id:
-          - media_player.lounge_sonos
+          - media_player.lounge
           - media_player.kitchen
-          - media_player.lucas_room_sonos
-          - media_player.bedroom_sonos
+          - media_player.lucass_room
+          - media_player.bedroom
     - service: input_boolean.turn_on
       target:
         entity_id: input_boolean.lucas_sleeping
@@ -25,8 +25,8 @@
           - climate.hallway
           - climate.lounge
           - climate.kitchen
-          - climate.bedroom
-          - climate.lucas_room
+          - climate.bedroom_2
+          - climate.lucas_s_room
           - climate.office
       data:
         preset_mode: "sleep"

@@ -1,0 +1,123 @@
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: '#nino'
+    styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+    
+  # 
+  # Profile Picture
+  # 
+  - type: custom:button-card
+    entity: person.nino
+    template: people_profile_picture
+    variables:
+      status: |
+        [[[
+          if (states['input_select.nino_sleep_state'].state == "Sleep") {
+            return "sleeping";
+          }
+        ]]]
+
+
+
+  # 
+  # Heading
+  # 
+  - type: custom:button-card
+    name: "Nino"
+    template: kohbo_person_heading
+    custom_fields:
+      location: '[[[ return states["input_select.nino_sleep_state"].state ]]]'
+        
+
+  # 
+  # Details
+  # 
+  - type: entities
+    card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+    entities:
+      # 
+      # Status
+      # 
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-person-status
+        name: Status
+        entity: input_select.nino_sleep_state
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        color: >
+          {% set status = states[config.entity].state %}
+          {% if status == "Awake" or status == "Just Got Up" %}
+            var(--success-color)
+          {% else %}
+            var(--orange-color)
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+      # 
+      # Bed Occupancy
+      # 
+      - type: custom:template-entity-row
+        icon: kohbo:kohbo-bed
+        name: Bed Occupancy
+        entity: binary_sensor.nino_bed_occupied
+        state: "{{ 'Detected' if states[config.entity].state == 'on' else 'Clear' }}"
+        secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+        color: >
+          {% if states[config.entity].state == "on" %}
+            var(--orange-color)
+          {% else %}
+            var(--light-grey-color)
+          {% endif %}
+        card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+
+
+  # 
+  # Medications
+  # 
+  - type: custom:stack-in-card
+    mode: vertical
+    card_mod:
+      style: |
+        :host {
+          --stack-card-gap: 0;
+          --vertical-stack-card-gap: 0 !important;
+        }
+    cards:
+      - type: entities
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+        entities:
+          - entity: input_boolean.nino_daily_medication_taken
+            icon: kohbo:kohbo-medication
+            name: Daily Medication
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+          - type: custom:template-entity-row
+            icon: kohbo:kohbo-timer
+            name: Daily Reminder
+            entity: timer.nino_daily_medication_timer
+            state: "{{ states[config.entity].state | title }}"
+            secondary: "{{ states[config.entity].last_changed | relative_time }} ago"
+            card_mod: !include /config/dashboards/templates/includes/kohbo_entity_item_layout.yaml
+
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            name: Medication Reminder Time
+            template: kohbo_card_section_title
+
+          - type: custom:button-card
+            name: What time should we remind Nino to take his medication?
+            template: kohbo_card_section_description
+
+          - type: entities
+            card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_entities_container.yaml
+            entities:
+              - entity: input_datetime.nino_daily_medication_time
+                name: Remind him at
+                card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml  

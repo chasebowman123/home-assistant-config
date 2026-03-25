@@ -1,0 +1,95 @@
+type: custom:vertical-layout
+title: Upper Floor
+path: rooms-upper-floor
+theme: kohbo
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout_tabbed_nav.yaml
+cards:
+  - !include /config/dashboards/templates/includes/rooms/kohbo_room_page_header.yaml
+
+  - type: vertical-stack
+    cards:
+      # 
+      # Overview Area for the upper floor
+      # 
+      - type: custom:mod-card
+        style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
+        card:
+          type: horizontal-stack
+          cards:
+            # Occupancy
+            - type: custom:button-card
+              template: kohbo_chip_card_room_occupancy
+              entity: binary_sensor.upper_floor_occupied
+            
+            # Lights
+            - type: custom:button-card
+              template: kohbo_chip_card
+              entity: light.upper_floor_lights
+              state_display: >
+                [[[
+                  if (states['light.upper_floor_lights'].state == "on")
+                    return `${states['sensor.upper_floor_lights_on'].state} On`
+                  else
+                    return "Off"
+                ]]]
+              tap_action:
+                action: more-info
+
+            # Temperature
+            - type: custom:button-card
+              template: kohbo_chip_card
+              entity: sensor.second_floor_temperature
+              icon: mdi:home-thermometer
+              color: var(--light-grey-color)
+            
+            # Motion
+            - type: custom:button-card
+              template: kohbo_chip_card
+              entity: binary_sensor.upper_floor_motion
+              show_state: false
+
+
+      # 
+      # Main Bedroom
+      # 
+      - !include /config/dashboards/kohbo/rooms/upper_floor/partials/main_bedroom_card.yaml
+
+      # 
+      # Nino's Bedroom
+      # 
+      - !include /config/dashboards/kohbo/rooms/upper_floor/partials/ninos_bedroom_card.yaml
+
+      # 
+      # Gianluca's Bedroom
+      # 
+      - !include /config/dashboards/kohbo/rooms/upper_floor/partials/gianlucas_bedroom_card.yaml
+
+      # 
+      # Upstairs Hallway
+      # 
+      - !include /config/dashboards/kohbo/rooms/upper_floor/partials/upstairs_hallway_card.yaml
+
+
+  # 
+  # Main Bedroom Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.sonos_main_bedroom
+      - hash: '#main_bedroom_media_player'
+
+  # 
+  # Nino's Bedroom Media Player Pop Up
+  # 
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.ninos_room
+      - hash: '#ninos_bedroom_media_player'
+
+  # 
+  # Navbar
+  # 
+  - !include /config/dashboards/templates/includes/navbar.yaml

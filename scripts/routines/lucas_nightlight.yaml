@@ -6,6 +6,6 @@ lucas_nightlight:
   sequence:
     - service: light.toggle
       target:
-        entity_id: light.lucas_go_nightlight
+        entity_id: light.hue_color_lamp_1
       data:
         brightness_pct: 3

@@ -8,19 +8,19 @@
   action:
     - service: light.turn_off
       target:
-        entity_id: light.lounge_spots
+        entity_id: light.lounge_spotlights
     - service: switch.turn_off
       target:
         entity_id: switch.lounge_hue_sync_box
     - service: light.turn_on
       target:
-        entity_id: light.lounge_light_strip
+        entity_id: light.lounge_strip_light
       data:
         brightness_pct: 15
         color_temp_kelvin: 2200
     - service: light.turn_on
       target:
-        entity_id: light.lounge_play_light_bar
+        entity_id: light.lounge_wall_lights
       data:
         brightness_pct: 15
         color_temp_kelvin: 2200

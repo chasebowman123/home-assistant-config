@@ -27,17 +27,19 @@ input_text: !include_dir_merge_named input_text/
 counter: !include_dir_merge_named counter/
 
 frontend:
+  extra_module_url:
+    - /hacsfiles/hass-hue-icons/hass-hue-icons.js
   themes: !include_dir_merge_named themes/
 
 lovelace:
   mode: storage
   dashboards:
-    dashboard-eidam:
+    dashboard-kohbo-eidam:
       mode: yaml
       title: "Eidam"
       icon: mdi:home-assistant
       show_in_sidebar: true
-      filename: dashboards/eidam/eidam.yaml
+      filename: dashboards/kohbo-eidam/eidam.yaml
 
 logger:
   default: info

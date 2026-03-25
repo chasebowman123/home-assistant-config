@@ -3,7 +3,7 @@
   description: "Motion activates cloakroom light, off after 5 minutes of no motion."
   trigger:
     - platform: state
-      entity_id: binary_sensor.cloakroom_motion
+      entity_id: binary_sensor.cloakroom_sensor_contact
       to: "on"
   condition:
     - condition: not
@@ -17,14 +17,14 @@
   action:
     - service: light.turn_on
       target:
-        entity_id: light.cloakroom_light
+        entity_id: light.cloakroom
     - wait_for_trigger:
         - platform: state
-          entity_id: binary_sensor.cloakroom_motion
+          entity_id: binary_sensor.cloakroom_sensor_contact
           to: "off"
           for:
             minutes: 5
     - service: light.turn_off
       target:
-        entity_id: light.cloakroom_light
+        entity_id: light.cloakroom
   mode: restart

@@ -1,0 +1,9 @@
+kohbo_horizontal_action_card_alarm_entity:
+  template: kohbo_horizontal_action_card_entity
+  state:
+    - value: 'disarmed'
+      icon: kohbo:kohbo-alarm-disarmed
+    - value: 'armed_home'
+      icon: kohbo:kohbo-alarm-armed-home
+    - value: 'armed_away'
+      icon: kohbo:kohbo-alarm-armed-away

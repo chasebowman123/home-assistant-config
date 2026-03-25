@@ -9,14 +9,14 @@
     - service: light.turn_off
       target:
         entity_id:
-          - light.lounge_spots
-          - light.lounge_play_light_bar
-          - light.lounge_light_strip
+          - light.lounge_spotlights
+          - light.lounge_wall_lights
+          - light.lounge_strip_light
           - light.lounge_piano_lamp
-          - light.lounge_iris
+          - light.lounge_io
     - service: switch.turn_off
       target:
         entity_id: switch.lounge_hue_sync_box
     - service: media_player.media_pause
       target:
-        entity_id: media_player.lounge_sonos
+        entity_id: media_player.lounge
