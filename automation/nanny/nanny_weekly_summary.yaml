@@ -1,0 +1,30 @@
+# Nanny Weekly Summary
+# Every Sunday at 8pm, sends a summary of the week's hours and resets counters.
+- id: nanny_weekly_summary
+  alias: "Nanny - Weekly Summary"
+  description: "Sunday 8pm: send weekly nanny hours summary and reset counters."
+  trigger:
+    - platform: time
+      at: "20:00:00"
+  condition:
+    - condition: time
+      weekday:
+        - sun
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "📋 Nanny Weekly Summary"
+        message: >
+          Week ending {{ now().strftime('%d %b %Y') }}:
+          Sessions: {{ states('counter.nanny_weekly_sessions') }}
+          Total hours: {{ states('input_number.nanny_weekly_hours') }}h
+          Last session: {{ states('input_text.nanny_last_session') }}
+    - service: input_number.set_value
+      target:
+        entity_id: input_number.nanny_weekly_hours
+      data:
+        value: 0
+    - service: counter.reset
+      target:
+        entity_id: counter.nanny_weekly_sessions
+  mode: single

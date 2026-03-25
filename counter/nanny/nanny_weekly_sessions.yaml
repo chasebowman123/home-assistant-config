@@ -1,0 +1,7 @@
+# Nanny Weekly Sessions
+# Count of sessions this week. Resets every Sunday.
+nanny_weekly_sessions:
+  name: "Nanny Weekly Sessions"
+  icon: mdi:counter
+  initial: 0
+  step: 1

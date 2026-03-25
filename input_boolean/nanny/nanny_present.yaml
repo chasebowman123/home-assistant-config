@@ -1,0 +1,5 @@
+# Nanny Present
+# Tracks whether Ankii is currently at the house.
+nanny_present:
+  name: "Nanny Present"
+  icon: mdi:account-check

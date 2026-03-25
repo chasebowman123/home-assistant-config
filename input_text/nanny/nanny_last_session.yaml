@@ -1,0 +1,6 @@
+# Nanny Last Session
+# Human-readable summary of the last nanny session.
+nanny_last_session:
+  name: "Nanny Last Session"
+  icon: mdi:clipboard-text
+  max: 255

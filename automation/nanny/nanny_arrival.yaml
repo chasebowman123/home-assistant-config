@@ -1,0 +1,39 @@
+# Nanny Arrival
+# Logs Ankii's arrival time to the nanny_hours calendar and sends notification.
+# Triggers when her phone connects to the Eero network (device_tracker goes to 'home').
+# Only fires Mon-Fri during reasonable hours to avoid false triggers.
+- id: nanny_arrival
+  alias: "Nanny - Arrival"
+  description: "Log Ankii's arrival time when her phone connects to Wi-Fi."
+  trigger:
+    - platform: state
+      entity_id: device_tracker.ankiis_phone
+      to: "home"
+  condition:
+    - condition: time
+      weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+    - condition: time
+      after: "06:00:00"
+      before: "12:00:00"
+    - condition: state
+      entity_id: input_boolean.nanny_present
+      state: "off"
+  action:
+    - service: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.nanny_present
+    - service: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.nanny_arrival_time
+      data:
+        datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "👩‍👦 Ankii Arrived"
+        message: "Ankii connected to Wi-Fi at {{ now().strftime('%H:%M') }}."
+  mode: single

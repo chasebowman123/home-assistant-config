@@ -1,0 +1,7 @@
+# Nanny Arrival Time
+# Stores today's arrival timestamp for duration calculation.
+nanny_arrival_time:
+  name: "Nanny Arrival Time"
+  icon: mdi:clock-in
+  has_date: true
+  has_time: true

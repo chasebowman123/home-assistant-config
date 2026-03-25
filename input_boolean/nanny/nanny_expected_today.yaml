@@ -1,0 +1,6 @@
+# Nanny Expected Today
+# Toggle off on days Ankii isn't expected to suppress no-show alerts.
+nanny_expected_today:
+  name: "Nanny Expected Today"
+  icon: mdi:calendar-check
+  initial: true

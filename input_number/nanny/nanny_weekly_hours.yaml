@@ -1,0 +1,9 @@
+# Nanny Weekly Hours
+# Running total of hours worked this week. Resets every Sunday.
+nanny_weekly_hours:
+  name: "Nanny Weekly Hours"
+  icon: mdi:timer-outline
+  min: 0
+  max: 100
+  step: 0.01
+  unit_of_measurement: "h"
