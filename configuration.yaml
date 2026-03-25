@@ -14,17 +14,17 @@ group: !include_dir_merge_named group/
 automation: !include automations.yaml
 automation mine: !include_dir_list automation/
 script: !include scripts.yaml
-script mine: !include_dir_named scripts/
+script mine: !include_dir_merge_named scripts/
 scene: !include scenes.yaml
 
 binary_sensor: !include_dir_merge_list binary_sensors/
 sensor: !include_dir_merge_list sensors/
-input_boolean: !include_dir_named input_boolean/
-input_select: !include_dir_named input_select/
-input_number: !include_dir_named input_number/
-input_datetime: !include_dir_named input_datetime/
-input_text: !include_dir_named input_text/
-counter: !include_dir_named counter/
+input_boolean: !include_dir_merge_named input_boolean/
+input_select: !include_dir_merge_named input_select/
+input_number: !include_dir_merge_named input_number/
+input_datetime: !include_dir_merge_named input_datetime/
+input_text: !include_dir_merge_named input_text/
+counter: !include_dir_merge_named counter/
 
 frontend:
   themes: !include_dir_merge_named themes/
