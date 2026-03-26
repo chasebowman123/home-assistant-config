@@ -3,38 +3,53 @@
 <head><title>WS Test</title></head>
 <body style="background:#1a1a1e;color:white;font-family:sans-serif;padding:20px;">
 <h2>WebSocket Connection Test</h2>
+<div style="margin:20px 0;">
+  <input id="token" type="password" placeholder="Paste your long-lived access token" style="width:100%;padding:12px;font-size:14px;background:#252529;color:white;border:1px solid #444;border-radius:8px;">
+  <button onclick="doConnect()" style="margin-top:10px;padding:12px 24px;background:#4ade80;color:black;border:none;border-radius:8px;font-size:14px;cursor:pointer;">Connect</button>
+</div>
 <div id="log" style="white-space:pre-wrap;font-size:14px;"></div>
 <script>
 const log = document.getElementById('log');
 function addLog(msg) { log.textContent += msg + '\n'; }
 
-const host = location.hostname;
-const port = location.port || '8123';
-const wsUrl = 'ws://' + host + ':' + port + '/api/websocket';
-
-addLog('Page URL: ' + location.href);
-addLog('Trying: ' + wsUrl);
-addLog('');
-
-try {
+function doConnect() {
+  const token = document.getElementById('token').value.trim();
+  if (!token) { addLog('Please paste a token'); return; }
+  
+  log.textContent = '';
+  const host = location.hostname;
+  const port = location.port || '8123';
+  const wsUrl = 'ws://' + host + ':' + port + '/api/websocket';
+  addLog('Connecting to: ' + wsUrl);
+  
   const ws = new WebSocket(wsUrl);
   ws.onopen = () => addLog('✅ WebSocket OPENED');
   ws.onmessage = (e) => {
     const msg = JSON.parse(e.data);
-    addLog('📨 Message: ' + msg.type);
+    addLog('Message: ' + msg.type);
     if (msg.type === 'auth_required') {
-      addLog('🔐 Auth required - need token');
+      addLog('Sending token...');
+      ws.send(JSON.stringify({ type: 'auth', access_token: token }));
+    }
+    if (msg.type === 'auth_ok') {
+      addLog('✅ AUTHENTICATED! HA version: ' + msg.ha_version);
       addLog('');
-      addLog('The WebSocket connects fine!');
-      addLog('The issue is authentication.');
+      addLog('Token works! Now fetching states...');
+      ws.send(JSON.stringify({ id: 1, type: 'get_states' }));
+    }
+    if (msg.type === 'auth_invalid') {
+      addLog('❌ AUTH FAILED: ' + msg.message);
+    }
+    if (msg.type === 'result' && msg.id === 1 && msg.success) {
+      addLog('✅ Got ' + msg.result.length + ' entities!');
       addLog('');
-      addLog('Try entering your token below:');
+      addLog('EVERYTHING WORKS. Ready to deploy the full dashboard.');
+      localStorage.setItem('ha_dashboard_token', token);
+      addLog('Token saved to localStorage.');
     }
   };
-  ws.onerror = (e) => addLog('❌ WebSocket ERROR: ' + JSON.stringify(e));
-  ws.onclose = (e) => addLog('🔴 WebSocket CLOSED: code=' + e.code + ' reason=' + e.reason);
-} catch(e) {
-  addLog('❌ Exception: ' + e.message);
+  ws.onerror = () => addLog('❌ WebSocket ERROR');
+  ws.onclose = (e) => addLog('Connection closed: code=' + e.code);
 }
 </script>
 </body>
