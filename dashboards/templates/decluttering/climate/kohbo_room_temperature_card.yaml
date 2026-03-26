@@ -12,7 +12,6 @@ kohbo_room_temperature_card:
     icon: '[[icon]]'
     points_per_hour: 2
     line_width: 4
-    decimals: 0
     smoothing: true
     color_thresholds_transition: smooth
     color_thresholds:
