@@ -1,0 +1,3001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Home Assistant Dashboard — Eidam Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+<style>
+/* ========== RESET & BASE ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #1a1a1e;
+  --card: #252529;
+  --card-hover: #2d2d32;
+  --surface: #1e1e22;
+  --text: #ffffff;
+  --text-secondary: rgba(255,255,255,0.6);
+  --text-muted: rgba(255,255,255,0.4);
+  --text-dim: rgba(255,255,255,0.25);
+  --border: rgba(255,255,255,0.06);
+  --green: #4ade80;
+  --green-dim: rgba(74,222,128,0.15);
+  --amber: #fbbf24;
+  --amber-dim: rgba(251,191,36,0.15);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.15);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.15);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.15);
+  --teal: #2dd4bf;
+  --teal-dim: rgba(45,212,191,0.15);
+  --violet: #a78bfa;
+  --violet-dim: rgba(167,139,250,0.15);
+  --cyan: #22d3ee;
+  --cyan-dim: rgba(34,211,238,0.15);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --pad: 20px;
+  --pad-sm: 14px;
+  --gap: 12px;
+  --nav-h: 68px;
+  --phone-w: 390px;
+  --phone-h: 844px;
+}
+html, body { 
+  height: 100%; 
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #111113;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+/* ========== CONNECTION OVERLAY ========== */
+.connection-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.connection-overlay.hidden { display: none; }
+.connection-form {
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+}
+.connection-form h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.connection-form p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+.connection-form .logo-icon {
+  width: 64px; height: 64px;
+  border-radius: 20px;
+  background: var(--teal-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: var(--teal);
+  margin: 0 auto 16px;
+}
+.connection-form input {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  margin-bottom: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.connection-form input:focus {
+  border-color: var(--teal);
+}
+.connection-form input::placeholder {
+  color: var(--text-muted);
+}
+.connection-form label {
+  display: block;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.connection-form .field {
+  margin-bottom: 16px;
+}
+.connect-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--teal);
+  color: #000;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 4px;
+}
+.connect-btn:hover { opacity: 0.9; }
+.connect-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.connection-error {
+  color: var(--red);
+  font-size: 12px;
+  margin-top: 12px;
+  min-height: 18px;
+}
+.connection-status {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* ========== PHONE FRAME ========== */
+.phone-frame {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--phone-w);
+  height: var(--phone-h);
+  background: var(--bg);
+  border-radius: 44px;
+  border: 3px solid #333;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.05), 0 40px 80px rgba(0,0,0,0.6);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+/* Status bar */
+.status-bar {
+  height: 54px;
+  padding: 14px 28px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 600;
+  flex-shrink: 0;
+  background: var(--bg);
+  z-index: 10;
+}
+.status-bar-left { font-variant-numeric: tabular-nums; }
+.status-bar-right { display: flex; align-items: center; gap: 5px; font-size: 13px; }
+.status-bar-right .mdi { font-size: 16px; }
+
+/* ========== SCROLLABLE CONTENT ========== */
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.content-area::-webkit-scrollbar { display: none; }
+
+/* View container */
+.view {
+  display: none;
+  padding: 0 var(--pad) 24px;
+  min-height: 100%;
+  animation: fadeIn 0.25s ease;
+}
+.view.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ========== BOTTOM NAV ========== */
+.bottom-nav {
+  height: var(--nav-h);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-shrink: 0;
+  padding-bottom: 8px;
+  z-index: 10;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+.nav-item .mdi { font-size: 24px; }
+.nav-item.active { color: var(--text); }
+
+/* ========== HEADERS ========== */
+.view-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0 16px;
+  position: relative;
+}
+.view-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.view-header .header-right {
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.view-header .header-left {
+  position: absolute;
+  left: 0;
+}
+.header-icon {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.header-icon:hover { background: var(--card-hover); }
+.header-icon .mdi { font-size: 20px; color: var(--text-secondary); }
+
+/* ========== SECTION LABELS ========== */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 20px 0 10px;
+}
+
+/* ========== CARDS ========== */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  margin-bottom: var(--gap);
+}
+.card-sm {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: var(--pad-sm);
+  margin-bottom: var(--gap);
+}
+
+/* ========== CHIPS ROW ========== */
+.chips-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--card);
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.chip:hover { background: var(--card-hover); }
+.chip .mdi { font-size: 16px; }
+.chip-icon {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+.avatar-row {
+  display: flex;
+  margin-left: auto;
+  gap: -4px;
+}
+.avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: -6px;
+}
+.avatar:first-child { margin-left: 0; }
+
+/* ========== SECURITY CARD ========== */
+.security-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.security-icon-wrap {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.security-score {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 2.5px solid var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: auto;
+  color: var(--teal);
+}
+.security-items {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+}
+.security-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.security-item-icon {
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.security-item-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.security-item-value {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ========== CLIMATE CARD ========== */
+.climate-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.climate-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.climate-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+.temp-big {
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 4px 0 2px;
+}
+.temp-big .unit {
+  font-size: 24px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: 2px;
+}
+.sparkline-container {
+  height: 80px;
+  margin: 12px -4px 16px;
+  position: relative;
+}
+.sensor-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+.sensor-item {
+  text-align: center;
+}
+.sensor-dots {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  margin-bottom: 6px;
+}
+.sensor-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+}
+.sensor-value {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.sensor-unit {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-top: 2px;
+  display: block;
+}
+.sensor-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ========== ROOMS FOOTER ========== */
+.rooms-badge {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 14px var(--pad);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: var(--gap);
+}
+
+/* ========== QUICK ACTIONS ========== */
+.quick-actions {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: var(--gap);
+  -webkit-overflow-scrolling: touch;
+}
+.quick-actions::-webkit-scrollbar { display: none; }
+.quick-action {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.quick-action:hover { background: var(--card-hover); }
+.quick-action .mdi { font-size: 16px; color: var(--amber); }
+
+/* ========== ENERGY OVERVIEW ========== */
+.energy-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.energy-stat {
+  padding: 0 8px;
+}
+.energy-stat:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+.energy-stat-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.energy-stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.energy-stat-value .unit {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: 2px;
+}
+.energy-sparkline-row {
+  display: flex;
+  gap: 4px;
+  margin-top: 10px;
+  align-items: flex-end;
+  height: 16px;
+}
+.energy-spark-bar {
+  flex: 1;
+  background: var(--teal);
+  border-radius: 2px;
+  opacity: 0.5;
+}
+
+/* ========== CHART CONTAINER ========== */
+.chart-container {
+  position: relative;
+  height: 220px;
+  margin: 16px -8px 8px;
+}
+.chart-container canvas {
+  width: 100%;
+  height: 100%;
+}
+.chart-legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+/* ========== ENERGY HISTORY ========== */
+.energy-history-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.energy-history-item {
+  padding: 0 8px;
+}
+.energy-history-item:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+.energy-history-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.energy-history-value {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.energy-history-value .unit {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+.energy-history-change {
+  font-size: 11px;
+  margin-top: 6px;
+  font-weight: 500;
+}
+.change-down { color: var(--green); }
+.change-up-bad { color: var(--red); }
+.change-neutral { color: var(--text-muted); }
+
+/* ========== PERIOD TABS ========== */
+.period-tabs {
+  display: flex;
+  gap: 0;
+  background: var(--surface);
+  border-radius: var(--radius-xs);
+  padding: 3px;
+  margin: 16px 0 12px;
+}
+.period-tab {
+  flex: 1;
+  text-align: center;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.period-tab.active {
+  background: var(--card);
+  color: var(--text);
+}
+
+/* ========== HISTORY CHART ========== */
+.history-chart-container {
+  height: 140px;
+  position: relative;
+  margin: 0 -8px;
+}
+
+/* ========== LIGHT CONTROLS ========== */
+.light-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.light-row:last-child { border-bottom: none; }
+.light-icon-wrap {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+.light-info { flex: 1; }
+.light-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+.light-status {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+/* iOS Toggle */
+.toggle {
+  width: 50px;
+  height: 28px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.12);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+.toggle.on { background: var(--green); }
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: white;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.toggle.on::after { transform: translateX(22px); }
+.toggle.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Brightness slider */
+.brightness-slider {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  margin-top: 10px;
+  position: relative;
+  cursor: pointer;
+}
+.brightness-fill {
+  height: 100%;
+  background: var(--amber);
+  border-radius: 2px;
+  position: relative;
+}
+.brightness-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: white;
+  position: absolute;
+  right: -8px;
+  top: -6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+/* ========== THERMOSTAT CARD ========== */
+.thermostat-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  margin-bottom: var(--gap);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.thermostat-card:hover { background: var(--card-hover); }
+.thermo-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.thermo-room {
+  font-size: 14px;
+  font-weight: 600;
+}
+.thermo-status {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 50px;
+}
+.thermo-temps {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.thermo-current {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.thermo-target {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.thermo-sparkline {
+  height: 40px;
+  margin-top: 8px;
+}
+
+/* ========== PRESENCE ========== */
+.presence-row {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.presence-row:last-child { border-bottom: none; }
+.presence-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 12px;
+}
+.presence-info { flex: 1; }
+.presence-name { font-size: 14px; font-weight: 500; }
+.presence-status { font-size: 12px; color: var(--text-muted); }
+.presence-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+/* ========== CAMERA GRID ========== */
+.camera-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap);
+}
+.camera-card {
+  aspect-ratio: 16/9;
+  background: #111;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+}
+.camera-card .mdi { font-size: 24px; color: var(--text-muted); }
+.camera-card span { font-size: 11px; color: var(--text-muted); }
+
+/* ========== SENSOR LIST ========== */
+.sensor-list-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.sensor-list-item:last-child { border-bottom: none; }
+.sensor-list-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  margin-right: 12px;
+}
+.sensor-list-info { flex: 1; }
+.sensor-list-name { font-size: 13px; font-weight: 500; }
+.sensor-list-state { font-size: 11px; color: var(--text-muted); }
+.sensor-list-value { font-size: 13px; font-weight: 600; }
+
+/* ========== MEDIA PLAYER ========== */
+.media-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  margin-bottom: var(--gap);
+}
+.media-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.media-art {
+  width: 56px; height: 56px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #333, #555);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.media-info { flex: 1; }
+.media-title { font-size: 14px; font-weight: 600; }
+.media-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.media-source { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.media-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.media-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 22px;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+.media-btn:hover { color: var(--text); }
+.media-btn.play {
+  width: 48px; height: 48px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 26px;
+}
+.media-progress {
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  margin-top: 12px;
+}
+.media-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--text);
+}
+
+/* ========== APPLIANCE CARD ========== */
+.appliance-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  margin-bottom: var(--gap);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.appliance-icon-wrap {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.appliance-info { flex: 1; }
+.appliance-name { font-size: 14px; font-weight: 600; }
+.appliance-status { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.appliance-power { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.appliance-badge {
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ========== ROUTINE BUTTONS ========== */
+.routine-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.routine-btn {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.routine-btn:hover { background: var(--card-hover); }
+.routine-btn .mdi {
+  font-size: 24px;
+  display: block;
+  margin-bottom: 6px;
+}
+.routine-btn span {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ========== SETTINGS ========== */
+.setting-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-info { flex: 1; }
+.setting-name { font-size: 14px; font-weight: 500; }
+.setting-desc { font-size: 12px; color: var(--text-muted); }
+
+/* ========== MODE CHIPS ========== */
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: var(--gap);
+}
+.mode-chip {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.mode-chip:hover { background: var(--card-hover); }
+.mode-chip.active {
+  background: var(--teal-dim);
+  outline: 1px solid var(--teal);
+}
+.mode-chip .mdi {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 4px;
+}
+.mode-chip span {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ========== ROOM VIEW BACK HEADER ========== */
+.room-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 0 16px;
+  gap: 12px;
+}
+.room-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  flex: 1;
+  text-align: center;
+}
+.room-header .header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ========== HUMIDITY PROMINENT ========== */
+.humidity-card {
+  background: linear-gradient(135deg, rgba(96,165,250,0.15) 0%, rgba(96,165,250,0.05) 100%);
+  border-radius: var(--radius);
+  padding: var(--pad);
+  margin-bottom: var(--gap);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.humidity-value {
+  font-size: 36px;
+  font-weight: 700;
+}
+.humidity-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* ========== CLIMATE ADJUST BUTTONS ========== */
+.climate-adjust {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+.climate-adjust-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--text-secondary);
+  transition: background 0.2s;
+  border: none;
+  font-family: inherit;
+}
+.climate-adjust-btn:hover { background: rgba(255,255,255,0.15); }
+.climate-adjust-target {
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 60px;
+  text-align: center;
+}
+
+/* ========== FOOTER ========== */
+.pplx-footer {
+  padding: 20px;
+  text-align: center;
+}
+.pplx-footer a {
+  font-size: 11px;
+  color: var(--text-dim);
+  text-decoration: none;
+}
+.pplx-footer a:hover { color: var(--text-muted); }
+
+/* ========== SCROLLBAR HIDE ========== */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 420px) {
+  .phone-frame {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    position: fixed;
+    top: 0; left: 0;
+    transform: none;
+  }
+  .status-bar { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== CONNECTION OVERLAY ========== -->
+<div class="connection-overlay" id="connectionOverlay">
+  <div class="connection-form">
+    <div class="logo-icon"><span class="mdi mdi-home-assistant"></span></div>
+    <h2>Eidam Home</h2>
+    <p>Connect to your Home Assistant instance</p>
+    <div class="field">
+      <label>WebSocket URL</label>
+      <input type="text" id="haUrl" placeholder="ws://homeassistant.local:8123/api/websocket">
+    </div>
+    <div class="field">
+      <label>Long-Lived Access Token</label>
+      <input type="password" id="haToken" placeholder="Paste your access token here">
+    </div>
+    <button class="connect-btn" id="connectBtn" onclick="connectToHA()">Connect</button>
+    <div class="connection-error" id="connectionError"></div>
+    <div class="connection-status" id="connectionStatus"></div>
+  </div>
+</div>
+
+<!-- ========== MAIN DASHBOARD ========== -->
+<div class="phone-frame">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-bar-left" id="statusTime">10:06</div>
+    <div class="status-bar-right">
+      <span class="mdi mdi-signal-cellular-3"></span>
+      <span class="mdi mdi-wifi-strength-4"></span>
+      <span id="statusConnection" style="font-size:11px; background:rgba(255,255,255,0.15); padding:1px 5px; border-radius:4px;">--</span>
+    </div>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="content-area" id="contentArea">
+
+    <!-- ==================== HOME VIEW ==================== -->
+    <div class="view active" id="view-home">
+      <div class="view-header">
+        <h1>Home</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-bell-outline"></span></div>
+        </div>
+      </div>
+
+      <!-- Chips Row -->
+      <div class="chips-row">
+        <div class="chip" id="homeHouseModeChip">
+          <span class="chip-icon" style="background:var(--teal-dim);color:var(--teal);"><span class="mdi mdi-home"></span></span>
+          <span id="homeHouseModeLabel">--</span>
+        </div>
+        <div class="chip">
+          <span class="mdi mdi-flash" style="color:var(--amber);"></span>
+          <span id="homePowerLabel">-- W</span>
+        </div>
+        <div class="avatar-row" id="homeAvatarRow">
+          <div class="avatar" id="avatarEdward" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">E</div>
+          <div class="avatar" id="avatarLoretta" style="background:linear-gradient(135deg,#ec4899,#f43f5e);">L</div>
+          <div class="avatar" style="background:linear-gradient(135deg,#f59e0b,#f97316);">🐾</div>
+        </div>
+      </div>
+
+      <!-- Security Card -->
+      <div class="card" id="homeSecurityCard">
+        <div class="security-card-header">
+          <div class="security-icon-wrap" id="secIconWrap" style="background:var(--amber-dim);color:var(--amber);">
+            <span class="mdi mdi-alert" id="secIcon"></span>
+          </div>
+          <div>
+            <div style="font-size:16px;font-weight:600;" id="secTitle">Partially Secure</div>
+            <div style="font-size:12px;color:var(--text-muted);">Security Overview</div>
+          </div>
+          <div class="security-score" id="secScore">--</div>
+        </div>
+        <div class="security-items">
+          <div class="security-item">
+            <div class="security-item-icon" id="alarmIcon" style="background:var(--red-dim);color:var(--red);">
+              <span class="mdi mdi-shield-off" id="alarmIconMdi"></span>
+            </div>
+            <div class="security-item-label">Alarm</div>
+            <div class="security-item-value" id="alarmValue" style="color:var(--red);">--</div>
+          </div>
+          <div class="security-item">
+            <div class="security-item-icon" style="background:var(--amber-dim);color:var(--amber);">
+              <span class="mdi mdi-lock"></span>
+            </div>
+            <div class="security-item-label">Locks</div>
+            <div class="security-item-value" style="color:var(--amber);">Locked</div>
+          </div>
+          <div class="security-item">
+            <div class="security-item-icon" style="background:var(--green-dim);color:var(--green);">
+              <span class="mdi mdi-garage"></span>
+            </div>
+            <div class="security-item-label">Garage</div>
+            <div class="security-item-value" style="color:var(--green);">Closed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Indoor Climate Card -->
+      <div class="card">
+        <div class="climate-header">
+          <div class="climate-title">Indoor Climate</div>
+          <div class="climate-icon"><span class="mdi mdi-thermometer"></span></div>
+        </div>
+        <div class="temp-big"><span id="homeTemp">--</span><span class="unit"> °C</span></div>
+        <div class="sparkline-container"><canvas id="homeSparkline"></canvas></div>
+        <div class="sensor-grid">
+          <div class="sensor-item">
+            <div class="sensor-dots">
+              <div class="sensor-dot" style="background:var(--red);"></div>
+              <div class="sensor-dot" style="background:var(--orange);"></div>
+              <div class="sensor-dot" style="background:var(--amber);"></div>
+            </div>
+            <div class="sensor-value" id="homeHumidity">--</div>
+            <div class="sensor-unit">%</div>
+            <div class="sensor-label">Humidity</div>
+          </div>
+          <div class="sensor-item">
+            <div class="sensor-dots">
+              <div class="sensor-dot" style="background:var(--green);"></div>
+              <div class="sensor-dot" style="background:var(--green);"></div>
+              <div class="sensor-dot" style="background:var(--green);opacity:0.3;"></div>
+            </div>
+            <div class="sensor-value">--</div>
+            <div class="sensor-unit">ppm</div>
+            <div class="sensor-label">CO₂</div>
+          </div>
+          <div class="sensor-item">
+            <div class="sensor-dots">
+              <div class="sensor-dot" style="background:var(--green);"></div>
+              <div class="sensor-dot" style="background:var(--green);"></div>
+              <div class="sensor-dot" style="background:var(--green);opacity:0.3;"></div>
+            </div>
+            <div class="sensor-value">--</div>
+            <div class="sensor-unit">ppb</div>
+            <div class="sensor-label">Chemicals</div>
+          </div>
+          <div class="sensor-item">
+            <div class="sensor-dots">
+              <div class="sensor-dot" style="background:var(--green);"></div>
+              <div class="sensor-dot" style="background:var(--green);"></div>
+              <div class="sensor-dot" style="background:var(--green);"></div>
+            </div>
+            <div class="sensor-value" id="homePM25">--</div>
+            <div class="sensor-unit">µg/m³</div>
+            <div class="sensor-label">PM2.5</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rooms Occupied -->
+      <div class="rooms-badge">
+        <span class="mdi mdi-home-group" style="margin-right:6px;color:var(--teal);"></span>
+        <span id="roomsOccupiedBadge">-- Rooms</span>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="section-label">Quick Actions</div>
+      <div class="quick-actions">
+        <div class="quick-action" data-script="script.morning_routine"><span class="mdi mdi-weather-sunny"></span> Morning</div>
+        <div class="quick-action" data-script="script.goodnight_routine"><span class="mdi mdi-power-sleep"></span> Goodnight</div>
+        <div class="quick-action" data-script="script.all_lights_off"><span class="mdi mdi-power-off"></span> All Off</div>
+      </div>
+
+      <!-- Modes -->
+      <div class="section-label">Modes</div>
+      <div class="mode-grid" id="homeModeGrid">
+        <div class="mode-chip" data-mode="Day Time"><span class="mdi mdi-weather-sunny" style="color:var(--amber);"></span><span>Day</span></div>
+        <div class="mode-chip" data-mode="Evening Time"><span class="mdi mdi-weather-sunset" style="color:var(--orange);"></span><span>Evening</span></div>
+        <div class="mode-chip" data-mode="Night Time"><span class="mdi mdi-weather-night" style="color:var(--violet);"></span><span>Night</span></div>
+        <div class="mode-chip" data-mode="Away"><span class="mdi mdi-airplane"></span><span>Away</span></div>
+        <div class="mode-chip" data-mode="All Out"><span class="mdi mdi-home-export-outline"></span><span>All Out</span></div>
+        <div class="mode-chip" data-mode="Dogs Alone"><span class="mdi mdi-dog"></span><span>Dogs</span></div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== ROOMS VIEW ==================== -->
+    <div class="view" id="view-rooms">
+      <div class="view-header">
+        <h1>Rooms</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-magnify"></span></div>
+        </div>
+      </div>
+
+      <div class="chips-row">
+        <div class="chip" style="background:var(--teal-dim);color:var(--teal);"><span class="mdi mdi-check-circle"></span> <span id="roomsOccupiedChip">-- Occupied</span></div>
+        <div class="chip"><span class="mdi mdi-lightbulb" style="color:var(--amber);"></span> <span id="roomsLightsChip">-- Lights</span></div>
+      </div>
+
+      <!-- Room Cards -->
+      <div class="thermostat-card" onclick="showRoom('lounge')" id="roomCardLounge">
+        <div class="thermo-top">
+          <div class="thermo-room"><span class="mdi mdi-sofa" style="color:var(--amber);margin-right:6px;"></span>Lounge</div>
+          <div class="thermo-status" id="loungeStatus" style="background:var(--green-dim);color:var(--green);">--</div>
+        </div>
+        <div class="thermo-temps">
+          <div class="thermo-current" id="loungeCurrentTemp">--°</div>
+          <div class="thermo-target" id="loungeTargetTemp">Target --°C</div>
+        </div>
+        <div class="thermo-sparkline"><canvas class="room-spark" data-room="lounge"></canvas></div>
+      </div>
+
+      <div class="thermostat-card" onclick="showRoom('bedroom')" id="roomCardBedroom">
+        <div class="thermo-top">
+          <div class="thermo-room"><span class="mdi mdi-bed" style="color:var(--violet);margin-right:6px;"></span>Bedroom</div>
+          <div class="thermo-status" id="bedroomStatus" style="background:var(--blue-dim);color:var(--blue);">--</div>
+        </div>
+        <div class="thermo-temps">
+          <div class="thermo-current" id="bedroomCurrentTemp">--°</div>
+          <div class="thermo-target" id="bedroomTargetTemp">Target --°C</div>
+        </div>
+        <div class="thermo-sparkline"><canvas class="room-spark" data-room="bedroom"></canvas></div>
+      </div>
+
+      <div class="thermostat-card" onclick="showRoom('lucas')" id="roomCardLucas">
+        <div class="thermo-top">
+          <div class="thermo-room"><span class="mdi mdi-baby-face" style="color:var(--cyan);margin-right:6px;"></span>Lucas's Room</div>
+          <div class="thermo-status" id="lucasStatus" style="background:var(--green-dim);color:var(--green);">--</div>
+        </div>
+        <div class="thermo-temps">
+          <div class="thermo-current" id="lucasCurrentTemp">--°</div>
+          <div class="thermo-target" id="lucasTargetTemp">Target --°C</div>
+        </div>
+        <div class="thermo-sparkline"><canvas class="room-spark" data-room="lucas"></canvas></div>
+      </div>
+
+      <div class="thermostat-card" onclick="showRoom('kitchen')" id="roomCardKitchen">
+        <div class="thermo-top">
+          <div class="thermo-room"><span class="mdi mdi-stove" style="color:var(--orange);margin-right:6px;"></span>Kitchen</div>
+          <div class="thermo-status" id="kitchenStatus" style="background:var(--green-dim);color:var(--green);">--</div>
+        </div>
+        <div class="thermo-temps">
+          <div class="thermo-current" id="kitchenCurrentTemp">--°</div>
+          <div class="thermo-target" id="kitchenTargetTemp">Target --°C</div>
+        </div>
+        <div class="thermo-sparkline"><canvas class="room-spark" data-room="kitchen"></canvas></div>
+      </div>
+
+      <div class="thermostat-card" onclick="showRoom('office')" id="roomCardOffice">
+        <div class="thermo-top">
+          <div class="thermo-room"><span class="mdi mdi-desk" style="color:var(--teal);margin-right:6px;"></span>Office</div>
+          <div class="thermo-status" id="officeStatus" style="background:var(--green-dim);color:var(--green);">--</div>
+        </div>
+        <div class="thermo-temps">
+          <div class="thermo-current" id="officeCurrentTemp">--°</div>
+          <div class="thermo-target" id="officeTargetTemp">Target --°C</div>
+        </div>
+        <div class="thermo-sparkline"><canvas class="room-spark" data-room="office"></canvas></div>
+      </div>
+
+      <div class="thermostat-card" onclick="showRoom('hallway')" id="roomCardHallway">
+        <div class="thermo-top">
+          <div class="thermo-room"><span class="mdi mdi-door-open" style="color:var(--blue);margin-right:6px;"></span>Hallway</div>
+          <div class="thermo-status" id="hallwayStatus" style="background:var(--blue-dim);color:var(--blue);">--</div>
+        </div>
+        <div class="thermo-temps">
+          <div class="thermo-current" id="hallwayCurrentTemp">--°</div>
+          <div class="thermo-target" id="hallwayTargetTemp">Target --°C</div>
+        </div>
+        <div class="thermo-sparkline"><canvas class="room-spark" data-room="hallway"></canvas></div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== CLIMATE VIEW ==================== -->
+    <div class="view" id="view-climate">
+      <div class="view-header">
+        <h1>Climate</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-dots-horizontal"></span></div>
+        </div>
+      </div>
+
+      <!-- Weather -->
+      <div class="card">
+        <div class="climate-header">
+          <div class="climate-title">Outdoor Weather</div>
+          <div class="climate-icon"><span class="mdi mdi-weather-partly-cloudy" id="weatherIcon"></span></div>
+        </div>
+        <div class="temp-big"><span id="weatherTemp">--</span><span class="unit"> °C</span></div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;" id="weatherCondition">--</div>
+      </div>
+
+      <!-- Tado Zones -->
+      <div class="section-label">Heating Zones</div>
+      <div id="climateZones"></div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== SECURITY VIEW ==================== -->
+    <div class="view" id="view-security">
+      <div class="view-header">
+        <h1>Security</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-dots-horizontal"></span></div>
+        </div>
+      </div>
+
+      <!-- Alarm Panel -->
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+          <div class="security-icon-wrap" id="secAlarmIconWrap" style="background:var(--red-dim);color:var(--red);font-size:26px;">
+            <span class="mdi mdi-shield-off" id="secAlarmIcon"></span>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:18px;font-weight:700;" id="secAlarmTitle">--</div>
+            <div style="font-size:12px;color:var(--text-muted);" id="secAlarmSub">All zones inactive</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          <div style="background:var(--surface);border-radius:var(--radius-xs);padding:12px;text-align:center;cursor:pointer;" onclick="callAlarmService('alarm_arm_home')">
+            <span class="mdi mdi-shield-home" style="font-size:22px;color:var(--green);display:block;margin-bottom:4px;"></span>
+            <span style="font-size:11px;font-weight:500;">Arm Home</span>
+          </div>
+          <div style="background:var(--surface);border-radius:var(--radius-xs);padding:12px;text-align:center;cursor:pointer;" onclick="callAlarmService('alarm_arm_away')">
+            <span class="mdi mdi-shield-lock" style="font-size:22px;color:var(--red);display:block;margin-bottom:4px;"></span>
+            <span style="font-size:11px;font-weight:500;">Arm Away</span>
+          </div>
+          <div style="background:var(--surface);border-radius:var(--radius-xs);padding:12px;text-align:center;cursor:pointer;" onclick="callAlarmService('alarm_disarm')">
+            <span class="mdi mdi-shield-off" style="font-size:22px;color:var(--violet);display:block;margin-bottom:4px;"></span>
+            <span style="font-size:11px;font-weight:500;">Disarm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Presence -->
+      <div class="card">
+        <div class="section-label" style="margin:0 0 8px;">Presence</div>
+        <div class="presence-row">
+          <div class="presence-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);">E</div>
+          <div class="presence-info">
+            <div class="presence-name">Edward</div>
+            <div class="presence-status" id="edwardPresenceStatus">--</div>
+          </div>
+          <div class="presence-dot" id="edwardPresenceDot" style="background:var(--text-muted);"></div>
+        </div>
+        <div class="presence-row">
+          <div class="presence-avatar" style="background:linear-gradient(135deg,#ec4899,#f43f5e);">L</div>
+          <div class="presence-info">
+            <div class="presence-name">Loretta</div>
+            <div class="presence-status" id="lorettaPresenceStatus">--</div>
+          </div>
+          <div class="presence-dot" id="lorettaPresenceDot" style="background:var(--text-muted);"></div>
+        </div>
+        <div class="presence-row">
+          <div class="presence-avatar" style="background:linear-gradient(135deg,#f59e0b,#f97316);">🐾</div>
+          <div class="presence-info">
+            <div class="presence-name">Dogs</div>
+            <div class="presence-status">Indoor</div>
+          </div>
+          <div class="presence-dot" style="background:var(--green);"></div>
+        </div>
+      </div>
+
+      <!-- Cameras -->
+      <div class="section-label">Cameras</div>
+      <div class="camera-grid" style="margin-bottom:var(--gap);">
+        <div class="camera-card"><span class="mdi mdi-cctv"></span><span>Basement Door</span></div>
+        <div class="camera-card"><span class="mdi mdi-cctv"></span><span>Upstairs</span></div>
+        <div class="camera-card"><span class="mdi mdi-cctv"></span><span>Garden</span></div>
+      </div>
+
+      <!-- Ring Batteries -->
+      <div class="card">
+        <div class="section-label" style="margin:0 0 8px;">Ring Batteries</div>
+        <div class="sensor-list-item">
+          <div class="sensor-list-icon" style="background:var(--green-dim);color:var(--green);"><span class="mdi mdi-battery"></span></div>
+          <div class="sensor-list-info">
+            <div class="sensor-list-name">Basement Door</div>
+          </div>
+          <div class="sensor-list-value" id="battBasementDoor">--%</div>
+        </div>
+        <div class="sensor-list-item">
+          <div class="sensor-list-icon" style="background:var(--green-dim);color:var(--green);"><span class="mdi mdi-battery"></span></div>
+          <div class="sensor-list-info">
+            <div class="sensor-list-name">Basement Stairs</div>
+          </div>
+          <div class="sensor-list-value" id="battBasementStairs">--%</div>
+        </div>
+        <div class="sensor-list-item">
+          <div class="sensor-list-icon" style="background:var(--green-dim);color:var(--green);"><span class="mdi mdi-battery"></span></div>
+          <div class="sensor-list-info">
+            <div class="sensor-list-name">Garden</div>
+          </div>
+          <div class="sensor-list-value" id="battGarden">--%</div>
+        </div>
+        <div class="sensor-list-item">
+          <div class="sensor-list-icon" style="background:var(--green-dim);color:var(--green);"><span class="mdi mdi-battery"></span></div>
+          <div class="sensor-list-info">
+            <div class="sensor-list-name">Upstairs</div>
+          </div>
+          <div class="sensor-list-value" id="battUpstairs">--%</div>
+        </div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== MORE VIEW ==================== -->
+    <div class="view" id="view-more">
+      <div class="view-header">
+        <h1>More</h1>
+      </div>
+
+      <!-- More Menu Items -->
+      <div class="section-label">Rooms</div>
+      <div class="card" style="padding:0;">
+        <div class="light-row" style="padding:14px var(--pad);cursor:pointer;" onclick="showRoom('lounge')">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-sofa"></span></div>
+          <div class="light-info"><div class="light-name">Lounge</div><div class="light-status" id="moreLoungeStatus">--</div></div>
+          <span class="mdi mdi-chevron-right" style="color:var(--text-muted);font-size:20px;"></span>
+        </div>
+        <div class="light-row" style="padding:14px var(--pad);cursor:pointer;" onclick="showRoom('bedroom')">
+          <div class="light-icon-wrap" style="background:var(--violet-dim);color:var(--violet);"><span class="mdi mdi-bed"></span></div>
+          <div class="light-info"><div class="light-name">Bedroom</div><div class="light-status" id="moreBedroomStatus">--</div></div>
+          <span class="mdi mdi-chevron-right" style="color:var(--text-muted);font-size:20px;"></span>
+        </div>
+        <div class="light-row" style="padding:14px var(--pad);cursor:pointer;" onclick="showRoom('lucas')">
+          <div class="light-icon-wrap" style="background:var(--cyan-dim);color:var(--cyan);"><span class="mdi mdi-baby-face"></span></div>
+          <div class="light-info"><div class="light-name">Lucas's Room</div><div class="light-status" id="moreLucasStatus">--</div></div>
+          <span class="mdi mdi-chevron-right" style="color:var(--text-muted);font-size:20px;"></span>
+        </div>
+        <div class="light-row" style="padding:14px var(--pad);cursor:pointer;" onclick="showRoom('kitchen')">
+          <div class="light-icon-wrap" style="background:var(--orange-dim);color:var(--orange);"><span class="mdi mdi-stove"></span></div>
+          <div class="light-info"><div class="light-name">Kitchen</div><div class="light-status" id="moreKitchenStatus">--</div></div>
+          <span class="mdi mdi-chevron-right" style="color:var(--text-muted);font-size:20px;"></span>
+        </div>
+        <div class="light-row" style="padding:14px var(--pad);cursor:pointer;" onclick="showRoom('office')">
+          <div class="light-icon-wrap" style="background:var(--teal-dim);color:var(--teal);"><span class="mdi mdi-desk"></span></div>
+          <div class="light-info"><div class="light-name">Office</div><div class="light-status" id="moreOfficeStatus">--</div></div>
+          <span class="mdi mdi-chevron-right" style="color:var(--text-muted);font-size:20px;"></span>
+        </div>
+        <div class="light-row" style="padding:14px var(--pad);cursor:pointer;" onclick="showRoom('hallway')">
+          <div class="light-icon-wrap" style="background:var(--blue-dim);color:var(--blue);"><span class="mdi mdi-door-open"></span></div>
+          <div class="light-info"><div class="light-name">Hallway</div><div class="light-status" id="moreHallwayStatus">--</div></div>
+          <span class="mdi mdi-chevron-right" style="color:var(--text-muted);font-size:20px;"></span>
+        </div>
+      </div>
+
+      <div class="section-label">Features</div>
+      <div class="card" style="padding:0;">
+        <div class="light-row" style="padding:14px var(--pad);cursor:pointer;" onclick="showSubview('settings')">
+          <div class="light-icon-wrap" style="background:rgba(255,255,255,0.06);color:var(--text-secondary);"><span class="mdi mdi-cog"></span></div>
+          <div class="light-info"><div class="light-name">Settings</div><div class="light-status">System configuration</div></div>
+          <span class="mdi mdi-chevron-right" style="color:var(--text-muted);font-size:20px;"></span>
+        </div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== LOUNGE VIEW ==================== -->
+    <div class="view" id="view-lounge">
+      <div class="room-header">
+        <div class="header-icon" onclick="goBack()"><span class="mdi mdi-arrow-left"></span></div>
+        <h1>Lounge</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-dots-horizontal"></span></div>
+        </div>
+      </div>
+
+      <!-- Mode selector -->
+      <div class="section-label">Room Mode</div>
+      <div class="chips-row" id="loungeModeChips">
+        <div class="chip mode-select-chip" data-entity="input_select.lounge" data-option="Standard">Standard</div>
+        <div class="chip mode-select-chip" data-entity="input_select.lounge" data-option="Movie with Sync">Movie+Sync</div>
+        <div class="chip mode-select-chip" data-entity="input_select.lounge" data-option="Movie without Sync">Movie</div>
+        <div class="chip mode-select-chip" data-entity="input_select.lounge" data-option="Music">Music</div>
+        <div class="chip mode-select-chip" data-entity="input_select.lounge" data-option="Off">Off</div>
+      </div>
+
+      <!-- Lights -->
+      <div class="section-label">Lights</div>
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="light-row" data-entity="light.lounge">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-lightbulb-group"></span></div>
+          <div class="light-info"><div class="light-name">All Lounge</div><div class="light-status entity-state" data-entity="light.lounge">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.lounge" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.lounge_spotlights">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-ceiling-light"></span></div>
+          <div class="light-info"><div class="light-name">Spotlights</div><div class="light-status entity-state" data-entity="light.lounge_spotlights">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.lounge_spotlights" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.lounge_wall_lights">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-wall-sconce-flat"></span></div>
+          <div class="light-info"><div class="light-name">Wall Lights</div><div class="light-status entity-state" data-entity="light.lounge_wall_lights">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.lounge_wall_lights" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.lounge_strip_light">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-led-strip-variant"></span></div>
+          <div class="light-info"><div class="light-name">Strip Light</div><div class="light-status entity-state" data-entity="light.lounge_strip_light">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.lounge_strip_light" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.lounge_piano_lamp">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-piano"></span></div>
+          <div class="light-info"><div class="light-name">Piano Lamp</div><div class="light-status entity-state" data-entity="light.lounge_piano_lamp">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.lounge_piano_lamp" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.lounge_io">
+          <div class="light-icon-wrap" style="background:var(--violet-dim);color:var(--violet);"><span class="mdi mdi-lava-lamp"></span></div>
+          <div class="light-info"><div class="light-name">Iris</div><div class="light-status entity-state" data-entity="light.lounge_io">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.lounge_io" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.lounge_signe_light">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-floor-lamp"></span></div>
+          <div class="light-info"><div class="light-name">Signe Light</div><div class="light-status entity-state" data-entity="light.lounge_signe_light">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.lounge_signe_light" data-domain="light"></div>
+        </div>
+      </div>
+
+      <!-- Accent Switches -->
+      <div class="section-label">Accents</div>
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="light-row" data-entity="switch.bubble_light">
+          <div class="light-icon-wrap" style="background:var(--cyan-dim);color:var(--cyan);"><span class="mdi mdi-lava-lamp"></span></div>
+          <div class="light-info"><div class="light-name">Bubble Light</div><div class="light-status entity-state" data-entity="switch.bubble_light">--</div></div>
+          <div class="toggle entity-toggle" data-entity="switch.bubble_light" data-domain="switch"></div>
+        </div>
+        <div class="light-row" data-entity="switch.banana_light">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-lamp"></span></div>
+          <div class="light-info"><div class="light-name">Banana Light</div><div class="light-status entity-state" data-entity="switch.banana_light">--</div></div>
+          <div class="toggle entity-toggle" data-entity="switch.banana_light" data-domain="switch"></div>
+        </div>
+        <div class="light-row" data-entity="switch.disco_lights">
+          <div class="light-icon-wrap" style="background:var(--violet-dim);color:var(--violet);"><span class="mdi mdi-party-popper"></span></div>
+          <div class="light-info"><div class="light-name">Disco Lights</div><div class="light-status entity-state" data-entity="switch.disco_lights">--</div></div>
+          <div class="toggle entity-toggle" data-entity="switch.disco_lights" data-domain="switch"></div>
+        </div>
+        <div class="light-row" data-entity="switch.bar_light">
+          <div class="light-icon-wrap" style="background:var(--orange-dim);color:var(--orange);"><span class="mdi mdi-glass-cocktail"></span></div>
+          <div class="light-info"><div class="light-name">Bar Light</div><div class="light-status entity-state" data-entity="switch.bar_light">--</div></div>
+          <div class="toggle entity-toggle" data-entity="switch.bar_light" data-domain="switch"></div>
+        </div>
+      </div>
+
+      <!-- Sync Box -->
+      <div class="section-label">Sync Box</div>
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="light-row" data-entity="switch.lounge_hue_sync_box">
+          <div class="light-icon-wrap" style="background:var(--teal-dim);color:var(--teal);"><span class="mdi mdi-sync"></span></div>
+          <div class="light-info"><div class="light-name">Hue Sync Box</div><div class="light-status entity-state" data-entity="switch.lounge_hue_sync_box">--</div></div>
+          <div class="toggle entity-toggle" data-entity="switch.lounge_hue_sync_box" data-domain="switch"></div>
+        </div>
+      </div>
+
+      <!-- Media -->
+      <div class="section-label">Media</div>
+      <div class="media-card">
+        <div class="media-top">
+          <div class="media-art"><span class="mdi mdi-speaker"></span></div>
+          <div class="media-info">
+            <div class="media-title">Lounge Speaker</div>
+            <div class="media-subtitle entity-state" data-entity="media_player.lounge">--</div>
+          </div>
+        </div>
+      </div>
+      <div class="media-card">
+        <div class="media-top">
+          <div class="media-art"><span class="mdi mdi-television"></span></div>
+          <div class="media-info">
+            <div class="media-title">Lounge TV</div>
+            <div class="media-subtitle entity-state" data-entity="media_player.lounge_tv_2">--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== BEDROOM VIEW ==================== -->
+    <div class="view" id="view-bedroom">
+      <div class="room-header">
+        <div class="header-icon" onclick="goBack()"><span class="mdi mdi-arrow-left"></span></div>
+        <h1>Bedroom</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-dots-horizontal"></span></div>
+        </div>
+      </div>
+
+      <!-- Mode selector -->
+      <div class="section-label">Room Mode</div>
+      <div class="chips-row" id="bedroomModeChips">
+        <div class="chip mode-select-chip" data-entity="input_select.bedroom" data-option="Relaxing">Relaxing</div>
+        <div class="chip mode-select-chip" data-entity="input_select.bedroom" data-option="Bedtime">Bedtime</div>
+        <div class="chip mode-select-chip" data-entity="input_select.bedroom" data-option="Off">Off</div>
+      </div>
+
+      <!-- Lights -->
+      <div class="section-label">Lights</div>
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="light-row" data-entity="light.bedroom">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-lightbulb-group"></span></div>
+          <div class="light-info"><div class="light-name">All Bedroom</div><div class="light-status entity-state" data-entity="light.bedroom">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.bedroom" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.bedroom_spot_lights">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-ceiling-light"></span></div>
+          <div class="light-info"><div class="light-name">Spot Lights</div><div class="light-status entity-state" data-entity="light.bedroom_spot_lights">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.bedroom_spot_lights" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.bedroom_signe_light">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-floor-lamp"></span></div>
+          <div class="light-info"><div class="light-name">Signe Light</div><div class="light-status entity-state" data-entity="light.bedroom_signe_light">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.bedroom_signe_light" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.bedroom_tv_strip_light">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-led-strip-variant"></span></div>
+          <div class="light-info"><div class="light-name">TV Strip Light</div><div class="light-status entity-state" data-entity="light.bedroom_tv_strip_light">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.bedroom_tv_strip_light" data-domain="light"></div>
+        </div>
+      </div>
+
+      <!-- Media -->
+      <div class="section-label">Media</div>
+      <div class="media-card">
+        <div class="media-top">
+          <div class="media-art" style="background:linear-gradient(135deg,#6366f1,#818cf8);"><span class="mdi mdi-speaker" style="color:white;"></span></div>
+          <div class="media-info">
+            <div class="media-title">Bedroom Speaker</div>
+            <div class="media-subtitle entity-state" data-entity="media_player.bedroom">--</div>
+          </div>
+        </div>
+      </div>
+      <div class="media-card">
+        <div class="media-top">
+          <div class="media-art"><span class="mdi mdi-television"></span></div>
+          <div class="media-info">
+            <div class="media-title">LG OLED TV</div>
+            <div class="media-subtitle entity-state" data-entity="media_player.lg_webos_tv_oled55g54lw">--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== LUCAS'S ROOM VIEW ==================== -->
+    <div class="view" id="view-lucas">
+      <div class="room-header">
+        <div class="header-icon" onclick="goBack()"><span class="mdi mdi-arrow-left"></span></div>
+        <h1>Lucas's Room</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-dots-horizontal"></span></div>
+        </div>
+      </div>
+
+      <!-- Mode selector -->
+      <div class="section-label">Room Mode</div>
+      <div class="chips-row" id="lucasModeChips">
+        <div class="chip mode-select-chip" data-entity="input_select.lucas_room" data-option="Standard">Standard</div>
+        <div class="chip mode-select-chip" data-entity="input_select.lucas_room" data-option="Bathtime">Bathtime</div>
+        <div class="chip mode-select-chip" data-entity="input_select.lucas_room" data-option="Wind Down">Wind Down</div>
+        <div class="chip mode-select-chip" data-entity="input_select.lucas_room" data-option="Bedtime">Bedtime</div>
+        <div class="chip mode-select-chip" data-entity="input_select.lucas_room" data-option="Night Time">Night</div>
+      </div>
+
+      <!-- Sleeping toggle -->
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="light-row">
+          <div class="light-icon-wrap" style="background:var(--violet-dim);color:var(--violet);"><span class="mdi mdi-sleep"></span></div>
+          <div class="light-info"><div class="light-name">Lucas Sleeping</div><div class="light-status entity-state" data-entity="input_boolean.lucas_sleeping">--</div></div>
+          <div class="toggle entity-toggle" data-entity="input_boolean.lucas_sleeping" data-domain="input_boolean"></div>
+        </div>
+      </div>
+
+      <!-- Sensors -->
+      <div class="section-label">Sensors</div>
+      <div class="card">
+        <div class="sensor-grid" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="sensor-item">
+            <div class="sensor-value" id="lucasRoomTemp">--</div>
+            <div class="sensor-unit">°C</div>
+            <div class="sensor-label">Room Temp</div>
+          </div>
+          <div class="sensor-item">
+            <div class="sensor-value" id="lucasAirQuality">--</div>
+            <div class="sensor-unit"></div>
+            <div class="sensor-label">Air Quality</div>
+          </div>
+          <div class="sensor-item">
+            <div class="sensor-value" id="lucasBathTemp">--</div>
+            <div class="sensor-unit">°C</div>
+            <div class="sensor-label">Bath Temp</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lights -->
+      <div class="section-label">Lights</div>
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="light-row" data-entity="light.lucass_room">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-lightbulb-group"></span></div>
+          <div class="light-info"><div class="light-name">All Lights</div><div class="light-status entity-state" data-entity="light.lucass_room">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.lucass_room" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.lucass_room_spot_lights">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-ceiling-light"></span></div>
+          <div class="light-info"><div class="light-name">Spot Lights</div><div class="light-status entity-state" data-entity="light.lucass_room_spot_lights">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.lucass_room_spot_lights" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.lucass_room_iris">
+          <div class="light-icon-wrap" style="background:var(--violet-dim);color:var(--violet);"><span class="mdi mdi-lava-lamp"></span></div>
+          <div class="light-info"><div class="light-name">Iris</div><div class="light-status entity-state" data-entity="light.lucass_room_iris">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.lucass_room_iris" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="switch.cloud_lamp">
+          <div class="light-icon-wrap" style="background:var(--cyan-dim);color:var(--cyan);"><span class="mdi mdi-cloud"></span></div>
+          <div class="light-info"><div class="light-name">Cloud Lamp</div><div class="light-status entity-state" data-entity="switch.cloud_lamp">--</div></div>
+          <div class="toggle entity-toggle" data-entity="switch.cloud_lamp" data-domain="switch"></div>
+        </div>
+        <div class="light-row" data-entity="light.hue_color_lamp_1">
+          <div class="light-icon-wrap" style="background:var(--blue-dim);color:var(--blue);"><span class="mdi mdi-lamp"></span></div>
+          <div class="light-info"><div class="light-name">Go Nightlight</div><div class="light-status entity-state" data-entity="light.hue_color_lamp_1">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.hue_color_lamp_1" data-domain="light"></div>
+        </div>
+      </div>
+
+      <!-- Media -->
+      <div class="section-label">Media</div>
+      <div class="media-card">
+        <div class="media-top">
+          <div class="media-art" style="background:linear-gradient(135deg,#ff6b6b,#feca57);"><span class="mdi mdi-music-note" style="color:white;font-size:28px;"></span></div>
+          <div class="media-info">
+            <div class="media-title">Lucas's Speaker</div>
+            <div class="media-subtitle entity-state" data-entity="media_player.lucass_room">--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== KITCHEN VIEW ==================== -->
+    <div class="view" id="view-kitchen">
+      <div class="room-header">
+        <div class="header-icon" onclick="goBack()"><span class="mdi mdi-arrow-left"></span></div>
+        <h1>Kitchen</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-dots-horizontal"></span></div>
+        </div>
+      </div>
+
+      <div class="section-label">Lights</div>
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="light-row" data-entity="light.kitchen_spotlights">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-ceiling-light"></span></div>
+          <div class="light-info"><div class="light-name">Kitchen Spotlights</div><div class="light-status entity-state" data-entity="light.kitchen_spotlights">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.kitchen_spotlights" data-domain="light"></div>
+        </div>
+      </div>
+
+      <div class="section-label">Media</div>
+      <div class="media-card">
+        <div class="media-top">
+          <div class="media-art" style="background:linear-gradient(135deg,#f97316,#f59e0b);"><span class="mdi mdi-speaker" style="color:white;"></span></div>
+          <div class="media-info">
+            <div class="media-title">Kitchen Speaker</div>
+            <div class="media-subtitle entity-state" data-entity="media_player.kitchen">--</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== OFFICE VIEW ==================== -->
+    <div class="view" id="view-office">
+      <div class="room-header">
+        <div class="header-icon" onclick="goBack()"><span class="mdi mdi-arrow-left"></span></div>
+        <h1>Office</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-dots-horizontal"></span></div>
+        </div>
+      </div>
+
+      <!-- Mode selector -->
+      <div class="section-label">Room Mode</div>
+      <div class="chips-row" id="officeModeChips">
+        <div class="chip mode-select-chip" data-entity="input_select.office" data-option="Standard Work">Work</div>
+        <div class="chip mode-select-chip" data-entity="input_select.office" data-option="Standard Evening">Evening</div>
+        <div class="chip mode-select-chip" data-entity="input_select.office" data-option="Arriving Guests">Guests</div>
+      </div>
+
+      <!-- Important Meeting Toggle -->
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="light-row">
+          <div class="light-icon-wrap" style="background:var(--red-dim);color:var(--red);"><span class="mdi mdi-video"></span></div>
+          <div class="light-info"><div class="light-name">Important Meeting</div><div class="light-status entity-state" data-entity="input_boolean.important_meeting">--</div></div>
+          <div class="toggle entity-toggle" data-entity="input_boolean.important_meeting" data-domain="input_boolean"></div>
+        </div>
+      </div>
+
+      <!-- Lights -->
+      <div class="section-label">Lights</div>
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="light-row" data-entity="light.office_spotlights">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-ceiling-light"></span></div>
+          <div class="light-info"><div class="light-name">Office Spotlights</div><div class="light-status entity-state" data-entity="light.office_spotlights">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.office_spotlights" data-domain="light"></div>
+        </div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== HALLWAY VIEW ==================== -->
+    <div class="view" id="view-hallway">
+      <div class="room-header">
+        <div class="header-icon" onclick="goBack()"><span class="mdi mdi-arrow-left"></span></div>
+        <h1>Hallway</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-dots-horizontal"></span></div>
+        </div>
+      </div>
+
+      <div class="section-label">Lights</div>
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="light-row" data-entity="light.hallway">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-lightbulb-group"></span></div>
+          <div class="light-info"><div class="light-name">All Hallway</div><div class="light-status entity-state" data-entity="light.hallway">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.hallway" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.hallway_lamp_post">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-floor-lamp"></span></div>
+          <div class="light-info"><div class="light-name">Lamp Post</div><div class="light-status entity-state" data-entity="light.hallway_lamp_post">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.hallway_lamp_post" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.hallway_signe_light">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-floor-lamp-variant"></span></div>
+          <div class="light-info"><div class="light-name">Signe Light</div><div class="light-status entity-state" data-entity="light.hallway_signe_light">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.hallway_signe_light" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.hallway_spot_lights">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-ceiling-light"></span></div>
+          <div class="light-info"><div class="light-name">Spot Lights</div><div class="light-status entity-state" data-entity="light.hallway_spot_lights">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.hallway_spot_lights" data-domain="light"></div>
+        </div>
+        <div class="light-row" data-entity="light.cloakroom">
+          <div class="light-icon-wrap" style="background:var(--amber-dim);color:var(--amber);"><span class="mdi mdi-hanger"></span></div>
+          <div class="light-info"><div class="light-name">Cloakroom</div><div class="light-status entity-state" data-entity="light.cloakroom">--</div></div>
+          <div class="toggle entity-toggle" data-entity="light.cloakroom" data-domain="light"></div>
+        </div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+    <!-- ==================== SETTINGS VIEW ==================== -->
+    <div class="view" id="view-settings">
+      <div class="room-header">
+        <div class="header-icon" onclick="goBack()"><span class="mdi mdi-arrow-left"></span></div>
+        <h1>Settings</h1>
+        <div class="header-right">
+          <div class="header-icon"><span class="mdi mdi-dots-horizontal"></span></div>
+        </div>
+      </div>
+
+      <div class="section-label">House Mode</div>
+      <div class="mode-grid" id="settingsModeGrid">
+        <div class="mode-chip" data-mode="Day Time"><span class="mdi mdi-weather-sunny" style="color:var(--amber);"></span><span>Day</span></div>
+        <div class="mode-chip" data-mode="Evening Time"><span class="mdi mdi-weather-sunset" style="color:var(--orange);"></span><span>Evening</span></div>
+        <div class="mode-chip" data-mode="Night Time"><span class="mdi mdi-weather-night" style="color:var(--violet);"></span><span>Night</span></div>
+        <div class="mode-chip" data-mode="Away"><span class="mdi mdi-airplane"></span><span>Away</span></div>
+        <div class="mode-chip" data-mode="All Out"><span class="mdi mdi-home-export-outline"></span><span>All Out</span></div>
+        <div class="mode-chip" data-mode="Dogs Alone"><span class="mdi mdi-dog"></span><span>Dogs</span></div>
+      </div>
+
+      <div class="section-label">Toggles</div>
+      <div class="card" style="padding:6px var(--pad);">
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-name">Lucas Sleeping</div><div class="setting-desc entity-state" data-entity="input_boolean.lucas_sleeping">--</div></div>
+          <div class="toggle entity-toggle" data-entity="input_boolean.lucas_sleeping" data-domain="input_boolean"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-name">Important Meeting</div><div class="setting-desc entity-state" data-entity="input_boolean.important_meeting">--</div></div>
+          <div class="toggle entity-toggle" data-entity="input_boolean.important_meeting" data-domain="input_boolean"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-name">Evening Entertaining</div><div class="setting-desc entity-state" data-entity="input_boolean.evening_entertaining">--</div></div>
+          <div class="toggle entity-toggle" data-entity="input_boolean.evening_entertaining" data-domain="input_boolean"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-name">Disco Disco</div><div class="setting-desc entity-state" data-entity="input_boolean.disco_disco">--</div></div>
+          <div class="toggle entity-toggle" data-entity="input_boolean.disco_disco" data-domain="input_boolean"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-name">Bad Weather</div><div class="setting-desc entity-state" data-entity="input_boolean.bad_weather">--</div></div>
+          <div class="toggle entity-toggle" data-entity="input_boolean.bad_weather" data-domain="input_boolean"></div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><div class="setting-name">Edward Alone</div><div class="setting-desc entity-state" data-entity="input_boolean.edward_alone">--</div></div>
+          <div class="toggle entity-toggle" data-entity="input_boolean.edward_alone" data-domain="input_boolean"></div>
+        </div>
+      </div>
+
+      <div class="section-label">Connection</div>
+      <div class="card">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;">
+          <div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Status</div>
+            <div style="font-size:14px;font-weight:600;" id="settingsConnStatus">Connected</div>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">Entities</div>
+            <div style="font-size:14px;font-weight:600;" id="settingsEntityCount">--</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <button style="width:100%;padding:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text-secondary);font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;" onclick="disconnectHA()">Disconnect & Reconfigure</button>
+        </div>
+      </div>
+
+      <div class="pplx-footer">
+        <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <div class="nav-item active" data-view="home" onclick="switchView('home')">
+      <span class="mdi mdi-home"></span>
+      <span>Home</span>
+    </div>
+    <div class="nav-item" data-view="rooms" onclick="switchView('rooms')">
+      <span class="mdi mdi-view-grid"></span>
+      <span>Rooms</span>
+    </div>
+    <div class="nav-item" data-view="climate" onclick="switchView('climate')">
+      <span class="mdi mdi-thermometer"></span>
+      <span>Climate</span>
+    </div>
+    <div class="nav-item" data-view="security" onclick="switchView('security')">
+      <span class="mdi mdi-shield-home"></span>
+      <span>Security</span>
+    </div>
+    <div class="nav-item" data-view="more" onclick="switchView('more')">
+      <span class="mdi mdi-dots-horizontal"></span>
+      <span>More</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== HA WEBSOCKET CONNECTION ====================
+let socket = null;
+let msgId = 3; // Start at 3, 1 and 2 reserved for subscribe_events and get_states
+let states = {}; // entity_id -> state object
+let connected = false;
+
+function getNextId() { return msgId++; }
+
+// Load saved connection settings
+const savedUrl = localStorage.getItem('ha_url') || '';
+const savedToken = localStorage.getItem('ha_token') || '';
+
+document.getElementById('haUrl').value = savedUrl || 'ws://homeassistant.local:8123/api/websocket';
+document.getElementById('haToken').value = savedToken || '';
+
+// Auto-connect if we have saved credentials
+if (savedUrl && savedToken) {
+  connectToHA();
+}
+
+function connectToHA() {
+  const url = document.getElementById('haUrl').value.trim();
+  const token = document.getElementById('haToken').value.trim();
+  const errorEl = document.getElementById('connectionError');
+  const statusEl = document.getElementById('connectionStatus');
+  const btn = document.getElementById('connectBtn');
+
+  if (!url || !token) {
+    errorEl.textContent = 'Please enter both URL and token';
+    return;
+  }
+
+  btn.disabled = true;
+  statusEl.textContent = 'Connecting...';
+  errorEl.textContent = '';
+
+  try {
+    socket = new WebSocket(url);
+  } catch (e) {
+    errorEl.textContent = 'Invalid WebSocket URL';
+    btn.disabled = false;
+    statusEl.textContent = '';
+    return;
+  }
+
+  socket.onopen = () => {
+    statusEl.textContent = 'Connected, authenticating...';
+  };
+
+  socket.onmessage = (event) => {
+    const msg = JSON.parse(event.data);
+
+    if (msg.type === 'auth_required') {
+      socket.send(JSON.stringify({ type: 'auth', access_token: token }));
+    }
+
+    if (msg.type === 'auth_ok') {
+      connected = true;
+      localStorage.setItem('ha_url', url);
+      localStorage.setItem('ha_token', token);
+      statusEl.textContent = 'Authenticated! Loading states...';
+
+      // Subscribe to state changes
+      socket.send(JSON.stringify({ id: 1, type: 'subscribe_events', event_type: 'state_changed' }));
+      // Get all current states
+      socket.send(JSON.stringify({ id: 2, type: 'get_states' }));
+    }
+
+    if (msg.type === 'auth_invalid') {
+      errorEl.textContent = 'Authentication failed: ' + (msg.message || 'Invalid token');
+      btn.disabled = false;
+      statusEl.textContent = '';
+      socket.close();
+      return;
+    }
+
+    if (msg.type === 'result' && msg.id === 2 && msg.success) {
+      // Process all states
+      msg.result.forEach(entity => {
+        states[entity.entity_id] = entity;
+      });
+      // Hide connection overlay and render dashboard
+      document.getElementById('connectionOverlay').classList.add('hidden');
+      document.getElementById('settingsEntityCount').textContent = Object.keys(states).length;
+      renderAllStates();
+      requestAnimationFrame(initCharts);
+    }
+
+    if (msg.type === 'event' && msg.event && msg.event.event_type === 'state_changed') {
+      const data = msg.event.data;
+      if (data.new_state) {
+        states[data.entity_id] = data.new_state;
+        updateEntity(data.entity_id);
+      }
+    }
+  };
+
+  socket.onerror = (e) => {
+    errorEl.textContent = 'Connection error. Check URL and ensure HA is accessible.';
+    btn.disabled = false;
+    statusEl.textContent = '';
+  };
+
+  socket.onclose = (e) => {
+    if (connected) {
+      // Try to reconnect
+      connected = false;
+      document.getElementById('statusConnection').textContent = '!';
+      setTimeout(() => {
+        if (!connected) connectToHA();
+      }, 5000);
+    } else {
+      btn.disabled = false;
+      statusEl.textContent = '';
+    }
+  };
+}
+
+function disconnectHA() {
+  localStorage.removeItem('ha_url');
+  localStorage.removeItem('ha_token');
+  if (socket) socket.close();
+  connected = false;
+  document.getElementById('connectionOverlay').classList.remove('hidden');
+  document.getElementById('haUrl').value = 'ws://homeassistant.local:8123/api/websocket';
+  document.getElementById('haToken').value = '';
+  document.getElementById('connectBtn').disabled = false;
+  document.getElementById('connectionError').textContent = '';
+  document.getElementById('connectionStatus').textContent = '';
+}
+
+// ==================== SERVICE CALLS ====================
+function callService(domain, service, data = {}) {
+  if (!socket || !connected) return;
+  const id = getNextId();
+  const msg = { id, type: 'call_service', domain, service, ...data };
+  socket.send(JSON.stringify(msg));
+}
+
+function toggleEntity(entityId, domain) {
+  const service = 'toggle';
+  callService(domain, service, { target: { entity_id: entityId } });
+}
+
+function callAlarmService(service) {
+  callService('alarm_control_panel', service, { target: { entity_id: 'alarm_control_panel.home_alarm' } });
+}
+
+function setInputSelect(entityId, option) {
+  callService('input_select', 'select_option', {
+    service_data: { option },
+    target: { entity_id: entityId }
+  });
+}
+
+function setClimateTemp(entityId, temp) {
+  callService('climate', 'set_temperature', {
+    service_data: { temperature: temp },
+    target: { entity_id: entityId }
+  });
+}
+
+function runScript(entityId) {
+  callService('script', 'turn_on', { target: { entity_id: entityId } });
+}
+
+// ==================== STATE HELPERS ====================
+function getState(entityId) {
+  return states[entityId] || null;
+}
+
+function getAttr(entityId, attr) {
+  const s = getState(entityId);
+  return s && s.attributes ? s.attributes[attr] : null;
+}
+
+function isOn(entityId) {
+  const s = getState(entityId);
+  return s && s.state === 'on';
+}
+
+function fmtTemp(val) {
+  if (val === null || val === undefined) return '--';
+  return Math.round(val * 10) / 10;
+}
+
+// ==================== RENDER ALL STATES ====================
+function renderAllStates() {
+  updateStatusBar();
+  updateHomeView();
+  updateRoomsView();
+  updateClimateView();
+  updateSecurityView();
+  updateSettingsView();
+  updateAllToggles();
+  updateAllEntityStates();
+  updateAllModeChips();
+  updateRoomSubviews();
+}
+
+// Update a single entity after state_changed event
+function updateEntity(entityId) {
+  updateEntityToggles(entityId);
+  updateEntityStates(entityId);
+
+  // Update specific views based on entity
+  if (entityId === 'input_select.house') updateHouseMode();
+  if (entityId === 'sensor.total_home_power') updatePower();
+  if (entityId.startsWith('person.')) updatePresence();
+  if (entityId === 'alarm_control_panel.home_alarm') { updateAlarm(); updateSecurityAlarm(); }
+  if (entityId === 'sensor.hallway_temp_temperature') updateHomeTemp();
+  if (entityId === 'sensor.hallway_temp_humidity') updateHomeHumidity();
+  if (entityId === 'sensor.core_400s_pm2_5') updateHomePM25();
+  if (entityId === 'weather.home') updateWeather();
+  if (entityId.startsWith('climate.')) { updateRoomsView(); updateClimateView(); }
+  if (entityId.startsWith('sensor.') && entityId.includes('battery')) updateBatteries();
+  if (entityId.startsWith('input_select.')) updateAllModeChips();
+  if (entityId.startsWith('sensor.lucas')) updateLucasSensors();
+}
+
+// ==================== STATUS BAR ====================
+function updateStatusBar() {
+  const now = new Date();
+  document.getElementById('statusTime').textContent =
+    now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+  document.getElementById('statusConnection').textContent = connected ? '●' : '!';
+  document.getElementById('statusConnection').style.color = connected ? 'var(--green)' : 'var(--red)';
+}
+setInterval(updateStatusBar, 10000);
+
+// ==================== HOME VIEW ====================
+function updateHomeView() {
+  updateHouseMode();
+  updatePower();
+  updatePresence();
+  updateAlarm();
+  updateHomeTemp();
+  updateHomeHumidity();
+  updateHomePM25();
+}
+
+function updateHouseMode() {
+  const s = getState('input_select.house');
+  const label = s ? s.state : '--';
+  document.getElementById('homeHouseModeLabel').textContent = label;
+  // Update mode grids
+  ['homeModeGrid', 'settingsModeGrid'].forEach(gridId => {
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+    grid.querySelectorAll('.mode-chip').forEach(chip => {
+      const mode = chip.dataset.mode;
+      chip.classList.toggle('active', mode === label);
+    });
+  });
+}
+
+function updatePower() {
+  const s = getState('sensor.total_home_power');
+  const val = s ? s.state : '--';
+  const numVal = parseFloat(val);
+  document.getElementById('homePowerLabel').textContent =
+    (!isNaN(numVal) ? Math.round(numVal).toLocaleString() : val) + ' W';
+}
+
+function updatePresence() {
+  const edward = getState('person.edward_eidam');
+  const loretta = getState('person.loretta_eidam');
+
+  const edHome = edward && edward.state === 'home';
+  const loHome = loretta && loretta.state === 'home';
+
+  document.getElementById('edwardPresenceStatus').textContent = edHome ? 'Home' : 'Away';
+  document.getElementById('edwardPresenceDot').style.background = edHome ? 'var(--green)' : 'var(--red)';
+  document.getElementById('lorettaPresenceStatus').textContent = loHome ? 'Home' : 'Away';
+  document.getElementById('lorettaPresenceDot').style.background = loHome ? 'var(--green)' : 'var(--red)';
+
+  // Update avatars opacity on home view
+  document.getElementById('avatarEdward').style.opacity = edHome ? '1' : '0.4';
+  document.getElementById('avatarLoretta').style.opacity = loHome ? '1' : '0.4';
+}
+
+function updateAlarm() {
+  const s = getState('alarm_control_panel.home_alarm');
+  if (!s) return;
+  const state = s.state;
+  const alarmEl = document.getElementById('alarmValue');
+  const iconEl = document.getElementById('alarmIconMdi');
+  const iconWrap = document.getElementById('alarmIcon');
+  const secTitle = document.getElementById('secTitle');
+  const secScore = document.getElementById('secScore');
+  const secIconWrap = document.getElementById('secIconWrap');
+  const secIcon = document.getElementById('secIcon');
+
+  if (state === 'disarmed') {
+    alarmEl.textContent = 'Disarmed';
+    alarmEl.style.color = 'var(--red)';
+    iconEl.className = 'mdi mdi-shield-off';
+    iconWrap.style.background = 'var(--red-dim)';
+    iconWrap.style.color = 'var(--red)';
+    secTitle.textContent = 'Partially Secure';
+    secScore.textContent = '51';
+    secIconWrap.style.background = 'var(--amber-dim)';
+    secIconWrap.style.color = 'var(--amber)';
+    secIcon.className = 'mdi mdi-alert';
+  } else if (state === 'armed_home') {
+    alarmEl.textContent = 'Armed Home';
+    alarmEl.style.color = 'var(--green)';
+    iconEl.className = 'mdi mdi-shield-home';
+    iconWrap.style.background = 'var(--green-dim)';
+    iconWrap.style.color = 'var(--green)';
+    secTitle.textContent = 'Secure';
+    secScore.textContent = '85';
+    secIconWrap.style.background = 'var(--green-dim)';
+    secIconWrap.style.color = 'var(--green)';
+    secIcon.className = 'mdi mdi-shield-check';
+  } else if (state === 'armed_away') {
+    alarmEl.textContent = 'Armed Away';
+    alarmEl.style.color = 'var(--green)';
+    iconEl.className = 'mdi mdi-shield-lock';
+    iconWrap.style.background = 'var(--green-dim)';
+    iconWrap.style.color = 'var(--green)';
+    secTitle.textContent = 'Fully Secure';
+    secScore.textContent = '100';
+    secIconWrap.style.background = 'var(--green-dim)';
+    secIconWrap.style.color = 'var(--green)';
+    secIcon.className = 'mdi mdi-shield-check';
+  } else {
+    alarmEl.textContent = state.replace(/_/g, ' ');
+    alarmEl.style.color = 'var(--amber)';
+  }
+}
+
+function updateSecurityAlarm() {
+  const s = getState('alarm_control_panel.home_alarm');
+  if (!s) return;
+  const state = s.state;
+  const titleEl = document.getElementById('secAlarmTitle');
+  const iconEl = document.getElementById('secAlarmIcon');
+  const iconWrap = document.getElementById('secAlarmIconWrap');
+
+  if (state === 'disarmed') {
+    titleEl.textContent = 'Alarm Disarmed';
+    iconEl.className = 'mdi mdi-shield-off';
+    iconWrap.style.background = 'var(--red-dim)';
+    iconWrap.style.color = 'var(--red)';
+  } else if (state === 'armed_home') {
+    titleEl.textContent = 'Alarm Armed (Home)';
+    iconEl.className = 'mdi mdi-shield-home';
+    iconWrap.style.background = 'var(--green-dim)';
+    iconWrap.style.color = 'var(--green)';
+  } else if (state === 'armed_away') {
+    titleEl.textContent = 'Alarm Armed (Away)';
+    iconEl.className = 'mdi mdi-shield-lock';
+    iconWrap.style.background = 'var(--green-dim)';
+    iconWrap.style.color = 'var(--green)';
+  } else {
+    titleEl.textContent = 'Alarm: ' + state.replace(/_/g, ' ');
+  }
+}
+
+function updateHomeTemp() {
+  const s = getState('sensor.hallway_temp_temperature');
+  document.getElementById('homeTemp').textContent = s ? fmtTemp(parseFloat(s.state)) : '--';
+}
+
+function updateHomeHumidity() {
+  const s = getState('sensor.hallway_temp_humidity');
+  document.getElementById('homeHumidity').textContent = s ? Math.round(parseFloat(s.state)) : '--';
+}
+
+function updateHomePM25() {
+  const s = getState('sensor.core_400s_pm2_5');
+  document.getElementById('homePM25').textContent = s ? s.state : '--';
+}
+
+// ==================== ROOMS VIEW ====================
+const roomClimateEntities = {
+  lounge: 'climate.lounge',
+  bedroom: 'climate.bedroom_2',
+  lucas: 'climate.lucas_s_room',
+  kitchen: 'climate.kitchen',
+  office: 'climate.office',
+  hallway: 'climate.hallway'
+};
+
+function updateRoomsView() {
+  Object.entries(roomClimateEntities).forEach(([room, entityId]) => {
+    const s = getState(entityId);
+    const currentTemp = s ? getAttr(entityId, 'current_temperature') : null;
+    const targetTemp = s ? getAttr(entityId, 'temperature') : null;
+    const hvacAction = s ? getAttr(entityId, 'hvac_action') : null;
+
+    const currentEl = document.getElementById(`${room}CurrentTemp`);
+    const targetEl = document.getElementById(`${room}TargetTemp`);
+    const statusEl = document.getElementById(`${room}Status`);
+
+    if (currentEl) currentEl.textContent = currentTemp !== null ? fmtTemp(currentTemp) + '°' : '--°';
+    if (targetEl) targetEl.textContent = targetTemp !== null ? 'Target ' + fmtTemp(targetTemp) + '°C' : 'Target --°C';
+
+    if (statusEl) {
+      if (!s || s.state === 'unavailable') {
+        statusEl.textContent = 'Unavailable';
+        statusEl.style.background = 'var(--red-dim)';
+        statusEl.style.color = 'var(--red)';
+      } else if (hvacAction === 'heating') {
+        statusEl.textContent = 'Heating';
+        statusEl.style.background = 'var(--blue-dim)';
+        statusEl.style.color = 'var(--blue)';
+      } else {
+        statusEl.textContent = 'Idle';
+        statusEl.style.background = 'var(--green-dim)';
+        statusEl.style.color = 'var(--green)';
+      }
+    }
+
+    // Update More view status
+    const moreEl = document.getElementById(`more${room.charAt(0).toUpperCase() + room.slice(1)}Status`);
+    if (moreEl) {
+      moreEl.textContent = (currentTemp !== null ? fmtTemp(currentTemp) + '°C' : '--');
+    }
+  });
+}
+
+// ==================== CLIMATE VIEW ====================
+function updateClimateView() {
+  updateWeather();
+  renderClimateZones();
+}
+
+function updateWeather() {
+  const s = getState('weather.home');
+  if (!s) return;
+  const temp = s.attributes ? s.attributes.temperature : null;
+  document.getElementById('weatherTemp').textContent = temp !== null ? fmtTemp(temp) : '--';
+  const condition = s.state || '--';
+  document.getElementById('weatherCondition').textContent = condition.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+  // Set weather icon
+  const iconMap = {
+    'sunny': 'mdi-weather-sunny',
+    'clear-night': 'mdi-weather-night',
+    'cloudy': 'mdi-weather-cloudy',
+    'partlycloudy': 'mdi-weather-partly-cloudy',
+    'rainy': 'mdi-weather-rainy',
+    'snowy': 'mdi-weather-snowy',
+    'fog': 'mdi-weather-fog',
+    'windy': 'mdi-weather-windy',
+    'lightning': 'mdi-weather-lightning',
+  };
+  const iconEl = document.getElementById('weatherIcon');
+  iconEl.className = 'mdi ' + (iconMap[condition] || 'mdi-weather-partly-cloudy');
+}
+
+function renderClimateZones() {
+  const container = document.getElementById('climateZones');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const zones = [
+    { name: 'Lounge', entity: 'climate.lounge', color: 'amber' },
+    { name: 'Bedroom', entity: 'climate.bedroom_2', color: 'violet' },
+    { name: "Lucas's Room", entity: 'climate.lucas_s_room', color: 'cyan' },
+    { name: 'Kitchen', entity: 'climate.kitchen', color: 'orange' },
+    { name: 'Office', entity: 'climate.office', color: 'teal' },
+    { name: 'Hallway', entity: 'climate.hallway', color: 'blue' },
+  ];
+
+  zones.forEach(zone => {
+    const s = getState(zone.entity);
+    const currentTemp = s ? getAttr(zone.entity, 'current_temperature') : null;
+    const targetTemp = s ? getAttr(zone.entity, 'temperature') : null;
+    const hvacAction = s ? getAttr(zone.entity, 'hvac_action') : null;
+    const isHeating = hvacAction === 'heating';
+    const unavailable = !s || s.state === 'unavailable';
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="climate-header">
+        <div class="climate-title">${zone.name}</div>
+        <div style="font-size:11px;font-weight:500;padding:3px 8px;border-radius:50px;
+          background:${unavailable ? 'var(--red-dim)' : (isHeating ? 'var(--blue-dim)' : 'var(--green-dim)')};
+          color:${unavailable ? 'var(--red)' : (isHeating ? 'var(--blue)' : 'var(--green)')};">
+          ${unavailable ? 'Unavailable' : (isHeating ? 'Heating' : 'Idle')}
+        </div>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:12px;margin:8px 0;">
+        <div style="font-size:36px;font-weight:700;letter-spacing:-0.03em;">
+          ${currentTemp !== null ? fmtTemp(currentTemp) : '--'}°
+        </div>
+      </div>
+      <div class="climate-adjust" data-entity="${zone.entity}" data-current-target="${targetTemp || 20}">
+        <span style="font-size:12px;color:var(--text-muted);">Target:</span>
+        <button class="climate-adjust-btn" onclick="adjustTemp('${zone.entity}', -0.5)">
+          <span class="mdi mdi-minus"></span>
+        </button>
+        <div class="climate-adjust-target" id="target-${zone.entity.replace(/\./g, '-')}">
+          ${targetTemp !== null ? fmtTemp(targetTemp) : '--'}°C
+        </div>
+        <button class="climate-adjust-btn" onclick="adjustTemp('${zone.entity}', 0.5)">
+          <span class="mdi mdi-plus"></span>
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function adjustTemp(entityId, delta) {
+  const s = getState(entityId);
+  if (!s) return;
+  const current = getAttr(entityId, 'temperature');
+  if (current === null) return;
+  const newTemp = Math.round((current + delta) * 2) / 2; // round to 0.5
+  setClimateTemp(entityId, newTemp);
+  // Optimistic update
+  const targetEl = document.getElementById('target-' + entityId.replace(/\./g, '-'));
+  if (targetEl) targetEl.textContent = fmtTemp(newTemp) + '°C';
+}
+
+// ==================== SECURITY VIEW ====================
+function updateBatteries() {
+  const battMap = {
+    'battBasementDoor': 'sensor.basement_door_battery',
+    'battBasementStairs': 'sensor.basement_stairs_battery',
+    'battGarden': 'sensor.garden_battery',
+    'battUpstairs': 'sensor.upstairs_battery'
+  };
+  Object.entries(battMap).forEach(([elId, entityId]) => {
+    const s = getState(entityId);
+    const el = document.getElementById(elId);
+    if (el) el.textContent = s ? Math.round(parseFloat(s.state)) + '%' : '--%';
+  });
+}
+
+// ==================== SETTINGS VIEW ====================
+function updateSettingsView() {
+  updateHouseMode();
+  updateBatteries();
+}
+
+// ==================== LUCAS SENSORS ====================
+function updateLucasSensors() {
+  const temp = getState('sensor.lucas_room_temp_temperature');
+  const aq = getState('sensor.lucass_room_air_quality_monitor_indoor_air_quality');
+  const bath = getState('sensor.lucass_bathroom_temp_sensor_temperature');
+
+  const tempEl = document.getElementById('lucasRoomTemp');
+  const aqEl = document.getElementById('lucasAirQuality');
+  const bathEl = document.getElementById('lucasBathTemp');
+
+  if (tempEl) tempEl.textContent = temp ? fmtTemp(parseFloat(temp.state)) : '--';
+  if (aqEl) aqEl.textContent = aq ? aq.state : '--';
+  if (bathEl) bathEl.textContent = bath ? fmtTemp(parseFloat(bath.state)) : '--';
+}
+
+function updateRoomSubviews() {
+  updateLucasSensors();
+}
+
+// ==================== TOGGLE MANAGEMENT ====================
+function updateAllToggles() {
+  document.querySelectorAll('.entity-toggle').forEach(toggle => {
+    const entityId = toggle.dataset.entity;
+    if (!entityId) return;
+    const s = getState(entityId);
+    if (!s) {
+      toggle.classList.remove('on');
+      toggle.classList.add('disabled');
+      return;
+    }
+    if (s.state === 'unavailable') {
+      toggle.classList.remove('on');
+      toggle.classList.add('disabled');
+      return;
+    }
+    toggle.classList.remove('disabled');
+    toggle.classList.toggle('on', s.state === 'on');
+  });
+}
+
+function updateEntityToggles(entityId) {
+  document.querySelectorAll(`.entity-toggle[data-entity="${entityId}"]`).forEach(toggle => {
+    const s = getState(entityId);
+    if (!s || s.state === 'unavailable') {
+      toggle.classList.remove('on');
+      toggle.classList.add('disabled');
+      return;
+    }
+    toggle.classList.remove('disabled');
+    toggle.classList.toggle('on', s.state === 'on');
+  });
+}
+
+// ==================== ENTITY STATE TEXT ====================
+function updateAllEntityStates() {
+  document.querySelectorAll('.entity-state').forEach(el => {
+    const entityId = el.dataset.entity;
+    if (!entityId) return;
+    const s = getState(entityId);
+    if (!s) { el.textContent = 'Unknown'; return; }
+    if (s.state === 'unavailable') { el.textContent = 'Unavailable'; el.style.color = 'var(--red)'; return; }
+    el.style.color = '';
+
+    // Format based on domain
+    const domain = entityId.split('.')[0];
+    if (domain === 'light' || domain === 'switch' || domain === 'input_boolean') {
+      const brightness = s.attributes ? s.attributes.brightness : null;
+      if (s.state === 'on' && brightness) {
+        el.textContent = Math.round(brightness / 255 * 100) + '%';
+      } else {
+        el.textContent = s.state === 'on' ? 'On' : 'Off';
+      }
+    } else if (domain === 'media_player') {
+      el.textContent = s.state === 'playing' ? 'Playing' : (s.state === 'paused' ? 'Paused' : (s.state === 'idle' ? 'Idle' : s.state));
+    } else {
+      el.textContent = s.state;
+    }
+  });
+}
+
+function updateEntityStates(entityId) {
+  document.querySelectorAll(`.entity-state[data-entity="${entityId}"]`).forEach(el => {
+    const s = getState(entityId);
+    if (!s) { el.textContent = 'Unknown'; return; }
+    if (s.state === 'unavailable') { el.textContent = 'Unavailable'; el.style.color = 'var(--red)'; return; }
+    el.style.color = '';
+
+    const domain = entityId.split('.')[0];
+    if (domain === 'light' || domain === 'switch' || domain === 'input_boolean') {
+      const brightness = s.attributes ? s.attributes.brightness : null;
+      if (s.state === 'on' && brightness) {
+        el.textContent = Math.round(brightness / 255 * 100) + '%';
+      } else {
+        el.textContent = s.state === 'on' ? 'On' : 'Off';
+      }
+    } else if (domain === 'media_player') {
+      el.textContent = s.state === 'playing' ? 'Playing' : (s.state === 'paused' ? 'Paused' : (s.state === 'idle' ? 'Idle' : s.state));
+    } else {
+      el.textContent = s.state;
+    }
+  });
+}
+
+// ==================== MODE CHIP MANAGEMENT ====================
+function updateAllModeChips() {
+  // House mode
+  updateHouseMode();
+
+  // Room mode selectors
+  const modeSelects = {
+    'input_select.lounge': 'loungeModeChips',
+    'input_select.bedroom': 'bedroomModeChips',
+    'input_select.lucas_room': 'lucasModeChips',
+    'input_select.office': 'officeModeChips',
+  };
+
+  Object.entries(modeSelects).forEach(([entityId, containerId]) => {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const s = getState(entityId);
+    const currentOption = s ? s.state : '';
+    container.querySelectorAll('.mode-select-chip').forEach(chip => {
+      const option = chip.dataset.option;
+      if (option === currentOption) {
+        chip.style.background = 'var(--teal-dim)';
+        chip.style.color = 'var(--teal)';
+      } else {
+        chip.style.background = '';
+        chip.style.color = '';
+      }
+    });
+  });
+}
+
+// ==================== EVENT LISTENERS ====================
+
+// Toggle clicks
+document.addEventListener('click', (e) => {
+  const toggle = e.target.closest('.entity-toggle');
+  if (toggle && !toggle.classList.contains('disabled')) {
+    const entityId = toggle.dataset.entity;
+    const domain = toggle.dataset.domain;
+    if (entityId && domain) {
+      toggleEntity(entityId, domain);
+      // Optimistic toggle
+      toggle.classList.toggle('on');
+    }
+  }
+});
+
+// Quick action clicks
+document.querySelectorAll('.quick-action[data-script]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const script = btn.dataset.script;
+    if (script) runScript(script);
+    // Visual feedback
+    btn.style.background = 'var(--teal-dim)';
+    setTimeout(() => btn.style.background = '', 500);
+  });
+});
+
+// House mode chip clicks
+document.querySelectorAll('#homeModeGrid .mode-chip, #settingsModeGrid .mode-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const mode = chip.dataset.mode;
+    if (mode) setInputSelect('input_select.house', mode);
+  });
+});
+
+// Room mode select chips
+document.addEventListener('click', (e) => {
+  const chip = e.target.closest('.mode-select-chip');
+  if (chip) {
+    const entity = chip.dataset.entity;
+    const option = chip.dataset.option;
+    if (entity && option) setInputSelect(entity, option);
+  }
+});
+
+// ==================== NAVIGATION ====================
+let currentView = 'home';
+let viewStack = [];
+
+function switchView(viewId) {
+  viewStack = [];
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + viewId).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelector(`.nav-item[data-view="${viewId}"]`)?.classList.add('active');
+  currentView = viewId;
+  document.getElementById('contentArea').scrollTop = 0;
+  requestAnimationFrame(initCharts);
+}
+
+function showRoom(roomId) {
+  viewStack.push(currentView);
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + roomId).classList.add('active');
+  currentView = roomId;
+  document.getElementById('contentArea').scrollTop = 0;
+  requestAnimationFrame(initCharts);
+}
+
+function showSubview(subId) {
+  viewStack.push(currentView);
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + subId).classList.add('active');
+  currentView = subId;
+  document.getElementById('contentArea').scrollTop = 0;
+  requestAnimationFrame(initCharts);
+}
+
+function goBack() {
+  const prev = viewStack.pop() || 'home';
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view-' + prev).classList.add('active');
+  currentView = prev;
+  const navViews = ['home','rooms','climate','security','more'];
+  if (navViews.includes(prev)) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelector(`.nav-item[data-view="${prev}"]`)?.classList.add('active');
+  }
+  document.getElementById('contentArea').scrollTop = 0;
+  requestAnimationFrame(initCharts);
+}
+
+// Period tab switching
+document.querySelectorAll('.period-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    tab.parentElement.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// ==================== CANVAS CHARTS ====================
+const DPR = window.devicePixelRatio || 1;
+
+function setupCanvas(canvas) {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * DPR;
+  canvas.height = rect.height * DPR;
+  canvas.style.width = rect.width + 'px';
+  canvas.style.height = rect.height + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(DPR, DPR);
+  return { ctx, w: rect.width, h: rect.height };
+}
+
+function generateSparkData(count, base, variance, smooth) {
+  const data = [];
+  let val = base;
+  for (let i = 0; i < count; i++) {
+    val += (Math.random() - 0.48) * variance;
+    val = Math.max(base - variance * 2, Math.min(base + variance * 2, val));
+    data.push(val);
+  }
+  if (smooth) {
+    for (let s = 0; s < 3; s++) {
+      for (let i = 1; i < data.length - 1; i++) {
+        data[i] = (data[i - 1] + data[i] + data[i + 1]) / 3;
+      }
+    }
+  }
+  return data;
+}
+
+function drawSparkline(canvas, data, color, fillColor) {
+  if (!canvas || !canvas.parentElement.offsetWidth) return;
+  const { ctx, w, h } = setupCanvas(canvas);
+  const min = Math.min(...data) - 0.5;
+  const max = Math.max(...data) + 0.5;
+  const range = max - min || 1;
+  const step = w / (data.length - 1);
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, h);
+  gradient.addColorStop(0, fillColor || 'rgba(74,222,128,0.25)');
+  gradient.addColorStop(1, 'rgba(74,222,128,0.0)');
+
+  ctx.beginPath();
+  ctx.moveTo(0, h);
+  for (let i = 0; i < data.length; i++) {
+    const x = i * step;
+    const y = h - ((data[i] - min) / range) * (h * 0.85) - h * 0.05;
+    if (i === 0) ctx.lineTo(x, y);
+    else {
+      const prevX = (i - 1) * step;
+      const prevY = h - ((data[i - 1] - min) / range) * (h * 0.85) - h * 0.05;
+      const cpx = (prevX + x) / 2;
+      ctx.bezierCurveTo(cpx, prevY, cpx, y, x, y);
+    }
+  }
+  ctx.lineTo(w, h);
+  ctx.closePath();
+  ctx.fillStyle = gradient;
+  ctx.fill();
+
+  ctx.beginPath();
+  for (let i = 0; i < data.length; i++) {
+    const x = i * step;
+    const y = h - ((data[i] - min) / range) * (h * 0.85) - h * 0.05;
+    if (i === 0) ctx.moveTo(x, y);
+    else {
+      const prevX = (i - 1) * step;
+      const prevY = h - ((data[i - 1] - min) / range) * (h * 0.85) - h * 0.05;
+      const cpx = (prevX + x) / 2;
+      ctx.bezierCurveTo(cpx, prevY, cpx, y, x, y);
+    }
+  }
+  ctx.strokeStyle = color || '#4ade80';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+function drawRoomSparklines() {
+  document.querySelectorAll('.room-spark').forEach(canvas => {
+    if (!canvas.parentElement.offsetWidth) return;
+    const room = canvas.dataset.room;
+    const s = getState(roomClimateEntities[room]);
+    const base = s ? (getAttr(roomClimateEntities[room], 'current_temperature') || 20) : 20;
+    const data = generateSparkData(30, base, 0.5, true);
+    drawSparkline(canvas, data, '#4ade80', 'rgba(74,222,128,0.15)');
+  });
+}
+
+const sparkDataHome = generateSparkData(40, 20, 0.8, true);
+
+function initCharts() {
+  const homeCanvas = document.getElementById('homeSparkline');
+  if (homeCanvas && homeCanvas.parentElement.offsetWidth) {
+    const s = getState('sensor.hallway_temp_temperature');
+    const base = s ? parseFloat(s.state) || 20 : 20;
+    const data = generateSparkData(40, base, 0.8, true);
+    drawSparkline(homeCanvas, data, '#4ade80', 'rgba(74,222,128,0.2)');
+  }
+  drawRoomSparklines();
+}
+
+// Wait for fonts to load
+document.fonts.ready.then(() => {
+  requestAnimationFrame(initCharts);
+});
+
+window.addEventListener('resize', () => {
+  requestAnimationFrame(initCharts);
+});
+</script>
+</body>
+</html>
