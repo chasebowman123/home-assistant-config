@@ -1,0 +1,1753 @@
+kiosk_mode:
+  hide_header: true
+
+views:
+  ##############################################################################
+  # TAB 1 — HOME
+  ##############################################################################
+  - title: Home
+    path: home
+    icon: mdi:home
+    theme: kohbo
+    cards:
+
+      # ── Chips row ──────────────────────────────────────────────────────────
+      - type: custom:mushroom-chips-card
+        chips:
+          - type: entity
+            entity: input_select.house
+            icon: mdi:home-variant
+          - type: weather
+            entity: weather.home
+            show_temperature: true
+            show_conditions: true
+          - type: entity
+            entity: person.edward_eidam
+            use_entity_picture: true
+          - type: entity
+            entity: person.loretta_eidam
+            use_entity_picture: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: transparent;
+              --ha-card-border-width: 0;
+              padding: 4px 0;
+            }
+
+      # ── Security overview ─────────────────────────────────────────────────
+      - type: custom:mushroom-alarm-control-panel-card
+        entity: alarm_control_panel.home_alarm
+        show_keypad: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # ── Climate overview — 2-column grid ──────────────────────────────────
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-climate-card
+            entity: climate.lounge
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-climate-card
+            entity: climate.hallway
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-climate-card
+            entity: climate.kitchen
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-climate-card
+            entity: climate.bedroom_2
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-climate-card
+            entity: climate.lucas_s_room
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-climate-card
+            entity: climate.office
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      # ── Quick Actions ─────────────────────────────────────────────────────
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Morning
+            secondary: Routine
+            icon: mdi:weather-sunny
+            icon_color: amber
+            tap_action:
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.morning_routine
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: Goodnight
+            secondary: Routine
+            icon: mdi:power-sleep
+            icon_color: blue
+            tap_action:
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.goodnight_routine
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: All Off
+            secondary: Lights
+            icon: mdi:power-off
+            icon_color: red
+            tap_action:
+              action: call-service
+              service: script.turn_on
+              service_data:
+                entity_id: script.all_lights_off
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      # ── House Modes — 3-column grid ────────────────────────────────────────
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Day Time
+            icon: mdi:white-balance-sunny
+            icon_color: "{{ 'amber' if is_state('input_select.house', 'Day Time') else 'disabled' }}"
+            badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'Day Time') else '' }}"
+            badge_color: amber
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.house
+                option: Day Time
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: {{ '#2d2d32' if is_state('input_select.house', 'Day Time') else '#252529' }};
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: Evening
+            icon: mdi:weather-night
+            icon_color: "{{ 'purple' if is_state('input_select.house', 'Evening Time') else 'disabled' }}"
+            badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'Evening Time') else '' }}"
+            badge_color: purple
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.house
+                option: Evening Time
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: {{ '#2d2d32' if is_state('input_select.house', 'Evening Time') else '#252529' }};
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: Night
+            icon: mdi:moon-waning-crescent
+            icon_color: "{{ 'blue' if is_state('input_select.house', 'Night Time') else 'disabled' }}"
+            badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'Night Time') else '' }}"
+            badge_color: blue
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.house
+                option: Night Time
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: {{ '#2d2d32' if is_state('input_select.house', 'Night Time') else '#252529' }};
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: Away
+            icon: mdi:airplane
+            icon_color: "{{ 'red' if is_state('input_select.house', 'Away') else 'disabled' }}"
+            badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'Away') else '' }}"
+            badge_color: red
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.house
+                option: Away
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: {{ '#2d2d32' if is_state('input_select.house', 'Away') else '#252529' }};
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: All Out
+            icon: mdi:home-export-outline
+            icon_color: "{{ 'orange' if is_state('input_select.house', 'All Out') else 'disabled' }}"
+            badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'All Out') else '' }}"
+            badge_color: orange
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.house
+                option: All Out
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: {{ '#2d2d32' if is_state('input_select.house', 'All Out') else '#252529' }};
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: Dogs Alone
+            icon: mdi:dog
+            icon_color: "{{ 'teal' if is_state('input_select.house', 'Dogs Alone') else 'disabled' }}"
+            badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'Dogs Alone') else '' }}"
+            badge_color: teal
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              service_data:
+                entity_id: input_select.house
+                option: Dogs Alone
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: {{ '#2d2d32' if is_state('input_select.house', 'Dogs Alone') else '#252529' }};
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      # ── Boolean Toggles ───────────────────────────────────────────────────
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.lucas_sleeping
+            name: Lucas Sleeping
+            icon: mdi:sleep
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.important_meeting
+            name: Important Meeting
+            icon: mdi:briefcase
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.evening_entertaining
+            name: Entertaining
+            icon: mdi:party-popper
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.disco_disco
+            name: Disco Mode
+            icon: mdi:music-note
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.bad_weather
+            name: Bad Weather
+            icon: mdi:weather-pouring
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.edward_alone
+            name: Edward Alone
+            icon: mdi:account
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+  ##############################################################################
+  # TAB 2 — ROOMS (navigation)
+  ##############################################################################
+  - title: Rooms
+    path: rooms
+    icon: mdi:floor-plan
+    theme: kohbo
+    cards:
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-template-card
+            primary: Lounge
+            secondary: "{{ state_attr('climate.lounge', 'current_temperature') | default('--') }}°C · {{ expand('light.lounge') | selectattr('state','eq','on') | list | count }} lights on"
+            icon: mdi:sofa
+            icon_color: amber
+            tap_action:
+              action: navigate
+              navigation_path: /eidam-phone/lounge
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: Bedroom
+            secondary: "{{ state_attr('climate.bedroom_2', 'current_temperature') | default('--') }}°C · {{ expand('light.bedroom') | selectattr('state','eq','on') | list | count }} lights on"
+            icon: mdi:bed
+            icon_color: blue
+            tap_action:
+              action: navigate
+              navigation_path: /eidam-phone/bedroom
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: Lucas Room
+            secondary: "{{ states('sensor.lucas_room_temp_temperature') | default('--') }}°C · {{ expand('light.lucass_room') | selectattr('state','eq','on') | list | count }} lights on"
+            icon: mdi:teddy-bear
+            icon_color: green
+            tap_action:
+              action: navigate
+              navigation_path: /eidam-phone/lucas-room
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: Kitchen
+            secondary: "{{ state_attr('climate.kitchen', 'current_temperature') | default('--') }}°C"
+            icon: mdi:chef-hat
+            icon_color: orange
+            tap_action:
+              action: navigate
+              navigation_path: /eidam-phone/kitchen
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: Office
+            secondary: "{{ state_attr('climate.office', 'current_temperature') | default('--') }}°C"
+            icon: mdi:desk
+            icon_color: violet
+            tap_action:
+              action: navigate
+              navigation_path: /eidam-phone/office
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-template-card
+            primary: Hallway
+            secondary: "{{ state_attr('climate.hallway', 'current_temperature') | default('--') }}°C"
+            icon: mdi:door
+            icon_color: teal
+            tap_action:
+              action: navigate
+              navigation_path: /eidam-phone/hallway
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+  ##############################################################################
+  # TAB 3 — LOUNGE (subview)
+  ##############################################################################
+  - title: Lounge
+    path: lounge
+    subview: true
+    theme: kohbo
+    cards:
+
+      # Back button
+      - type: custom:mushroom-template-card
+        primary: Back to Rooms
+        icon: mdi:arrow-left
+        icon_color: blue
+        tap_action:
+          action: navigate
+          navigation_path: /eidam-phone/rooms
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # Room mode selector
+      - type: custom:mushroom-select-card
+        entity: input_select.lounge
+        name: Lounge Mode
+        icon: mdi:sofa
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # Lights — main group toggle
+      - type: custom:mushroom-light-card
+        entity: light.lounge
+        name: Lounge Lights (All)
+        show_brightness_control: true
+        show_color_control: true
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # Individual lights grid
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.lounge_spotlights
+            name: Spotlights
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.lounge_wall_lights
+            name: Wall Lights
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.lounge_strip_light
+            name: Strip Light
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.lounge_piano_lamp
+            name: Piano Lamp
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.lounge_io
+            name: Iris
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.lounge_signe_light
+            name: Signe Light
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      # Accent switches
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: switch.bubble_light
+            name: Bubble Light
+            icon: mdi:lightbulb-on
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: switch.banana_light
+            name: Banana Light
+            icon: mdi:lightbulb-on
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: switch.disco_lights
+            name: Disco Lights
+            icon: mdi:party-popper
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: switch.bar_light
+            name: Bar Light
+            icon: mdi:glass-cocktail
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      # Hue Sync Box
+      - type: custom:mushroom-entity-card
+        entity: switch.lounge_hue_sync_box
+        name: Hue Sync Box
+        icon: mdi:sync
+        tap_action:
+          action: toggle
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # Media player
+      - type: custom:mushroom-media-player-card
+        entity: media_player.lounge
+        name: Lounge Speaker
+        show_volume_level: true
+        volume_controls:
+          - volume_mute
+          - volume_set
+          - volume_buttons
+        media_controls:
+          - on_off
+          - play_pause_stop
+          - previous
+          - next
+        collapsible_controls: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # Lounge TV
+      - type: custom:mushroom-media-player-card
+        entity: media_player.lounge_tv_2
+        name: Lounge TV (Samsung)
+        show_volume_level: true
+        volume_controls:
+          - volume_mute
+          - volume_set
+          - volume_buttons
+        media_controls:
+          - on_off
+          - play_pause_stop
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # Climate
+      - type: custom:mushroom-climate-card
+        entity: climate.lounge
+        name: Lounge Climate
+        show_temperature_control: true
+        collapsible_controls: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+  ##############################################################################
+  # TAB 4 — BEDROOM (subview)
+  ##############################################################################
+  - title: Bedroom
+    path: bedroom
+    subview: true
+    theme: kohbo
+    cards:
+
+      - type: custom:mushroom-template-card
+        primary: Back to Rooms
+        icon: mdi:arrow-left
+        icon_color: blue
+        tap_action:
+          action: navigate
+          navigation_path: /eidam-phone/rooms
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-select-card
+        entity: input_select.bedroom
+        name: Bedroom Mode
+        icon: mdi:bed
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-light-card
+        entity: light.bedroom
+        name: Bedroom Lights (All)
+        show_brightness_control: true
+        show_color_control: true
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.bedroom_spot_lights
+            name: Spotlights
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.bedroom_signe_light
+            name: Signe Light
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.bedroom_tv_strip_light
+            name: TV Strip
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.hue_color_lamp_1
+            name: Go Nightlight
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      - type: custom:mushroom-media-player-card
+        entity: media_player.bedroom
+        name: Bedroom Speaker
+        show_volume_level: true
+        volume_controls:
+          - volume_mute
+          - volume_set
+          - volume_buttons
+        media_controls:
+          - on_off
+          - play_pause_stop
+          - previous
+          - next
+        collapsible_controls: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-media-player-card
+        entity: media_player.lg_webos_tv_oled55g54lw
+        name: Bedroom TV (LG)
+        show_volume_level: true
+        volume_controls:
+          - volume_mute
+          - volume_set
+          - volume_buttons
+        media_controls:
+          - on_off
+          - play_pause_stop
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-climate-card
+        entity: climate.bedroom_2
+        name: Bedroom Climate
+        show_temperature_control: true
+        collapsible_controls: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+  ##############################################################################
+  # TAB 5 — LUCAS ROOM (subview)
+  ##############################################################################
+  - title: Lucas Room
+    path: lucas-room
+    subview: true
+    theme: kohbo
+    cards:
+
+      - type: custom:mushroom-template-card
+        primary: Back to Rooms
+        icon: mdi:arrow-left
+        icon_color: blue
+        tap_action:
+          action: navigate
+          navigation_path: /eidam-phone/rooms
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-select-card
+        entity: input_select.lucas_room
+        name: Lucas Room Mode
+        icon: mdi:teddy-bear
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # Temperature & Air Quality row
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: sensor.lucas_room_temp_temperature
+            name: Temperature
+            icon: mdi:thermometer
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: sensor.lucass_room_air_quality_monitor_indoor_air_quality
+            name: Air Quality
+            icon: mdi:air-filter
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      - type: custom:mushroom-light-card
+        entity: light.lucass_room
+        name: Lucas Room Lights (All)
+        show_brightness_control: true
+        show_color_control: true
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.lucass_room_spot_lights
+            name: Spotlights
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.lucass_room_iris
+            name: Iris
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      - type: custom:mushroom-media-player-card
+        entity: media_player.lucass_room
+        name: Lucas Room Speaker
+        show_volume_level: true
+        volume_controls:
+          - volume_mute
+          - volume_set
+          - volume_buttons
+        media_controls:
+          - on_off
+          - play_pause_stop
+          - previous
+          - next
+        collapsible_controls: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-climate-card
+        entity: climate.lucas_s_room
+        name: Lucas Room Climate
+        show_temperature_control: true
+        collapsible_controls: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # Fan
+      - type: custom:mushroom-fan-card
+        entity: fan.core_400s
+        name: Air Purifier
+        show_percentage_control: true
+        show_oscillate_control: false
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-entity-card
+        entity: sensor.core_400s_filter_lifetime
+        name: Filter Life Remaining
+        icon: mdi:air-filter
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-entity-card
+        entity: input_boolean.lucas_sleeping
+        name: Lucas Sleeping
+        icon: mdi:sleep
+        tap_action:
+          action: toggle
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-light-card
+        entity: light.lucass_bathroom_spotlights
+        name: Lucas Bathroom
+        show_brightness_control: true
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+  ##############################################################################
+  # TAB 6 — KITCHEN (subview)
+  ##############################################################################
+  - title: Kitchen
+    path: kitchen
+    subview: true
+    theme: kohbo
+    cards:
+
+      - type: custom:mushroom-template-card
+        primary: Back to Rooms
+        icon: mdi:arrow-left
+        icon_color: blue
+        tap_action:
+          action: navigate
+          navigation_path: /eidam-phone/rooms
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-light-card
+        entity: light.kitchen_spotlights
+        name: Kitchen Spotlights
+        show_brightness_control: true
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-media-player-card
+        entity: media_player.kitchen
+        name: Kitchen Speaker
+        show_volume_level: true
+        volume_controls:
+          - volume_mute
+          - volume_set
+          - volume_buttons
+        media_controls:
+          - on_off
+          - play_pause_stop
+          - previous
+          - next
+        collapsible_controls: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-climate-card
+        entity: climate.kitchen
+        name: Kitchen Climate
+        show_temperature_control: true
+        collapsible_controls: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+  ##############################################################################
+  # TAB 7 — OFFICE (subview)
+  ##############################################################################
+  - title: Office
+    path: office
+    subview: true
+    theme: kohbo
+    cards:
+
+      - type: custom:mushroom-template-card
+        primary: Back to Rooms
+        icon: mdi:arrow-left
+        icon_color: blue
+        tap_action:
+          action: navigate
+          navigation_path: /eidam-phone/rooms
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-select-card
+        entity: input_select.office
+        name: Office Mode
+        icon: mdi:desk
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-light-card
+        entity: light.office_spotlights
+        name: Office Spotlights
+        show_brightness_control: true
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-climate-card
+        entity: climate.office
+        name: Office Climate
+        show_temperature_control: true
+        collapsible_controls: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-entity-card
+        entity: input_boolean.important_meeting
+        name: Important Meeting
+        icon: mdi:briefcase
+        tap_action:
+          action: toggle
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+  ##############################################################################
+  # TAB 8 — HALLWAY (subview)
+  ##############################################################################
+  - title: Hallway
+    path: hallway
+    subview: true
+    theme: kohbo
+    cards:
+
+      - type: custom:mushroom-template-card
+        primary: Back to Rooms
+        icon: mdi:arrow-left
+        icon_color: blue
+        tap_action:
+          action: navigate
+          navigation_path: /eidam-phone/rooms
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-light-card
+        entity: light.hallway
+        name: Hallway Lights (All)
+        show_brightness_control: true
+        show_color_control: true
+        collapsible_controls: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-light-card
+            entity: light.hallway_lamp_post
+            name: Lamp Post
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.hallway_signe_light
+            name: Signe Light
+            show_brightness_control: true
+            show_color_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.cloakroom
+            name: Cloakroom
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.bathroom_spotlights
+            name: Bathroom
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-light-card
+            entity: light.garden_lights
+            name: Garden Lights
+            show_brightness_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: switch.cloud_lamp
+            name: Cloud Lamp
+            icon: mdi:cloud
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      - type: custom:mushroom-climate-card
+        entity: climate.hallway
+        name: Hallway Climate
+        show_temperature_control: true
+        collapsible_controls: false
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      - type: custom:mushroom-entity-card
+        entity: sensor.hallway_temp_temperature
+        name: Hallway Temperature
+        icon: mdi:thermometer
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+  ##############################################################################
+  # TAB 9 — CLIMATE
+  ##############################################################################
+  - title: Climate
+    path: climate
+    icon: mdi:thermometer
+    theme: kohbo
+    cards:
+
+      # Weather forecast
+      - type: weather-forecast
+        entity: weather.home
+        forecast_type: daily
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # All Tado zones
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-climate-card
+            entity: climate.lounge
+            name: Lounge
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-climate-card
+            entity: climate.hallway
+            name: Hallway
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-climate-card
+            entity: climate.kitchen
+            name: Kitchen
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-climate-card
+            entity: climate.bedroom_2
+            name: Bedroom
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-climate-card
+            entity: climate.lucas_s_room
+            name: Lucas Room
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-climate-card
+            entity: climate.office
+            name: Office
+            show_temperature_control: true
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      # Temperature graph
+      - type: custom:mini-graph-card
+        entities:
+          - entity: sensor.hallway_temp_temperature
+            name: Hallway
+          - entity: sensor.lucas_room_temp_temperature
+            name: Lucas Room
+        name: Temperature History
+        hours_to_show: 24
+        points_per_hour: 2
+        line_width: 2
+        smoothing: true
+        show:
+          labels: true
+          points: false
+          legend: true
+        style: |
+          ha-card {
+            background: #252529;
+            border: none;
+            border-radius: 16px;
+          }
+
+      # Air purifier status
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-fan-card
+            entity: fan.core_400s
+            name: Air Purifier
+            show_percentage_control: true
+            show_oscillate_control: false
+            collapsible_controls: true
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: sensor.core_400s_filter_lifetime
+            name: Filter Life
+            icon: mdi:air-filter
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+  ##############################################################################
+  # TAB 10 — SECURITY
+  ##############################################################################
+  - title: Security
+    path: security
+    icon: mdi:shield-home
+    theme: kohbo
+    cards:
+
+      # Alarm control panel
+      - type: custom:mushroom-alarm-control-panel-card
+        entity: alarm_control_panel.home_alarm
+        name: Home Alarm
+        show_keypad: true
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # Camera feeds
+      - type: grid
+        columns: 1
+        square: false
+        cards:
+          - type: picture-entity
+            entity: camera.basement_door
+            name: Basement Door
+            camera_view: live
+            show_state: false
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                  overflow: hidden;
+                }
+          - type: picture-entity
+            entity: camera.upstairs
+            name: Upstairs
+            camera_view: live
+            show_state: false
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                  overflow: hidden;
+                }
+          - type: picture-entity
+            entity: camera.garden_live_view
+            name: Garden
+            camera_view: live
+            show_state: false
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                  overflow: hidden;
+                }
+
+      # Battery status
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: sensor.basement_door_battery
+            name: Basement Door
+            icon: mdi:battery
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: sensor.basement_stairs_battery
+            name: Basement Stairs
+            icon: mdi:battery
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: sensor.garden_battery
+            name: Garden Camera
+            icon: mdi:battery
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: sensor.upstairs_battery
+            name: Upstairs Camera
+            icon: mdi:battery
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+  ##############################################################################
+  # TAB 11 — NANNY
+  ##############################################################################
+  - title: Nanny
+    path: nanny
+    icon: mdi:account-clock
+    theme: kohbo
+    cards:
+
+      # Presence & Expected
+      - type: horizontal-stack
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.nanny_present
+            name: Nanny Present
+            icon: mdi:account-check
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: input_boolean.nanny_expected_today
+            name: Expected Today
+            icon: mdi:calendar-check
+            tap_action:
+              action: toggle
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      # Arrival time
+      - type: custom:mushroom-entity-card
+        entity: input_datetime.nanny_arrival_time
+        name: Arrival Time
+        icon: mdi:clock-in
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }
+
+      # Weekly stats
+      - type: grid
+        columns: 2
+        square: false
+        cards:
+          - type: custom:mushroom-entity-card
+            entity: input_number.nanny_weekly_hours
+            name: Weekly Hours
+            icon: mdi:clock-outline
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+          - type: custom:mushroom-entity-card
+            entity: counter.nanny_weekly_sessions
+            name: Weekly Sessions
+            icon: mdi:counter
+            card_mod:
+              style: |
+                ha-card {
+                  --ha-card-background: #252529;
+                  --ha-card-border-width: 0;
+                  --ha-card-border-radius: 16px;
+                }
+
+      # Last session info
+      - type: custom:mushroom-entity-card
+        entity: input_text.nanny_last_session
+        name: Last Session
+        icon: mdi:calendar-clock
+        card_mod:
+          style: |
+            ha-card {
+              --ha-card-background: #252529;
+              --ha-card-border-width: 0;
+              --ha-card-border-radius: 16px;
+            }

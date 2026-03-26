@@ -34,12 +34,12 @@ frontend:
 lovelace:
   mode: storage
   dashboards:
-    dashboard-kohbo-eidam:
+    dashboard-eidam-phone:
       mode: yaml
       title: "Eidam"
       icon: mdi:home-assistant
       show_in_sidebar: true
-      filename: dashboards/kohbo-eidam/eidam.yaml
+      filename: dashboards/eidam-phone/phone.yaml
 
 logger:
   default: info
