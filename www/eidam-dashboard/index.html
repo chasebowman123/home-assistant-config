@@ -2118,11 +2118,14 @@ let connected = false;
 
 function getNextId() { return msgId++; }
 
+// Auto-detect WebSocket URL from current page location
+const autoUrl = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.hostname + ':' + (location.port || (location.protocol === 'https:' ? '443' : '80')) + '/api/websocket';
+
 // Load saved connection settings
 const savedUrl = localStorage.getItem('ha_url') || '';
 const savedToken = localStorage.getItem('ha_token') || '';
 
-document.getElementById('haUrl').value = savedUrl || 'ws://homeassistant.local:8123/api/websocket';
+document.getElementById('haUrl').value = savedUrl || autoUrl;
 document.getElementById('haToken').value = savedToken || '';
 
 // Auto-connect if we have saved credentials
