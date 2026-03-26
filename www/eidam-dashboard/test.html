@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head><title>WS Test</title></head>
+<body style="background:#1a1a1e;color:white;font-family:sans-serif;padding:20px;">
+<h2>WebSocket Connection Test</h2>
+<div id="log" style="white-space:pre-wrap;font-size:14px;"></div>
+<script>
+const log = document.getElementById('log');
+function addLog(msg) { log.textContent += msg + '\n'; }
+
+const host = location.hostname;
+const port = location.port || '8123';
+const wsUrl = 'ws://' + host + ':' + port + '/api/websocket';
+
+addLog('Page URL: ' + location.href);
+addLog('Trying: ' + wsUrl);
+addLog('');
+
+try {
+  const ws = new WebSocket(wsUrl);
+  ws.onopen = () => addLog('✅ WebSocket OPENED');
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    addLog('📨 Message: ' + msg.type);
+    if (msg.type === 'auth_required') {
+      addLog('🔐 Auth required - need token');
+      addLog('');
+      addLog('The WebSocket connects fine!');
+      addLog('The issue is authentication.');
+      addLog('');
+      addLog('Try entering your token below:');
+    }
+  };
+  ws.onerror = (e) => addLog('❌ WebSocket ERROR: ' + JSON.stringify(e));
+  ws.onclose = (e) => addLog('🔴 WebSocket CLOSED: code=' + e.code + ' reason=' + e.reason);
+} catch(e) {
+  addLog('❌ Exception: ' + e.message);
+}
+</script>
+</body>
+</html>
