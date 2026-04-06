@@ -1,0 +1,27 @@
+- id: lucas_wake_notification
+  alias: Lucas Wake Notification
+  description: "Notify both phones when motion detected in Lucas room between 05:00–09:00 while lucas_sleeping is on."
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.lucass_room_motion
+      to: "on"
+  condition:
+    - condition: time
+      after: "05:00:00"
+      before: "09:00:00"
+    - condition: state
+      entity_id: input_boolean.lucas_sleeping
+      state: "on"
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: Lucas is Awake
+        message: Motion detected in Lucas room
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: Lucas is Awake
+        message: Motion detected in Lucas room
+    - service: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.lucas_sleeping

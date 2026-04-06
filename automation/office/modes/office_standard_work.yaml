@@ -1,6 +1,8 @@
+# Office Standard Work mode: bright daylight colour temperature.
 - id: office_standard_work
   alias: "Office - Standard Work"
-  description: "Work mode: spots 100% at 4000K cool white."
+  description: "Office work mode: bright, cool-white lighting for focus."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.office
@@ -10,5 +12,6 @@
       target:
         entity_id: light.office_spotlights
       data:
-        brightness_pct: 100
+        brightness_pct: 90
         color_temp_kelvin: 4000
+        transition: 2

@@ -1,6 +1,8 @@
+# Evening Time mode: Lucas sleeping, mood lighting, doorbell silenced, Alexa announcement.
 - id: house_mode_evening_time
   alias: "House - Evening Time Mode"
-  description: "Lucas in bed, adults up. Mood lighting, doorbell silent."
+  description: "Lucas in bed, adults up. Mood lighting, doorbell silent, Alexa announcement."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.house
@@ -24,3 +26,14 @@
       data:
         title: "🌙 Evening Time"
         message: "Lucas sleeping mode on, doorbell silenced, mood lighting active."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🌙 Evening Time"
+        message: "Lucas sleeping mode on, doorbell silenced, mood lighting active."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.lounge_echo_hub
+        message: "Evening time mode is now active. Lucas is sleeping."
+        data:
+          type: announce

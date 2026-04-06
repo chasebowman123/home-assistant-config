@@ -1,6 +1,8 @@
+# Evening Entertaining off: restore normal lighting after guests leave.
 - id: evening_entertaining_deactivate
   alias: "Evening Entertaining - Deactivate"
   description: "Restore normal lighting after guests leave."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_boolean.evening_entertaining
@@ -15,11 +17,11 @@
     - service: light.turn_on
       target:
         entity_id:
-          - light.lounge_wall_lights
+          - light.lounge_signe_light
           - light.lounge_strip_light
       data:
         brightness_pct: 50
         color_temp_kelvin: 3000
     - service: light.turn_off
       target:
-        entity_id: light.lounge_io
+        entity_id: light.lounge_iris

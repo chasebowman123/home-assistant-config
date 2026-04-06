@@ -1,4 +1,5 @@
 - id: bad_weather_off
+  mode: single
   alias: "Weather - Bad Weather Off"
   description: "Weather clears: deactivate bad weather mode."
   trigger:

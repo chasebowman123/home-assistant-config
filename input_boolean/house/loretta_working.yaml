@@ -1,0 +1,5 @@
+# Loretta Working
+# Loretta is in a meeting or working — suppress office automations, TTS
+loretta_working:
+  name: "Loretta Working"
+  icon: mdi:briefcase

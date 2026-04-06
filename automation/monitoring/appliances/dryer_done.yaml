@@ -1,25 +1,33 @@
 - id: dryer_done
-  alias: "Appliance - Dryer Done"
-  description: "Notify when dryer cycle completes."
+  alias: Tumble Dryer Done
+  description: Notify Edward and Loretta and announce via Alexa when tumble dryer cycle completes.
+  mode: single
   trigger:
-    - platform: numeric_state
-      entity_id: sensor.dryer_power
-      below: 5
-      for:
-        minutes: 3
-  condition:
-    - condition: numeric_state
-      entity_id: sensor.dryer_energy_today
-      above: 0.1
+    - platform: state
+      entity_id: sensor.tumble_dryer_machine_state
+      to: stop
+  condition: []
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "👔 Dryer Done"
-        message: "The dryer has finished its cycle."
+        title: Tumble Dryer
+        message: Tumble dryer is done!
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: Tumble Dryer
+        message: Tumble dryer is done!
     - service: notify.alexa_media
       data:
         target:
-          - media_player.kitchen
-        message: "The dryer has finished."
+          - media_player.echo_show_15
+          - media_player.edward_s_echo_show_21
+        message: Tumble dryer is done
+        data:
+          type: push
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.lounge_echo_hub
+        message: Tumble dryer is done
         data:
           type: announce

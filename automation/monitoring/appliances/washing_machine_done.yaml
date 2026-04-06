@@ -1,25 +1,51 @@
+# Washing machine done: dual trigger (Samsung state sensor + Tapo power fallback). Notify both phones + Alexa.
 - id: washing_machine_done
-  alias: "Appliance - Washing Machine Done"
-  description: "Notify when washing machine cycle completes (power drops below 5W after being above 10W)."
+  alias: "Monitoring - Washing Machine Done"
+  description: "Notify when washing machine finishes. Dual trigger: Samsung state sensor (primary) + Tapo power fallback."
+  mode: single
   trigger:
+    - platform: state
+      entity_id: sensor.washing_machine_machine_state
+      to: "stop"
+      id: samsung_state
     - platform: numeric_state
       entity_id: sensor.washing_machine_power
       below: 5
       for:
         minutes: 3
+      id: tapo_power
   condition:
-    - condition: numeric_state
-      entity_id: sensor.washing_machine_energy_today
-      above: 0.1
+    - condition: or
+      conditions:
+        - condition: trigger
+          id: samsung_state
+        - condition: and
+          conditions:
+            - condition: trigger
+              id: tapo_power
+            - condition: template
+              value_template: "{{ states('sensor.washing_machine_machine_state') not in ['ready', 'stop', 'unknown', 'unavailable'] }}"
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "👕 Washing Machine Done"
-        message: "The washing machine has finished its cycle."
+        title: "🫧 Washing Machine Done"
+        message: "Washing machine is done! Time to hang the laundry."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🫧 Washing Machine Done"
+        message: "Washing machine is done! Time to hang the laundry."
     - service: notify.alexa_media
       data:
         target:
-          - media_player.kitchen
-        message: "The washing machine has finished."
+          - media_player.echo_show_15
+          - media_player.edward_s_echo_show_21
+        message: "Washing machine is done"
+        data:
+          type: push
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.lounge_echo_hub
+        message: "The washing machine has finished. Time to hang the laundry."
         data:
           type: announce

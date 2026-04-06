@@ -1,14 +1,20 @@
+# Twice-yearly reminder to clean the gutters (April + October).
 - id: gutter_clean
-  alias: "Maintenance - Gutter Clean"
-  description: "Bi-annual gutter cleaning reminder."
+  alias: "Maintenance - Gutter Clean Reminder"
+  description: "Twice-yearly reminder to clean gutters (April and October)."
+  mode: single
   trigger:
     - platform: time
-      at: "10:00:00"
+      at: "09:00:00"
   condition:
     - condition: template
       value_template: "{{ now().day == 1 and now().month in [4, 10] }}"
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🔧 Gutter Cleaning"
-        message: "Time for a bi-annual gutter clean. Book a professional or DIY this weekend."
+        title: "🏠 Gutter Clean Reminder"
+        message: "Time to arrange a gutter clean."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🏠 Gutter Clean Reminder"
+        message: "Time to arrange a gutter clean."

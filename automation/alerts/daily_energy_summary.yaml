@@ -1,11 +1,19 @@
+# Daily energy usage notification at 9pm to both phones.
 - id: daily_energy_summary
   alias: "Alert - Daily Energy Summary"
   description: "Daily energy usage notification at 9pm."
+  mode: single
   trigger:
     - platform: time
       at: "21:00:00"
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "⚡ Daily Energy Summary"
+        message: >
+          Today's usage: {{ states('sensor.energy_daily') | float | round(2) }} kWh
+          (£{{ (states('sensor.energy_daily') | float * 0.27) | round(2) }}).
+    - service: notify.mobile_app_lorettas_phone
       data:
         title: "⚡ Daily Energy Summary"
         message: >

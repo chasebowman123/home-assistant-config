@@ -1,0 +1,28 @@
+- id: garden_door_lights
+  alias: Garden Door Lights
+  description: "Garden door opened/closed → garden lights on smooth at 50%, auto-off after 5 minutes."
+  mode: restart
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.outside_door_contact
+      from: "on"
+      to: "off"
+    - platform: state
+      entity_id: binary_sensor.outside_door_contact
+      from: "off"
+      to: "on"
+  condition: []
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.garden_lights
+      data:
+        brightness: 128
+        transition: 10
+    - delay:
+        minutes: 5
+    - service: light.turn_off
+      target:
+        entity_id: light.garden_lights
+      data:
+        transition: 10

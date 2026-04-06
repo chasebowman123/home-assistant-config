@@ -1,18 +1,27 @@
+# Lucas bath water too hot (>38°C): notify both phones + Alexa alert.
 - id: lucas_bath_too_hot
-  alias: "Lucas - Bath Too Hot"
-  description: "Bath temperature exceeds 38°C: critical mobile notification."
+  alias: "Lucas Bath - Water Too Hot"
+  description: "Alert if Lucas bath temperature exceeds 38°C."
+  mode: single
   trigger:
     - platform: numeric_state
-      entity_id: sensor.lucas_bath_temp_sensor_temperature
+      entity_id: sensor.lucas_bath_temperature
       above: 38
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🚨 Bath Too Hot!"
-        message: "Lucas's bath is {{ states('sensor.lucas_bath_temp_sensor_temperature') }}°C — above safe limit of 38°C!"
+        title: "🛁 Bath Too Hot!"
+        message: "Lucas's bath is {{ states('sensor.lucas_bath_temperature') }}°C — too hot! Check immediately."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🛁 Bath Too Hot!"
+        message: "Lucas's bath is {{ states('sensor.lucas_bath_temperature') }}°C — too hot! Check immediately."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.echo_show_15
+          - media_player.edward_s_echo_show_21
+          - media_player.lounge_echo_hub
+        message: "Warning! Lucas's bath water is too hot. Please check immediately."
         data:
-          push:
-            sound:
-              name: default
-              critical: 1
-              volume: 1.0
+          type: announce

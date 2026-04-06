@@ -1,15 +1,20 @@
+# Monthly reminder to clean the dryer lint filter.
 - id: dryer_lint_reminder
-  alias: "Maintenance - Dryer Lint"
-  description: "Weekly reminder to clean dryer lint filter."
+  alias: "Maintenance - Dryer Lint Reminder"
+  description: "Monthly reminder to clean the tumble dryer lint filter."
+  mode: single
   trigger:
     - platform: time
-      at: "10:00:00"
+      at: "09:00:00"
   condition:
-    - condition: time
-      weekday:
-        - sun
+    - condition: template
+      value_template: "{{ now().day == 15 }}"
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🔧 Dryer Lint Filter"
-        message: "Weekly reminder: clean the dryer lint filter for safety and efficiency."
+        title: "🧺 Dryer Lint Filter"
+        message: "Monthly reminder: clean the tumble dryer lint filter."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🧺 Dryer Lint Filter"
+        message: "Monthly reminder: clean the tumble dryer lint filter."

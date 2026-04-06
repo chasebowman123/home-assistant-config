@@ -1,6 +1,8 @@
+# Office Standard Evening mode: warm dim lighting.
 - id: office_standard_evening
   alias: "Office - Standard Evening"
-  description: "Evening mode: spots 40% at 2700K warm."
+  description: "Office evening mode: warm dim lighting."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.office
@@ -12,3 +14,4 @@
       data:
         brightness_pct: 40
         color_temp_kelvin: 2700
+        transition: 3

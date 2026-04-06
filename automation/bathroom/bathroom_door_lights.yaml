@@ -1,6 +1,8 @@
+# Bathroom door open → lights on; auto-off 5 min after door closes.
 - id: bathroom_door_lights
   alias: "Bathroom - Door Lights"
   description: "Main bathroom door opens: lights on. Off 5 min after close."
+  mode: restart
   trigger:
     - platform: state
       entity_id: binary_sensor.bathroom_sensor_contact
@@ -9,6 +11,9 @@
     - service: light.turn_on
       target:
         entity_id: light.bathroom_spotlights
+      data:
+        brightness_pct: 100
+        transition: 1
     - wait_for_trigger:
         - platform: state
           entity_id: binary_sensor.bathroom_sensor_contact
@@ -18,4 +23,5 @@
     - service: light.turn_off
       target:
         entity_id: light.bathroom_spotlights
-  mode: restart
+      data:
+        transition: 5

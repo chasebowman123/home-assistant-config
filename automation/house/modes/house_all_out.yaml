@@ -1,6 +1,8 @@
+# All Out mode: lights/media off, heating lowered, both phones notified.
 - id: house_mode_all_out
   alias: "House - All Out Mode"
-  description: "Everyone including dogs is out. No alarm, heating lowered, all off."
+  description: "Everyone including dogs is out. Heating lowered, all off, both phones notified."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.house
@@ -27,6 +29,10 @@
       data:
         temperature: 18
     - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "🏠 All Out Mode"
+        message: "House empty. Heating lowered, everything off."
+    - service: notify.mobile_app_lorettas_phone
       data:
         title: "🏠 All Out Mode"
         message: "House empty. Heating lowered, everything off."

@@ -1,6 +1,8 @@
+# Sun below 3 degrees: warm dim hallway spots on automatically.
 - id: hallway_ambient_dark
   alias: "Hallway - Ambient After Dark"
   description: "Sun below 3 degrees: warm dim hallway spots."
+  mode: single
   trigger:
     - platform: numeric_state
       entity_id: sun.sun
@@ -15,6 +17,9 @@
         - condition: state
           entity_id: input_select.house
           state: "All Out"
+        - condition: state
+          entity_id: input_select.house
+          state: "Night Time"
   action:
     - service: light.turn_on
       target:

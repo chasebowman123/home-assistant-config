@@ -1,7 +1,8 @@
+# Lucas Bedtime mode: nightlight only, lullaby on Echo Show, sleeping flag on.
 - id: lucas_room_bedtime
-  mode: restart
-  alias: "Lucas - Bedtime"
-  description: "All off except Go nightlight at 3%, lullaby with volume fade."
+  alias: "Lucas Room - Bedtime"
+  description: "Lucas bedtime: nightlight on, lullaby announcement, sleeping flag on."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.lucas_room
@@ -10,37 +11,22 @@
     - service: light.turn_off
       target:
         entity_id:
-          - light.lucass_room_spot_lights
+          - light.lucass_room_spotlights
+          - light.lucass_room_pendant_light
           - light.lucass_room_iris
-          - switch.cloud_lamp
     - service: light.turn_on
       target:
-        entity_id: light.hue_color_lamp_1
+        entity_id: light.lucas_s_room_go
       data:
         brightness_pct: 3
+        color_temp_kelvin: 2200
     - service: input_boolean.turn_on
       target:
         entity_id: input_boolean.lucas_sleeping
-    - service: media_player.volume_set
-      target:
-        entity_id: media_player.lucass_room
+    - service: notify.alexa_media
       data:
-        volume_level: 0.12
-    - service: media_player.play_media
-      target:
-        entity_id: media_player.lucass_room
-      data:
-        media_content_id: "Lullabies"
-        media_content_type: playlist
-    - delay:
-        minutes: 20
-    - service: media_player.volume_set
-      target:
-        entity_id: media_player.lucass_room
-      data:
-        volume_level: 0.05
-    - delay:
-        minutes: 10
-    - service: media_player.media_stop
-      target:
-        entity_id: media_player.lucass_room
+        target:
+          - media_player.lucas_s_echo_show
+        message: "Goodnight Lucas! Sweet dreams. Time to sleep now."
+        data:
+          type: announce

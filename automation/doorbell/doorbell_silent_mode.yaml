@@ -1,6 +1,8 @@
+# Suppress doorbell physical ring in quiet modes (Evening, Night, Dogs Alone, Lucas sleeping, important meeting).
 - id: doorbell_silent_mode_on
   alias: "Doorbell - Silent Mode On"
   description: "Suppress doorbell physical ring in quiet modes."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.house

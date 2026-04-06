@@ -1,0 +1,15 @@
+- id: lucas_humidity_ok
+  alias: Lucas Humidity OK
+  description: Turn off humidifier when Lucas room humidity rises above 55% for 10 minutes.
+  mode: single
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.lucas_room_temp_humidity
+      above: 55
+      for:
+        minutes: 10
+  condition: []
+  action:
+    - service: humidifier.turn_off
+      target:
+        entity_id: humidifier.living_room_humidifier_humidifier

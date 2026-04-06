@@ -1,6 +1,8 @@
+# Office Arriving Guests mode: lights on full, Alexa welcome.
 - id: office_arriving_guests
   alias: "Office - Arriving Guests"
-  description: "Welcoming lighting and heating for guests."
+  description: "Office guest mode: lights on full, Alexa welcome message."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.office
@@ -10,21 +12,13 @@
       target:
         entity_id: light.office_spotlights
       data:
-        brightness_pct: 80
-        color_temp_kelvin: 3000
-    - service: light.turn_on
-      target:
-        entity_id: light.hallway_spot_lights
+        brightness_pct: 100
+        color_temp_kelvin: 4000
+        transition: 2
+    - service: notify.alexa_media
       data:
-        brightness_pct: 80
-        color_temp_kelvin: 3000
-    - service: light.turn_on
-      target:
-        entity_id: light.hallway_lamp_post
-      data:
-        brightness_pct: 80
-    - service: climate.set_temperature
-      target:
-        entity_id: climate.office
-      data:
-        temperature: 22
+        target:
+          - media_player.lounge_echo_hub
+        message: "Guests are arriving at the office. Lights are on."
+        data:
+          type: announce

@@ -1,14 +1,25 @@
+# Dishwasher salt nearly empty: notify both phones + Alexa.
 - id: dishwasher_salt_reminder
-  alias: "Maintenance - Dishwasher Salt"
-  description: "Monthly reminder to check dishwasher salt."
+  alias: "Maintenance - Dishwasher Salt Low"
+  description: "Notify when dishwasher salt indicator triggers."
+  mode: single
   trigger:
-    - platform: time
-      at: "10:00:00"
-  condition:
-    - condition: template
-      value_template: "{{ now().day == 1 }}"
+    - platform: state
+      entity_id: sensor.dishwasher_salt_nearly_empty
+      to: "present"
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🔧 Dishwasher Salt"
-        message: "Monthly check: top up dishwasher salt and rinse aid if needed."
+        title: "🧂 Dishwasher Salt Low"
+        message: "Dishwasher salt is nearly empty. Please refill."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🧂 Dishwasher Salt Low"
+        message: "Dishwasher salt is nearly empty. Please refill."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.lounge_echo_hub
+        message: "Reminder: the dishwasher needs more salt."
+        data:
+          type: announce

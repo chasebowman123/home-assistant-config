@@ -1,0 +1,5 @@
+# Vacation Mode
+# Extended absence — arm alarm, simulate presence, frost protect heating
+vacation_mode:
+  name: "Vacation Mode"
+  icon: mdi:airplane

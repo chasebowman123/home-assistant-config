@@ -1,6 +1,8 @@
+# Bedroom Off mode: all bedroom lights off.
 - id: bedroom_off
   alias: "Bedroom - Off"
   description: "All bedroom lights off."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.bedroom

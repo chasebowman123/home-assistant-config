@@ -1,16 +1,24 @@
+# Monthly energy report sent to both phones on the 1st of the month.
 - id: monthly_energy_report
-  alias: "Energy - Monthly Report"
-  description: "Monthly energy summary on the 1st at 9am."
+  alias: "Monitoring - Monthly Energy Report"
+  description: "Send monthly energy usage report on the 1st of each month."
+  mode: single
   trigger:
     - platform: time
-      at: "09:00:00"
+      at: "08:00:00"
   condition:
     - condition: template
       value_template: "{{ now().day == 1 }}"
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "⚡ Monthly Energy Report"
+        title: "📊 Monthly Energy Report"
         message: >
-          Last month's total: {{ states('sensor.energy_monthly') | float | round(1) }} kWh
-          (£{{ (states('sensor.energy_monthly') | float * 0.27) | round(2) }}).
+          Last month's energy usage: {{ states('sensor.energy_monthly') | float | round(1) }} kWh
+          (approx. £{{ (states('sensor.energy_monthly') | float * 0.27) | round(2) }}).
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "📊 Monthly Energy Report"
+        message: >
+          Last month's energy usage: {{ states('sensor.energy_monthly') | float | round(1) }} kWh
+          (approx. £{{ (states('sensor.energy_monthly') | float * 0.27) | round(2) }}).

@@ -1,0 +1,20 @@
+- id: oven_preheat_done
+  alias: Oven Preheat Done
+  description: "Notify when oven programme_phase attribute changes away from Preheating (i.e. preheat complete)."
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: sensor.oven
+      attribute: programme_phase
+  condition:
+    - condition: template
+      value_template: "{{ trigger.from_state.attributes.get('programme_phase') == 'Preheating' and trigger.to_state.attributes.get('programme_phase') != 'Preheating' }}"
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: Oven
+        message: Oven has finished preheating
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: Oven
+        message: Oven has finished preheating

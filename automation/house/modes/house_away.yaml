@@ -1,4 +1,5 @@
 - id: house_mode_away
+  mode: single
   alias: "House - Away Mode"
   description: "Holiday/extended absence. Alarm armed, frost protect heating, presence simulation."
   trigger:

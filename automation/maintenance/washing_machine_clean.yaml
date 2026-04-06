@@ -1,14 +1,20 @@
+# Monthly reminder to run a drum-clean cycle on the washing machine.
 - id: washing_machine_clean
-  alias: "Maintenance - Washing Machine Clean"
-  description: "Monthly reminder to run a cleaning cycle."
+  alias: "Maintenance - Washing Machine Drum Clean"
+  description: "Monthly reminder to run a drum-clean cycle on the washing machine."
+  mode: single
   trigger:
     - platform: time
-      at: "10:00:00"
+      at: "09:00:00"
   condition:
     - condition: template
-      value_template: "{{ now().day == 15 }}"
+      value_template: "{{ now().day == 1 }}"
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🔧 Washing Machine"
-        message: "Run a hot empty cycle with cleaning tablets to maintain the washing machine."
+        title: "🫧 Washing Machine Clean"
+        message: "Monthly reminder: run a drum-clean cycle on the washing machine."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🫧 Washing Machine Clean"
+        message: "Monthly reminder: run a drum-clean cycle on the washing machine."

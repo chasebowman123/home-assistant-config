@@ -1,6 +1,8 @@
+# Re-enable doorbell physical ring when returning to Day Time mode.
 - id: doorbell_silent_mode_off
   alias: "Doorbell - Silent Mode Off"
   description: "Re-enable doorbell ring when returning to normal modes."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.house

@@ -1,6 +1,8 @@
+# Alert if key appliances are still on at midnight.
 - id: appliance_left_on_overnight
-  alias: "Appliance - Left On Overnight"
-  description: "Notify if washing machine, dryer, or dishwasher still drawing power at midnight."
+  alias: "Monitoring - Appliance Left On Overnight"
+  description: "Alert at midnight if key appliances are still on."
+  mode: single
   trigger:
     - platform: time
       at: "00:00:00"
@@ -8,20 +10,36 @@
     - condition: or
       conditions:
         - condition: numeric_state
-          entity_id: sensor.washing_machine_power
-          above: 10
+          entity_id: sensor.oven_power
+          above: 50
         - condition: numeric_state
-          entity_id: sensor.dryer_power
-          above: 10
+          entity_id: sensor.washing_machine_power
+          above: 5
         - condition: numeric_state
           entity_id: sensor.dishwasher_power
-          above: 10
+          above: 5
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🌙 Appliance Still Running"
+        title: "⚠️ Appliance Left On"
         message: >
-          An appliance is still running at midnight.
-          {% if states('sensor.washing_machine_power') | float > 10 %}Washing Machine: {{ states('sensor.washing_machine_power') }}W. {% endif %}
-          {% if states('sensor.dryer_power') | float > 10 %}Dryer: {{ states('sensor.dryer_power') }}W. {% endif %}
-          {% if states('sensor.dishwasher_power') | float > 10 %}Dishwasher: {{ states('sensor.dishwasher_power') }}W. {% endif %}
+          Appliance still on at midnight:
+          Oven: {{ states('sensor.oven_power') }}W,
+          Washing Machine: {{ states('sensor.washing_machine_power') }}W,
+          Dishwasher: {{ states('sensor.dishwasher_power') }}W
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "⚠️ Appliance Left On"
+        message: >
+          Appliance still on at midnight:
+          Oven: {{ states('sensor.oven_power') }}W,
+          Washing Machine: {{ states('sensor.washing_machine_power') }}W,
+          Dishwasher: {{ states('sensor.dishwasher_power') }}W
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.echo_show_15
+          - media_player.lounge_echo_hub
+        message: "Warning: an appliance has been left on overnight. Please check the oven or washing machine."
+        data:
+          type: announce

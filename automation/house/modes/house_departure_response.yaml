@@ -1,4 +1,5 @@
 - id: house_departure_response
+  mode: single
   alias: "House - Departure Response"
   description: "Handle departure notification button press."
   trigger:

@@ -1,6 +1,8 @@
+# Lucas Bathtime mode: bathroom lights + warm scene, Alexa bathtime song.
 - id: lucas_room_bathtime
-  alias: "Lucas - Bathtime"
-  description: "Bathroom scene, calming room lights, bathtime playlist."
+  alias: "Lucas Room - Bathtime"
+  description: "Set up Lucas bathtime: bathroom lights, warm scene, Alexa announcement."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.lucas_room
@@ -8,29 +10,21 @@
   action:
     - service: light.turn_on
       target:
-        entity_id: light.lucass_room_spot_lights
-      data:
-        brightness_pct: 50
-        color_temp_kelvin: 2700
-    - service: light.turn_on
-      target:
-        entity_id: light.lucass_room_iris
-      data:
-        brightness_pct: 40
-        color_name: blue
-    - service: light.turn_on
-      target:
         entity_id: light.lucass_bathroom_spotlights
       data:
         brightness_pct: 80
-    - service: media_player.volume_set
+        color_temp_kelvin: 2700
+        transition: 3
+    - service: light.turn_on
       target:
-        entity_id: media_player.lucass_room
+        entity_id: light.lucass_room_spotlights
       data:
-        volume_level: 0.25
-    - service: media_player.play_media
-      target:
-        entity_id: media_player.lucass_room
+        brightness_pct: 60
+        color_temp_kelvin: 3000
+    - service: notify.alexa_media
       data:
-        media_content_id: "Bathtime Playlist"
-        media_content_type: playlist
+        target:
+          - media_player.lucas_s_echo_show
+        message: "Bath time, Lucas! Time to get clean!"
+        data:
+          type: announce

@@ -1,12 +1,13 @@
+# No-show alert: if Ankii not arrived by 10am on expected days.
 # Nanny No-Show Alert
-# If Ankii hasn't arrived by 9:30am on a weekday, send a reminder.
-# Can be suppressed by turning off the automation on days she's not expected.
+# Fires at 10am on weekdays if nanny is expected but hasn't arrived yet.
 - id: nanny_no_show_alert
   alias: "Nanny - No Show Alert"
-  description: "Alert if Ankii hasn't arrived by 9:30am on a weekday."
+  description: "Alert if Ankii hasn't arrived by 10am on an expected day."
+  mode: single
   trigger:
     - platform: time
-      at: "09:30:00"
+      at: "10:00:00"
   condition:
     - condition: time
       weekday:
@@ -16,14 +17,17 @@
         - thu
         - fri
     - condition: state
-      entity_id: input_boolean.nanny_present
-      state: "off"
-    - condition: state
       entity_id: input_boolean.nanny_expected_today
       state: "on"
+    - condition: state
+      entity_id: input_boolean.nanny_present
+      state: "off"
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "👩‍👦 Ankii Not Yet Arrived"
-        message: "It's 9:30am and Ankii hasn't connected to Wi-Fi yet."
-  mode: single
+        title: "⚠️ Nanny No-Show"
+        message: "Ankii hasn't arrived yet and it's 10am. Have you heard from her?"
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "⚠️ Nanny No-Show"
+        message: "Ankii hasn't arrived yet and it's 10am. Have you heard from her?"

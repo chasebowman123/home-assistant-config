@@ -1,6 +1,8 @@
+# Monthly reminder on 1st of the month to test smoke detectors.
 - id: smoke_detector_test
   alias: "Maintenance - Smoke Detector Test"
-  description: "Monthly reminder to test smoke detectors."
+  description: "Monthly reminder on the 1st to test smoke detectors."
+  mode: single
   trigger:
     - platform: time
       at: "10:00:00"
@@ -10,5 +12,9 @@
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🔧 Smoke Detector Test"
+        title: "🚨 Smoke Detector Test"
+        message: "Monthly reminder: test all smoke detectors today."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🚨 Smoke Detector Test"
         message: "Monthly reminder: test all smoke detectors today."

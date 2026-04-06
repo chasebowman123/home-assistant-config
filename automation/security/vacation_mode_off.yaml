@@ -1,0 +1,24 @@
+- id: vacation_mode_off
+  alias: Vacation Mode Off
+  description: Disarm alarm and stop simulation when vacation mode is turned off.
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: input_boolean.vacation_mode
+      to: "off"
+  condition: []
+  action:
+    - service: alarm_control_panel.alarm_disarm
+      target:
+        entity_id: alarm_control_panel.home_alarm
+    - service: light.turn_off
+      target:
+        entity_id: all
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: Vacation Mode Deactivated
+        message: Alarm disarmed and all simulation lights off
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: Vacation Mode Deactivated
+        message: Alarm disarmed and all simulation lights off

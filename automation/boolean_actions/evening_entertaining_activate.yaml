@@ -1,6 +1,8 @@
+# Evening Entertaining on: mood lighting for guests + Alexa announcement.
 - id: evening_entertaining_activate
   alias: "Evening Entertaining - Activate"
-  description: "Mood lighting for guests, music-friendly ambiance."
+  description: "Mood lighting for guests, music-friendly ambiance, Alexa announcement."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_boolean.evening_entertaining
@@ -25,7 +27,7 @@
         color_temp_kelvin: 2500
     - service: light.turn_on
       target:
-        entity_id: light.lounge_io
+        entity_id: light.lounge_iris
       data:
         brightness_pct: 40
         color_temp_kelvin: 2500
@@ -41,3 +43,10 @@
       data:
         brightness_pct: 60
         color_temp_kelvin: 2700
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.lounge_echo_hub
+        message: "Evening entertaining mode activated. Enjoy your evening!"
+        data:
+          type: announce

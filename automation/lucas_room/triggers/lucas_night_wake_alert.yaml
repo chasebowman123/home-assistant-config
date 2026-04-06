@@ -1,50 +1,45 @@
+# Lucas wakes at night (after 10pm, before 5am): notify both phones + Echo Show.
 - id: lucas_night_wake_alert
-  mode: single
   alias: "Lucas - Night Wake Alert"
-  description: "Lucas door opens at night: notify + flash lounge lights."
+  description: "Alert when Lucas wakes during the night. Notify both phones."
+  mode: single
   trigger:
     - platform: state
-      entity_id: binary_sensor.lucas_room_door_contact
+      entity_id: binary_sensor.lucass_room_motion
       to: "on"
   condition:
     - condition: time
       after: "22:00:00"
-      before: "07:00:00"
+      before: "05:00:00"
     - condition: state
       entity_id: input_boolean.lucas_sleeping
       state: "on"
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "👶 Lucas Awake"
-        message: "Lucas's door opened at {{ now().strftime('%H:%M') }}."
+        title: "🌙 Lucas Night Wake"
+        message: "Lucas has woken up at {{ now().strftime('%H:%M') }}."
         data:
           push:
             sound:
               name: default
-              critical: 1
+              critical: 0
               volume: 0.8
-    - service: light.turn_on
-      target:
-        entity_id: light.lounge_io
+    - service: notify.mobile_app_lorettas_phone
       data:
-        color_name: yellow
-        brightness_pct: 100
-    - delay:
-        seconds: 3
-    - service: light.turn_off
+        title: "🌙 Lucas Night Wake"
+        message: "Lucas has woken up at {{ now().strftime('%H:%M') }}."
+        data:
+          push:
+            sound:
+              name: default
+              critical: 0
+              volume: 0.8
+    - service: media_player.play_media
       target:
-        entity_id: light.lounge_io
-    - delay:
-        seconds: 2
-    - service: light.turn_on
-      target:
-        entity_id: light.lounge_io
+        entity_id:
+          - media_player.echo_show_15
+          - media_player.edward_s_echo_show_21
       data:
-        color_name: yellow
-        brightness_pct: 100
-    - delay:
-        seconds: 3
-    - service: light.turn_off
-      target:
-        entity_id: light.lounge_io
+        media_content_type: custom
+        media_content_id: show lucas camera

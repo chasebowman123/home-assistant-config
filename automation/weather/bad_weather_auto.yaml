@@ -1,0 +1,38 @@
+- id: bad_weather_auto
+  alias: "Bad Weather Auto-Set"
+  description: "Automatically set input_boolean.bad_weather based on weather forecast. On when rainy/stormy/snowy/hail, off when clear or sunny."
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: weather.forecast_home
+  condition: []
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: weather.forecast_home
+              state:
+                - rainy
+                - pouring
+                - lightning
+                - lightning-rainy
+                - hail
+                - snowy
+                - snowy-rainy
+          sequence:
+            - service: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.bad_weather
+        - conditions:
+            - condition: state
+              entity_id: weather.forecast_home
+              state:
+                - sunny
+                - clear-night
+                - partlycloudy
+                - windy
+                - cloudy
+          sequence:
+            - service: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.bad_weather

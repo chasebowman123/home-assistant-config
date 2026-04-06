@@ -1,6 +1,8 @@
+# Night Time mode: all off, sleep heating, Lucas monitoring, Alexa goodnight.
 - id: house_mode_night_time
   alias: "House - Night Time Mode"
-  description: "Adults to bed. Arm home, nightlights only, doorbell silent, motion lights dim."
+  description: "Adults to bed. All off, sleep heating, Lucas monitoring active."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.house
@@ -34,3 +36,15 @@
       data:
         title: "🌑 Night Time"
         message: "Goodnight. All off, Lucas monitoring active."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🌑 Night Time"
+        message: "Goodnight. All off, Lucas monitoring active."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.echo_show_15
+          - media_player.edward_s_echo_show_21
+        message: "Goodnight! All lights are off. Sleep well."
+        data:
+          type: announce

@@ -1,6 +1,8 @@
+# Bedroom Bedtime mode: all lights off, pause TV.
 - id: bedroom_bedtime
   alias: "Bedroom - Bedtime"
   description: "All lights off, pause TV."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.bedroom

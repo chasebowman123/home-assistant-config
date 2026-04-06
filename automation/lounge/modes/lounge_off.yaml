@@ -1,6 +1,8 @@
+# Lounge Off: all lounge lights off, Sync Box off, pause media.
 - id: lounge_off
   alias: "Lounge - Off"
   description: "All lounge lights off, pause media."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.lounge
@@ -10,10 +12,10 @@
       target:
         entity_id:
           - light.lounge_spotlights
-          - light.lounge_wall_lights
+          - light.lounge_signe_light
           - light.lounge_strip_light
           - light.lounge_piano_lamp
-          - light.lounge_io
+          - light.lounge_iris
     - service: switch.turn_off
       target:
         entity_id: switch.lounge_hue_sync_box

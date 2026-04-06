@@ -1,6 +1,8 @@
+# Notify both phones if HA Cloud goes offline for 5+ minutes.
 - id: cloud_integration_offline
   alias: "Alert - Cloud Integration Offline"
-  description: "Notify if Home Assistant Cloud goes offline."
+  description: "Notify if Home Assistant Cloud goes offline for 5 minutes."
+  mode: single
   trigger:
     - platform: state
       entity_id: binary_sensor.remote_ui
@@ -9,6 +11,10 @@
         minutes: 5
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "⚠️ HA Cloud Offline"
+        message: "Home Assistant Cloud has been offline for 5 minutes. Remote access may be unavailable."
+    - service: notify.mobile_app_lorettas_phone
       data:
         title: "⚠️ HA Cloud Offline"
         message: "Home Assistant Cloud has been offline for 5 minutes. Remote access may be unavailable."

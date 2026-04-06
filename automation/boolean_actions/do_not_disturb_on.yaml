@@ -1,0 +1,28 @@
+- id: do_not_disturb_on
+  alias: Do Not Disturb On
+  description: "When do_not_disturb turns on, enable DND on all Echo devices and pause the doorbell unified automation."
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: input_boolean.do_not_disturb
+      to: "on"
+  condition: []
+  action:
+    - service: switch.turn_on
+      target:
+        entity_id:
+          - switch.bedroom_do_not_disturb_switch
+          - switch.bedroom_fire_cube_do_not_disturb_switch
+          - switch.echo_show_15_do_not_disturb_switch
+          - switch.edward_s_echo_show_21_do_not_disturb_switch
+          - switch.edward_s_fire_do_not_disturb_switch
+          - switch.edward_s_wiim_mini_do_not_disturb_switch
+          - switch.loretta_s_echo_show_do_not_disturb_switch
+          - switch.lounge_echo_hub_do_not_disturb_switch
+          - switch.lounge_fire_cube_do_not_disturb_switch
+          - switch.lucas_s_echo_show_do_not_disturb_switch
+          - switch.office_do_not_disturb_switch
+    - service: automation.turn_off
+      target:
+        entity_id:
+          - automation.doorbell_unified

@@ -1,4 +1,5 @@
 - id: bad_weather_on
+  mode: single
   alias: "Weather - Bad Weather On"
   description: "Auto-detect rain/storm conditions and activate bad weather mode."
   trigger:

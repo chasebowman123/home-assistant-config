@@ -1,14 +1,20 @@
+# Quarterly reminder to defrost the fridge/freezer.
 - id: fridge_freezer_defrost
-  alias: "Maintenance - Fridge/Freezer Defrost"
-  description: "Quarterly reminder to defrost/clean fridge-freezer."
+  alias: "Maintenance - Fridge Freezer Defrost"
+  description: "Quarterly reminder to defrost the fridge/freezer."
+  mode: single
   trigger:
     - platform: time
-      at: "10:00:00"
+      at: "09:00:00"
   condition:
     - condition: template
-      value_template: "{{ now().day == 1 and now().month in [3, 6, 9, 12] }}"
+      value_template: "{{ now().day == 1 and now().month in [1, 4, 7, 10] }}"
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🔧 Fridge/Freezer"
-        message: "Quarterly reminder: defrost and clean the fridge-freezer."
+        title: "🧊 Fridge/Freezer Defrost"
+        message: "Quarterly reminder: check if the fridge/freezer needs defrosting."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🧊 Fridge/Freezer Defrost"
+        message: "Quarterly reminder: check if the fridge/freezer needs defrosting."

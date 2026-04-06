@@ -1,0 +1,38 @@
+- id: daily_system_health_check
+  alias: Daily System Health Check
+  description: "At 09:00, check all cameras and critical devices. Notify both phones only if something is offline."
+  mode: single
+  trigger:
+    - platform: time
+      at: "09:00:00"
+  condition: []
+  action:
+    - variables:
+        offline_items: >
+          {% set ns = namespace(items=[]) %}
+          {% set critical = [
+            'camera.lucass_room_live_view', 'camera.upstairs_live_view',
+            'camera.basement_stairs_live_view', 'camera.garden_live_view',
+            'camera.lounge_live_view', 'camera.bedroom_live_view',
+            'climate.hallway', 'climate.lounge', 'climate.kitchen',
+            'climate.lucas_s_room', 'climate.bedroom', 'climate.office',
+            'alarm_control_panel.home_alarm'
+          ] %}
+          {% for dev in critical %}
+            {% if states(dev) == 'unavailable' %}
+              {% set ns.items = ns.items + [state_attr(dev, 'friendly_name') | default(dev)] %}
+            {% endif %}
+          {% endfor %}
+          {{ ns.items | join(', ') }}
+    - if:
+        - condition: template
+          value_template: "{{ offline_items | length > 0 }}"
+      then:
+        - service: notify.mobile_app_ee_iphone_16_pro_max
+          data:
+            title: "Daily Health Check — Issues Found"
+            message: "Offline: {{ offline_items }}"
+        - service: notify.mobile_app_lorettas_phone
+          data:
+            title: "Daily Health Check — Issues Found"
+            message: "Offline: {{ offline_items }}"

@@ -1,6 +1,8 @@
+# Night Time mode: turn off all hallway lights with gentle transition.
 - id: hallway_lights_off_night
   alias: "Hallway - Lights Off Night Time"
   description: "Turn off hallway spots when Night Time mode activates."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.house

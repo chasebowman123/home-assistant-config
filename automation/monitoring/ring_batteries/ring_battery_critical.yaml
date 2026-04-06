@@ -1,22 +1,29 @@
+# Ring device battery critically low (<10%): notify both phones + Alexa.
 - id: ring_battery_critical
-  alias: "Ring - Battery Critical Alert"
-  description: "Critical alert when Ring battery drops below 5%."
+  alias: "Monitoring - Ring Battery Critical"
+  description: "Alert when any Ring device battery drops below 10%."
+  mode: single
   trigger:
     - platform: numeric_state
       entity_id:
         - sensor.basement_door_battery
-        - sensor.basement_stairs_battery
-        - sensor.garden_battery
         - sensor.upstairs_battery
-      below: 5
+        - sensor.lobby_battery
+        - sensor.garden_camera_battery
+      below: 10
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🚨 Ring Battery Critical"
-        message: "{{ trigger.to_state.name }} is at {{ trigger.to_state.state }}%! Charge immediately."
+        title: "🔴 Ring Battery Critical"
+        message: "{{ trigger.to_state.name }} battery is critically low at {{ trigger.to_state.state }}%. Replace immediately."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🔴 Ring Battery Critical"
+        message: "{{ trigger.to_state.name }} battery is critically low at {{ trigger.to_state.state }}%. Replace immediately."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.lounge_echo_hub
+        message: "Alert: a Ring device battery is critically low. Please replace it."
         data:
-          push:
-            sound:
-              name: default
-              critical: 1
-              volume: 1.0
+          type: announce

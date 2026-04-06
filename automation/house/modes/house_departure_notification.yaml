@@ -1,5 +1,6 @@
 - id: house_departure_notification
   alias: "House - Departure Notification"
+  mode: single
   description: "Both phones left home. Actionable notification to select mode."
   trigger:
     - platform: state

@@ -1,0 +1,20 @@
+- id: humidifier_water_shortage
+  alias: Humidifier Water Shortage
+  description: Notify both phones when bedroom or living room humidifier water tank is empty.
+  mode: single
+  trigger:
+    - platform: state
+      entity_id:
+        - binary_sensor.bedroom_humidifier_water_shortage
+        - binary_sensor.living_room_humidifier_water_shortage
+      to: "on"
+  condition: []
+  action:
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: Humidifier Water Low
+        message: Humidifier water tank is empty. Please refill.
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: Humidifier Water Low
+        message: Humidifier water tank is empty. Please refill.

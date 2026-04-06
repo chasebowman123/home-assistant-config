@@ -1,9 +1,11 @@
+# Ankii departs: calculate hours, create calendar event, notify both phones, Alexa goodbye.
 # Nanny Departure
 # Logs Ankii's departure, calculates hours worked, creates calendar event.
 # Uses a 10-minute buffer to avoid false departures from Wi-Fi drops.
 - id: nanny_departure
   alias: "Nanny - Departure"
   description: "Log Ankii's departure and create calendar event with hours worked."
+  mode: single
   trigger:
     - platform: state
       entity_id: device_tracker.ankiis_phone
@@ -45,6 +47,16 @@
         value: "{{ (states('input_number.nanny_weekly_hours') | float + hours | float) | round(2) }}"
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "👩‍👦 Ankii Left"
-        message: "Ankii left at {{ now().strftime('%H:%M') }}. Today: {{ hours }}h. Week total: {{ (states('input_number.nanny_weekly_hours') | float + hours | float) | round(2) }}h."
-  mode: single
+        title: "👩‍👦 Ankii Departed"
+        message: "Ankii left at {{ now().strftime('%H:%M') }}. Session: {{ hours }}h."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "👩‍👦 Ankii Departed"
+        message: "Ankii left at {{ now().strftime('%H:%M') }}. Session: {{ hours }}h."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.lounge_echo_hub
+        message: "Ankii has left for today. Goodbye Ankii!"
+        data:
+          type: announce

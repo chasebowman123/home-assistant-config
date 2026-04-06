@@ -1,6 +1,8 @@
+# Bedroom Relaxing mode: spots off, Signe + TV strip warm dim.
 - id: bedroom_relaxing
   alias: "Bedroom - Relaxing"
   description: "Spots off, Signe + TV strip warm dim."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.bedroom

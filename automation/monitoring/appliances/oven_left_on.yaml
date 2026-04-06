@@ -1,20 +1,29 @@
+# Oven left on for more than 3 hours: alert both phones + Alexa.
 - id: oven_left_on
-  alias: "Appliance - Oven Left On"
-  description: "Oven drawing power for over 2 hours: safety alert."
+  alias: "Monitoring - Oven Left On"
+  description: "Alert if oven has been on for more than 3 hours."
+  mode: single
   trigger:
     - platform: numeric_state
       entity_id: sensor.oven_power
       above: 50
       for:
-        hours: 2
+        hours: 3
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🔥 Oven Still On"
-        message: "The oven has been running for over 2 hours. Is everything OK?"
+        title: "🔥 Oven Left On"
+        message: "The oven has been on for over 3 hours ({{ states('sensor.oven_power') }}W). Was that intentional?"
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🔥 Oven Left On"
+        message: "The oven has been on for over 3 hours ({{ states('sensor.oven_power') }}W). Was that intentional?"
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.echo_show_15
+          - media_player.edward_s_echo_show_21
+          - media_player.lounge_echo_hub
+        message: "Warning: the oven has been on for over 3 hours. Please check."
         data:
-          push:
-            sound:
-              name: default
-              critical: 1
-              volume: 1.0
+          type: announce

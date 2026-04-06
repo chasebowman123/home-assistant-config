@@ -1,0 +1,26 @@
+- id: loretta_working_off
+  alias: Loretta Working Off
+  description: "Deactivate Loretta Working mode — restore office heating to 15°C, turn off Edison light."
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: input_boolean.loretta_working
+      to: "off"
+  condition: []
+  action:
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.office
+      data:
+        temperature: 15
+    - service: switch.turn_off
+      target:
+        entity_id: switch.office_edison_light
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: Loretta Working
+        message: Loretta Working mode deactivated — office restored to defaults
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: Loretta Working
+        message: Loretta Working mode deactivated — office restored to defaults

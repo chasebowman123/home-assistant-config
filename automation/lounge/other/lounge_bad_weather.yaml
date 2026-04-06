@@ -1,23 +1,35 @@
+# Bad Weather boolean on: cosy lounge scene + Alexa announcement.
 - id: lounge_bad_weather
-  alias: "Lounge - Bad Weather Ambient"
-  description: "Bad weather detected: turn on piano lamp for cosy ambiance."
+  alias: "Lounge - Bad Weather Scene"
+  description: "Bad weather mode: cosy lighting, piano lamp on, Alexa announcement."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_boolean.bad_weather
       to: "on"
-  condition:
-    - condition: not
-      conditions:
-        - condition: state
-          entity_id: input_select.house
-          state: "Away"
-        - condition: state
-          entity_id: input_select.house
-          state: "All Out"
   action:
     - service: light.turn_on
       target:
         entity_id: light.lounge_piano_lamp
       data:
-        brightness_pct: 50
+        brightness_pct: 60
         color_temp_kelvin: 2200
+    - service: light.turn_on
+      target:
+        entity_id: light.lounge_spotlights
+      data:
+        brightness_pct: 40
+        color_temp_kelvin: 2700
+    - service: light.turn_on
+      target:
+        entity_id: light.hallway_spot_lights
+      data:
+        brightness_pct: 30
+        color_temp_kelvin: 2200
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.lounge_echo_hub
+        message: "Cosy mode activated for the bad weather outside."
+        data:
+          type: announce

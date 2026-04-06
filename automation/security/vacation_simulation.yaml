@@ -1,0 +1,39 @@
+- id: vacation_simulation
+  alias: Vacation Mode
+  description: Arm alarm and simulate presence when vacation mode is on.
+  mode: single
+  trigger:
+    - platform: state
+      entity_id: input_boolean.vacation_mode
+      to: "on"
+  condition: []
+  action:
+    - service: alarm_control_panel.alarm_arm_away
+      target:
+        entity_id: alarm_control_panel.home_alarm
+    - service: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: Vacation Mode Activated
+        message: Alarm armed (away) and presence simulation started
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: Vacation Mode Activated
+        message: Alarm armed (away) and presence simulation started
+    - repeat:
+        while:
+          - condition: state
+            entity_id: input_boolean.vacation_mode
+            state: "on"
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: "{{ states.light | map(attribute='entity_id') | list | random }}"
+            data:
+              brightness: "{{ range(100, 255) | random }}"
+          - delay:
+              minutes: "{{ range(15, 45) | random }}"
+          - service: light.turn_off
+            target:
+              entity_id: "{{ states.light | map(attribute='entity_id') | list | random }}"
+          - delay:
+              minutes: "{{ range(15, 45) | random }}"

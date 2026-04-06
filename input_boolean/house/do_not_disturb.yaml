@@ -1,0 +1,5 @@
+# Do Not Disturb
+# Suppress TTS announcements, doorbell sound, and non-critical notifications
+do_not_disturb:
+  name: "Do Not Disturb"
+  icon: mdi:bell-off

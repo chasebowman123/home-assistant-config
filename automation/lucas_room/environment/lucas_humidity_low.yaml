@@ -1,0 +1,18 @@
+- id: lucas_humidity_low
+  alias: Lucas Humidity Low
+  description: Turn on humidifier when Lucas room humidity drops below 45% for 15 minutes.
+  mode: single
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.lucas_room_temp_humidity
+      below: 45
+      for:
+        minutes: 15
+  condition:
+    - condition: state
+      entity_id: humidifier.living_room_humidifier_humidifier
+      state: "off"
+  action:
+    - service: humidifier.turn_on
+      target:
+        entity_id: humidifier.living_room_humidifier_humidifier

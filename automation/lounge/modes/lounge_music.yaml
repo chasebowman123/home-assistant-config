@@ -1,6 +1,8 @@
+# Lounge Music mode: piano lamp + strip at 60%, Sync Box off.
 - id: lounge_music
   alias: "Lounge - Music"
-  description: "Piano lamp + strip at 60%."
+  description: "Piano lamp + strip at 60%, Sync Box off."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.lounge

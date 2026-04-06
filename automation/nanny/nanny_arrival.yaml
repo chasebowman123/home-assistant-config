@@ -1,10 +1,12 @@
+# Ankii arrives: log time, notify both phones, Alexa greeting.
 # Nanny Arrival
-# Logs Ankii's arrival time to the nanny_hours calendar and sends notification.
-# Triggers when her phone connects to the Eero network (device_tracker goes to 'home').
-# Only fires Mon-Fri during reasonable hours to avoid false triggers.
+# Logs Ankii's arrival time and sends notifications.
+# Triggers when her phone connects to the Eero network.
+# Only fires Mon-Fri during morning hours to avoid false triggers.
 - id: nanny_arrival
   alias: "Nanny - Arrival"
   description: "Log Ankii's arrival time when her phone connects to Wi-Fi."
+  mode: single
   trigger:
     - platform: state
       entity_id: device_tracker.ankiis_phone
@@ -36,4 +38,14 @@
       data:
         title: "👩‍👦 Ankii Arrived"
         message: "Ankii connected to Wi-Fi at {{ now().strftime('%H:%M') }}."
-  mode: single
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "👩‍👦 Ankii Arrived"
+        message: "Ankii connected to Wi-Fi at {{ now().strftime('%H:%M') }}."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.lounge_echo_hub
+        message: "Ankii has arrived. Good morning!"
+        data:
+          type: announce

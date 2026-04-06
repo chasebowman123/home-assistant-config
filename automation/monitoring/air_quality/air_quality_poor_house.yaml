@@ -1,17 +1,28 @@
+# Poor house air quality: notify both phones + Alexa recommendation to ventilate.
 - id: air_quality_poor_house
-  alias: "Air Quality - PM2.5 High"
-  description: "Alert when PM2.5 readings are high."
+  alias: "Monitoring - House Air Quality Poor"
+  description: "Notify both phones when house-wide air quality is poor."
+  mode: single
   trigger:
     - platform: numeric_state
-      entity_id: sensor.core_400s_pm2_5
-      above: 50
+      entity_id: sensor.lounge_air_quality_index
+      above: 100
       for:
-        minutes: 15
+        minutes: 10
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🌬️ High PM2.5 Detected"
-        message: "PM2.5 is {{ states('sensor.core_400s_pm2_5') }}μg/m³. Consider running the air purifier on high."
-    - service: fan.turn_on
-      target:
-        entity_id: fan.core_400s
+        title: "🌬️ Poor Air Quality"
+        message: "House air quality is poor (AQI: {{ states('sensor.lounge_air_quality_index') }}). Open windows or run purifier."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "🌬️ Poor Air Quality"
+        message: "House air quality is poor (AQI: {{ states('sensor.lounge_air_quality_index') }}). Open windows or run purifier."
+    - service: notify.alexa_media
+      data:
+        target:
+          - media_player.echo_show_15
+          - media_player.lounge_echo_hub
+        message: "Air quality in the house is poor. Consider opening windows or running the air purifier."
+        data:
+          type: announce

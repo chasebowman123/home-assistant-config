@@ -1,0 +1,30 @@
+- id: office_motion_lights
+  alias: Office Motion Lights
+  description: "Office motion or door open → spotlights smooth fade to 50%, off after 5 min no motion."
+  mode: restart
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.office_motion_sensor_occupancy
+      to: "on"
+    - platform: state
+      entity_id: binary_sensor.office_hallway_door_sensor_contact
+      to: "on"
+  condition: []
+  action:
+    - service: light.turn_on
+      target:
+        entity_id: light.office_spotlights
+      data:
+        brightness_pct: 50
+        transition: 1
+    - wait_for_trigger:
+        - platform: state
+          entity_id: binary_sensor.office_motion_sensor_occupancy
+          to: "off"
+          for:
+            minutes: 5
+    - service: light.turn_off
+      target:
+        entity_id: light.office_spotlights
+      data:
+        transition: 5

@@ -1,6 +1,8 @@
+# Day Time mode: heating to home preset, clear sleeping/booleans.
 - id: house_mode_day_time
   alias: "House - Day Time Mode"
   description: "Standard daytime operation. Normal heating and lighting."
+  mode: single
   trigger:
     - platform: state
       entity_id: input_select.house

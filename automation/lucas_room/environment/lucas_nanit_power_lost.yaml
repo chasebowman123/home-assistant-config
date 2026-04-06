@@ -1,27 +1,28 @@
+# Nanit baby monitor loses power: notify both phones + Alexa alert.
 - id: lucas_nanit_power_lost
-  alias: "Lucas - Nanit Lost Power"
-  description: "Nanit power drops for 2 minutes: critical alert + Alexa."
+  alias: "Lucas Room - Nanit Power Lost"
+  description: "Alert if Nanit baby monitor loses power."
+  mode: single
   trigger:
     - platform: state
-      entity_id: binary_sensor.nanit_power
+      entity_id: binary_sensor.lucas_nanit_power
       to: "off"
       for:
         minutes: 2
   action:
     - service: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🚨 Nanit Power Lost"
-        message: "Nanit baby monitor has lost power for 2 minutes!"
-        data:
-          push:
-            sound:
-              name: default
-              critical: 1
-              volume: 1.0
+        title: "📷 Nanit Offline"
+        message: "Lucas's Nanit baby monitor has lost power or gone offline. Please check."
+    - service: notify.mobile_app_lorettas_phone
+      data:
+        title: "📷 Nanit Offline"
+        message: "Lucas's Nanit baby monitor has lost power or gone offline. Please check."
     - service: notify.alexa_media
       data:
         target:
-          - media_player.kitchen
-        message: "Warning: Nanit baby monitor has lost power."
+          - media_player.echo_show_15
+          - media_player.edward_s_echo_show_21
+        message: "Alert: Lucas's Nanit monitor has gone offline. Please check the power."
         data:
           type: announce
