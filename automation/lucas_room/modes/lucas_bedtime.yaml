@@ -1,4 +1,5 @@
 - id: lucas_room_bedtime
+  mode: restart
   alias: "Lucas - Bedtime"
   description: "All off except Go nightlight at 3%, lullaby with volume fade."
   trigger:

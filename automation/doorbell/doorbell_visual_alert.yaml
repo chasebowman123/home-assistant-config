@@ -1,4 +1,5 @@
 - id: doorbell_visual_alert
+  mode: single
   alias: "Doorbell - Visual Alert"
   description: "Flash lights and notify when doorbell rings."
   trigger:

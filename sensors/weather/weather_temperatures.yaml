@@ -1,36 +1,33 @@
+# Weather Temperature Sensors
+# Migrated to trigger-based template to use weather.get_forecasts service
+# (forecast attribute was removed in HA 2024.4)
+#
+# NOTE: These are included via sensor: !include_dir_merge_list sensors/
+# which expects the legacy platform format. Since trigger-based templates
+# must live under the top-level 'template:' key, we move the forecast
+# sensors to packages/weather/ and keep only attribute-based sensors here.
+
+# Sensors that read directly from weather entity attributes (still work fine)
 - platform: template
   sensors:
-    weather_high_temp:
-      friendly_name: "Weather High"
-      unit_of_measurement: "°C"
-      value_template: >
-        {% set forecast = state_attr('weather.forecast_home', 'forecast') %}
-        {% if forecast and forecast | length > 0 %}
-          {{ forecast[0].temperature }}
-        {% else %}
-          {{ state_attr('weather.forecast_home', 'temperature') }}
-        {% endif %}
-
-    weather_low_temp:
-      friendly_name: "Weather Low"
-      unit_of_measurement: "°C"
-      value_template: >
-        {% set forecast = state_attr('weather.forecast_home', 'forecast') %}
-        {% if forecast and forecast | length > 0 %}
-          {{ forecast[0].templow | default(forecast[0].temperature | float - 5) }}
-        {% else %}
-          {{ state_attr('weather.forecast_home', 'temperature') | float(0) | round(0) }}
-        {% endif %}
-
     weather_feels_like:
       friendly_name: "Feels Like"
       unit_of_measurement: "°C"
       value_template: >
-        {{ state_attr('weather.forecast_home', 'apparent_temperature') | default(state_attr('weather.forecast_home', 'temperature')) }}
+        {{ state_attr('weather.forecast_home', 'apparent_temperature')
+           | default(state_attr('weather.forecast_home', 'temperature'), true) }}
 
     wind_direction_compass:
       friendly_name: "Wind Direction"
       value_template: >
         {% set bearing = state_attr('weather.forecast_home', 'wind_bearing') | float(0) %}
-        {% set directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'] %}
+        {% set directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
+                             'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'] %}
         {{ directions[(((bearing + 11.25) % 360) / 22.5) | int] }}
+
+    weather_visibility_miles:
+      friendly_name: "Visibility"
+      unit_of_measurement: "mi"
+      value_template: >
+        {% set vis_km = state_attr('weather.forecast_home', 'visibility') | float(10) %}
+        {{ (vis_km * 0.621371) | round(0) }}

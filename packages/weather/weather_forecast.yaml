@@ -1,0 +1,43 @@
+# Weather Forecast Sensors (Trigger-Based)
+#
+# The forecast attribute was removed from weather entities in HA 2024.4.
+# These sensors use weather.get_forecasts service to fetch daily forecast data.
+# They update every 30 minutes and on HA start.
+
+template:
+  - trigger:
+      - platform: time_pattern
+        minutes: "/30"
+      - platform: homeassistant
+        event: start
+    action:
+      - service: weather.get_forecasts
+        data:
+          type: daily
+        target:
+          entity_id: weather.forecast_home
+        response_variable: daily_forecast
+    sensor:
+      - name: "Weather High Temp"
+        unique_id: weather_high_temp
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state: >
+          {% set forecasts = daily_forecast['weather.forecast_home'].forecast %}
+          {% if forecasts and forecasts | length > 0 %}
+            {{ forecasts[0].temperature | float(0) | round(0) }}
+          {% else %}
+            {{ state_attr('weather.forecast_home', 'temperature') | float(0) | round(0) }}
+          {% endif %}
+
+      - name: "Weather Low Temp"
+        unique_id: weather_low_temp
+        unit_of_measurement: "°C"
+        device_class: temperature
+        state: >
+          {% set forecasts = daily_forecast['weather.forecast_home'].forecast %}
+          {% if forecasts and forecasts | length > 0 %}
+            {{ forecasts[0].templow | default(forecasts[0].temperature | float(0) - 5, true) | round(0) }}
+          {% else %}
+            {{ state_attr('weather.forecast_home', 'temperature') | float(0) | round(0) }}
+          {% endif %}

@@ -352,18 +352,18 @@ house_state_chip:
     type: custom:mushroom-chips-card
     chips:
       - type: template
-        entity: input_select.house_state
+        entity: input_select.house
         icon: >
-          {% set state = states('input_select.house_state') %}
+          {% set state = states('input_select.house') %}
           {% if state == 'Away' %}mdi:home-export-outline
           {% elif state == 'Quiet' %}mdi:volume-off
           {% elif state == 'Meeting' %}mdi:video
           {% elif state == 'Night' %}mdi:weather-night
           {% elif state == 'Guest' %}mdi:account-group
           {% else %}mdi:home{% endif %}
-        content: "{{ states('input_select.house_state') }}"
+        content: "{{ states('input_select.house') }}"
         icon_color: >
-          {% set state = states('input_select.house_state') %}
+          {% set state = states('input_select.house') %}
           {% if state == 'Away' %}grey
           {% elif state == 'Quiet' %}purple
           {% elif state == 'Meeting' %}red

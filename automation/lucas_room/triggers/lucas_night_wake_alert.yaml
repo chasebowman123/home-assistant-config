@@ -1,4 +1,5 @@
 - id: lucas_night_wake_alert
+  mode: single
   alias: "Lucas - Night Wake Alert"
   description: "Lucas door opens at night: notify + flash lounge lights."
   trigger:
