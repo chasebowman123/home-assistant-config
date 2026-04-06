@@ -1,0 +1,108 @@
+##############################################################
+# Scripts — Cameras Package
+# Scripts: S10 (Show Nanit), S11 (Show Lucas)
+#
+# Target devices:
+#   media_player.lounge_fire_cube
+#   media_player.echo_show_15
+#   media_player.edward_s_echo_show_21
+#   media_player.lounge_echo_hub
+##############################################################
+
+script:
+
+  ##############################################################
+  # S10 · Show Nanit
+  # Display Nanit baby camera on all 4 display devices.
+  # Uses media_player.play_media with 1-second delays between
+  # each device call.
+  # Note: Nanit camera entity — likely camera.nanit.
+  # Confirm in Settings → Devices after Nanit integration.
+  ##############################################################
+  show_nanit:
+    alias: "Show Nanit"
+    description: "Display Nanit baby camera on all display devices"
+    sequence:
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.lounge_fire_cube
+        data:
+          media_content_id: "{{ states.camera.nanit.attributes.entity_picture }}"
+          media_content_type: image
+
+      - delay: "00:00:01"
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.echo_show_15
+        data:
+          media_content_id: "{{ states.camera.nanit.attributes.entity_picture }}"
+          media_content_type: image
+
+      - delay: "00:00:01"
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.edward_s_echo_show_21
+        data:
+          media_content_id: "{{ states.camera.nanit.attributes.entity_picture }}"
+          media_content_type: image
+
+      - delay: "00:00:01"
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.lounge_echo_hub
+        data:
+          media_content_id: "{{ states.camera.nanit.attributes.entity_picture }}"
+          media_content_type: image
+
+    mode: single
+    icon: mdi:baby-face-outline
+
+  ##############################################################
+  # S11 · Show Lucas
+  # Display camera.lucass_room_live_view_2 on all 4 display devices.
+  # Only _2 camera is used (camera 1 removed per Change #7).
+  ##############################################################
+  show_lucas:
+    alias: "Show Lucas"
+    description: "Display Lucas's room camera on all display devices"
+    sequence:
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.lounge_fire_cube
+        data:
+          media_content_id: "{{ state_attr('camera.lucass_room_live_view_2', 'entity_picture') }}"
+          media_content_type: image
+
+      - delay: "00:00:01"
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.echo_show_15
+        data:
+          media_content_id: "{{ state_attr('camera.lucass_room_live_view_2', 'entity_picture') }}"
+          media_content_type: image
+
+      - delay: "00:00:01"
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.edward_s_echo_show_21
+        data:
+          media_content_id: "{{ state_attr('camera.lucass_room_live_view_2', 'entity_picture') }}"
+          media_content_type: image
+
+      - delay: "00:00:01"
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.lounge_echo_hub
+        data:
+          media_content_id: "{{ state_attr('camera.lucass_room_live_view_2', 'entity_picture') }}"
+          media_content_type: image
+
+    mode: single
+    icon: mdi:cctv
+

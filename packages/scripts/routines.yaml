@@ -1,0 +1,274 @@
+##############################################################
+# Scripts — Routines Package
+# Scripts: S1 (Goodnight Routine), S8 (Edward Sleeptime),
+#          S9 (Morning Routine), S12 (Leaving Home)
+##############################################################
+
+script:
+
+  ##############################################################
+  # S1 · Goodnight Routine
+  # Called from dashboard button or other automations.
+  # Turns off most lights, dims hallway, activates sleepy scenes,
+  # sets Tado night temps, sets goodnight_active ON.
+  # Uses native delay: NOT browser_mod.delay
+  ##############################################################
+  goodnight_routine:
+    alias: "Goodnight Routine"
+    description: "Full household goodnight sequence"
+    sequence:
+      # 1. Run All Lights Off script
+      - action: script.all_lights_off
+
+      # 2. Activate sleepy scenes
+      - action: scene.turn_on
+        target:
+          entity_id: scene.lounge_sleepy
+
+      - action: scene.turn_on
+        target:
+          entity_id: scene.bedroom_sleepy
+
+      # 3. Dim hallway to 40%
+      - action: light.turn_on
+        target:
+          entity_id: light.hue_color_lamp_1  # Hallway Flo Table Lamp
+        data:
+          brightness_pct: 40
+          transition: 2
+
+      - action: light.turn_on
+        target:
+          entity_id: light.hue_white_light_2  # Hallway Wall Light
+        data:
+          brightness_pct: 40
+          transition: 2
+
+      # 4. Turn off kitchen lights
+      - action: light.turn_off
+        target:
+          entity_id: light.kitchen_spots  # confirm entity ID
+
+      # 5. Turn off office lights
+      - action: light.turn_off
+        target:
+          entity_id: light.office_lights  # confirm entity ID
+
+      # 6. Turn off smart switches (with FIXME notes for unavailable ones)
+      - action: switch.turn_off
+        target:
+          entity_id: switch.bubble_light         # FIXME: currently unavailable — check device
+      - action: switch.turn_off
+        target:
+          entity_id: switch.banana_light         # FIXME: currently unavailable — check device
+      - action: switch.turn_off
+        target:
+          entity_id: switch.disco_lights         # FIXME: currently unavailable — check device
+      - action: switch.turn_off
+        target:
+          entity_id: switch.bar_light            # FIXME: currently unavailable — check device
+      - action: switch.turn_off
+        target:
+          entity_id: switch.office_edison_light
+
+      # 7. Set Tado night temperatures
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lounge
+        data:
+          temperature: "{{ states('input_number.lounge_night_temperature') | float }}"
+          hvac_mode: heat
+
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.bedroom
+        data:
+          temperature: "{{ states('input_number.bedroom_night_temperature') | float }}"
+          hvac_mode: heat
+
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.kitchen
+        data:
+          temperature: "{{ states('input_number.kitchen_night_temperature') | float }}"
+          hvac_mode: heat
+
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.hallway
+        data:
+          temperature: "{{ states('input_number.hallway_night_temperature') | float }}"
+          hvac_mode: heat
+
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lucas_s_room
+        data:
+          temperature: "{{ states('input_number.lucas_s_room_night_temperature') | float }}"
+          hvac_mode: heat
+
+      # 8. Set goodnight_active ON
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.goodnight_active
+
+    mode: single
+    icon: mdi:moon-waning-crescent
+
+  ##############################################################
+  # S8 · Edward Sleeptime
+  # Turn off lounge lights, set bedroom to sleepy scene,
+  # turn off goodnight_active if it's on.
+  ##############################################################
+  edward_sleeptime:
+    alias: "Edward Sleeptime"
+    description: "Edward's personal bedtime sequence"
+    sequence:
+      # Turn off lounge lights
+      - action: light.turn_off
+        target:
+          entity_id: light.lounge_spotlights
+
+      # Set bedroom to sleepy scene
+      - action: scene.turn_on
+        target:
+          entity_id: scene.bedroom_sleepy
+
+      # Turn off goodnight_active if it's currently on
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.goodnight_active
+                state: "on"
+            sequence:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.goodnight_active
+
+    mode: single
+    icon: mdi:sleep
+
+  ##############################################################
+  # S9 · Morning Routine
+  # Called by Lucas Is Up automation (#28) and dashboard.
+  # Activates Lucas's room arise scene, turns off lucas_sleeping,
+  # plays Spotify on Lucas echo show, notifies Edward.
+  # Note: media_player.kitchen does NOT exist — excluded.
+  ##############################################################
+  morning_routine:
+    alias: "Morning Routine"
+    description: "Household morning routine — Lucas wake-up and household start"
+    sequence:
+      # 1. Activate Lucas's room arise scene
+      - action: scene.turn_on
+        target:
+          entity_id: scene.lucass_room_arise
+
+      # 2. Turn off lucas_sleeping
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.lucas_sleeping
+
+      # 3. Set Lucas Echo Show volume and play morning Spotify
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          volume_level: 0.4
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          media_content_id: "spotify:playlist:37i9dQZF1DX0zmsulfyDdq"  # Disney Lullaby / morning playlist
+          media_content_type: music
+
+      # 4. Notify Edward that Lucas is up
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Good Morning!"
+          message: >-
+            Lucas's morning routine started at {{ now().strftime('%H:%M') }}.
+
+    mode: single
+    icon: mdi:weather-sunny
+
+  ##############################################################
+  # S12 · Leaving Home
+  # Turn off all lights, set Tado to away temps,
+  # lock doors if available, set house mode to Away.
+  ##############################################################
+  leaving_home:
+    alias: "Leaving Home"
+    description: "Departure sequence — turn off lights, set away temps, lock up"
+    sequence:
+      # 1. Turn off all lights
+      - action: script.all_lights_off
+
+      # 2. Set all Tado zones to away temperature
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lounge
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.bedroom
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.kitchen
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.hallway
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lucas_s_room
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.office
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+
+      # 3. Set house mode to Away
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.house_mode
+        data:
+          option: All Out
+
+      # 4. Turn off smart switches
+      - action: switch.turn_off
+        target:
+          entity_id:
+            - switch.office_edison_light
+
+      # 5. Send confirmation notification
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Leaving Home"
+          message: "House secured. Lights off, Tado set to away temperature."
+          data:
+            push:
+              sound: default
+
+    mode: single
+    icon: mdi:home-export-outline

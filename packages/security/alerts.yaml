@@ -1,0 +1,202 @@
+##############################################################
+# Security Alerts Package
+# Automations: #34, #35, #36, #37, #38
+##############################################################
+
+automation:
+
+  ##############################################################
+  # #34 · Doorbell Alert (Unified)
+  # Ring doorbell event → notification with camera snapshot
+  # Entity: camera.basement_door (front door Ring camera)
+  ##############################################################
+  - id: "doorbell_unified"
+    alias: "Doorbell Alert"
+    description: "Ring doorbell pressed — send notification with snapshot"
+    triggers:
+      - trigger: event
+        event_type: ring_doorbell
+      # Also handle via device trigger if Ring integration provides it
+      - trigger: state
+        entity_id: binary_sensor.basement_door  # Ring doorbell binary sensor
+        to: "on"
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Doorbell"
+          message: "Someone is at the door!"
+          data:
+            image: /api/camera_proxy/camera.basement_door_snapshot
+            push:
+              sound: default
+              category: camera
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Doorbell"
+                  message: "Someone is at the door!"
+                  data:
+                    image: /api/camera_proxy/camera.basement_door_snapshot
+    mode: single
+
+  ##############################################################
+  # #35 · Stairs Camera Motion
+  # binary_sensor.upstairs_motion ON → notification
+  ##############################################################
+  - id: "stairs_camera_motion"
+    alias: "Stairs Camera Motion Alert"
+    description: "Motion detected on upstairs/stairs camera"
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.upstairs_motion
+        to: "on"
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Stairs Motion"
+          message: "Motion detected on the upstairs camera."
+          data:
+            image: /api/camera_proxy/camera.upstairs_snapshot
+            push:
+              sound: default
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Stairs Motion"
+                  message: "Motion detected on the upstairs camera."
+                  data:
+                    image: /api/camera_proxy/camera.upstairs_snapshot
+    mode: single
+
+  ##############################################################
+  # #36 · Camera Offline Alert
+  # Any camera entity goes unavailable for 5 min → notification
+  ##############################################################
+  - id: "camera_offline_alert"
+    alias: "Camera Offline Alert"
+    description: "Alert when any camera goes unavailable for 5 minutes"
+    triggers:
+      - trigger: state
+        entity_id:
+          - camera.basement_door
+          - camera.basement_door_live_view
+          - camera.basement_stairs_live_view
+          - camera.bedroom_live_view
+          - camera.bedroom_live_view_2
+          - camera.garden_live_view
+          - camera.lounge_facing_tv_live_view
+          - camera.lounge_live_view
+          - camera.lucass_room_live_view_2
+          - camera.upstairs_live_view
+        to: "unavailable"
+        for:
+          minutes: 5
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Camera Offline"
+          message: >-
+            Camera {{ trigger.to_state.attributes.friendly_name | default(trigger.entity_id) }}
+            has been offline for 5 minutes.
+          data:
+            push:
+              sound: default
+    mode: queued
+    max: 10
+
+  ##############################################################
+  # #37 · Water Leak Kitchen
+  # PLACEHOLDER entity — binary_sensor.kitchen_water_leak
+  # ⚠ TODO: Verify actual entity ID in Settings → Devices
+  ##############################################################
+  - id: "water_leak_kitchen"
+    alias: "Water Leak Kitchen"
+    description: "URGENT alert for kitchen water leak sensor"
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.kitchen_water_leak  # ⚠ PLACEHOLDER — verify entity ID after re-pairing sensor
+        to: "on"
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "WATER LEAK — KITCHEN"
+          message: "Water leak detected in the kitchen! Check immediately."
+          data:
+            push:
+              sound:
+                name: default
+                critical: 1
+                volume: 1.0
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "WATER LEAK — KITCHEN"
+                  message: "Water leak detected in the kitchen! Check immediately."
+                  data:
+                    push:
+                      sound:
+                        name: default
+                        critical: 1
+                        volume: 1.0
+    mode: single
+
+  ##############################################################
+  # #38 · Water Leak Laundry
+  # PLACEHOLDER entity — binary_sensor.laundry_water_leak
+  # ⚠ TODO: Verify actual entity ID in Settings → Devices
+  ##############################################################
+  - id: "water_leak_laundry"
+    alias: "Water Leak Laundry"
+    description: "URGENT alert for laundry room water leak sensor"
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.laundry_water_leak  # ⚠ PLACEHOLDER — verify entity ID after re-pairing sensor
+        to: "on"
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "WATER LEAK — LAUNDRY"
+          message: "Water leak detected in the laundry room! Check immediately."
+          data:
+            push:
+              sound:
+                name: default
+                critical: 1
+                volume: 1.0
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "WATER LEAK — LAUNDRY"
+                  message: "Water leak detected in the laundry room! Check immediately."
+                  data:
+                    push:
+                      sound:
+                        name: default
+                        critical: 1
+                        volume: 1.0
+    mode: single

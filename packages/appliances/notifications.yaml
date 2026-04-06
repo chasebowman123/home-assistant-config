@@ -1,0 +1,299 @@
+##############################################################
+# Appliances Notifications Package
+# Automations: #39–#45
+#
+# Power sensors used:
+#   #39 Washing Machine: sensor.washing_machine_power
+#   #40 Tumble Dryer:    sensor.tumble_dryer_power
+#   #41 Dishwasher:      sensor.dishwasher_programme_finished (Miele integration)
+#   #42 Dishwasher Salt: sensor.dishwasher_salt_nearly_empty
+#   #43 Oven:            PLACEHOLDER — no oven entity in entity reference
+#   #44 Fridge:          PLACEHOLDER — no fridge entity in entity reference
+#   #45 Humidifier/Air Filter: sensor.bedroom_humidifier_wick_life
+#                              sensor.unnamed_p304m_air_filter_current_consumption
+##############################################################
+
+automation:
+
+  ##############################################################
+  # #39 · Washing Machine Done
+  # Power drops below 5W after being above 10W for 5 min
+  ##############################################################
+  - id: "washing_machine_done"
+    alias: "Washing Machine Done"
+    description: >-
+      Detects washing machine cycle completion by power drop.
+      Triggers when power drops below 5W after sustained high draw.
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.washing_machine_power
+        below: 5
+        for:
+          minutes: 2
+    conditions:
+      # Only alert if the machine was actually running (power was above 10W at some point)
+      - condition: template
+        value_template: >-
+          {{ trigger.from_state is not none and
+             trigger.from_state.state not in ['unavailable', 'unknown'] }}
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Washing Machine Finished"
+          message: "The washing machine has finished its cycle."
+          data:
+            push:
+              sound: default
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Washing Machine Finished"
+                  message: "The washing machine has finished its cycle."
+    mode: single
+
+  ##############################################################
+  # #40 · Tumble Dryer Done
+  # Power drops below 5W after being above 10W for 5 min
+  ##############################################################
+  - id: "tumble_dryer_done"
+    alias: "Tumble Dryer Done"
+    description: >-
+      Detects tumble dryer cycle completion by power drop.
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.tumble_dryer_power
+        below: 5
+        for:
+          minutes: 2
+    conditions:
+      - condition: template
+        value_template: >-
+          {{ trigger.from_state is not none and
+             trigger.from_state.state not in ['unavailable', 'unknown'] }}
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Tumble Dryer Finished"
+          message: "The tumble dryer has finished its cycle."
+          data:
+            push:
+              sound: default
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Tumble Dryer Finished"
+                  message: "The tumble dryer has finished its cycle."
+    mode: single
+
+  ##############################################################
+  # #41 · Dishwasher Done
+  # Uses Miele integration sensor.dishwasher_programme_finished
+  # (better signal than power drop for this appliance)
+  ##############################################################
+  - id: "dishwasher_done"
+    alias: "Dishwasher Done"
+    description: "Notify when the dishwasher programme finishes (Miele sensor)"
+    triggers:
+      - trigger: state
+        entity_id: sensor.dishwasher_programme_finished
+        to: "on"
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Dishwasher Finished"
+          message: "The dishwasher has finished its programme."
+          data:
+            push:
+              sound: default
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Dishwasher Finished"
+                  message: "The dishwasher has finished its programme."
+    mode: single
+
+  ##############################################################
+  # #42 · Dishwasher Salt Low
+  # sensor.dishwasher_salt_nearly_empty → notification
+  ##############################################################
+  - id: "dishwasher_salt_low"
+    alias: "Dishwasher Salt Low"
+    description: "Alert when dishwasher salt is nearly empty"
+    triggers:
+      - trigger: state
+        entity_id: sensor.dishwasher_salt_nearly_empty
+        to: "present"
+      # Also catch if it changes to a truthy value
+      - trigger: template
+        value_template: >-
+          {{ states('sensor.dishwasher_salt_nearly_empty') not in ['off', 'absent', 'unavailable', 'unknown'] and
+             states('sensor.dishwasher_salt_nearly_empty') == 'present' }}
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Dishwasher Salt Low"
+          message: "The dishwasher needs salt — please refill."
+          data:
+            push:
+              sound: default
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Dishwasher Salt Low"
+                  message: "The dishwasher needs salt — please refill."
+    mode: single
+
+  ##############################################################
+  # #43 · Oven Alert
+  # ⚠ PLACEHOLDER — no oven entity found in entity reference.
+  # TODO: Add oven entity after integration/sensor is set up.
+  ##############################################################
+  - id: "oven_alert"
+    alias: "Oven Alert"
+    description: >-
+      PLACEHOLDER — alert when oven temperature exceeds threshold.
+      ⚠ TODO: Replace binary_sensor.oven_door_open with correct oven entity ID.
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.oven_alert  # ⚠ PLACEHOLDER — no oven entity confirmed in entity reference
+        to: "on"
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Oven Alert"
+          message: "Oven alert triggered — please check the oven."
+          data:
+            push:
+              sound: default
+    mode: single
+
+  ##############################################################
+  # #44 · Fridge Alert
+  # ⚠ PLACEHOLDER — no fridge entity found in entity reference.
+  # TODO: Add fridge temp sensor after integration is set up.
+  ##############################################################
+  - id: "fridge_alert"
+    alias: "Fridge Alert"
+    description: >-
+      PLACEHOLDER — alert when fridge temperature exceeds safe threshold.
+      ⚠ TODO: Replace with correct fridge temperature sensor entity ID.
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.fridge_temperature  # ⚠ PLACEHOLDER — verify entity ID
+        above: 8
+        for:
+          minutes: 10
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Fridge Temperature Alert"
+          message: >-
+            Fridge temperature is above safe threshold:
+            {{ states('sensor.fridge_temperature') }}°C.
+          data:
+            push:
+              sound:
+                name: default
+                critical: 1
+                volume: 1.0
+    mode: single
+
+  ##############################################################
+  # #45 · Humidifier Water Low / Air Filter Replace
+  # Bedroom humidifier wick life low → replace notification
+  # Lucas room air filter — alert based on consumption anomaly
+  ##############################################################
+  - id: "humidifier_wick_low"
+    alias: "Humidifier Wick Life Low"
+    description: "Alert when Lucas room humidifier wick life drops below 10%"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.bedroom_humidifier_wick_life
+        below: 10
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Humidifier — Replace Wick"
+          message: >-
+            Lucas's room humidifier wick life is
+            {{ states('sensor.bedroom_humidifier_wick_life') }}% — time to replace.
+          data:
+            push:
+              sound: default
+    mode: single
+
+  - id: "living_room_humidifier_wick_low"
+    alias: "Living Room Humidifier Wick Life Low"
+    description: "Alert when living room humidifier wick life drops below 10%"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.living_room_humidifier_wick_life
+        below: 10
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Living Room Humidifier — Replace Wick"
+          message: >-
+            Living room humidifier wick life is
+            {{ states('sensor.living_room_humidifier_wick_life') }}% — time to replace.
+          data:
+            push:
+              sound: default
+    mode: single
+
+  - id: "air_filter_replace"
+    alias: "Lucas Air Filter Replace"
+    description: >-
+      Alert when Lucas's room air filter (Levoit) consumption sensor indicates
+      filter needs replacement. Currently monitors based on usage patterns.
+      ⚠ TODO: Confirm correct filter-change sensor if integration exposes one.
+    triggers:
+      # The air filter is connected via Tapo strip — monitor for zero consumption
+      # which may indicate the device has stopped (blocked filter / off)
+      - trigger: numeric_state
+        entity_id: sensor.unnamed_p304m_air_filter_current_consumption
+        below: 0.1
+        for:
+          hours: 4
+    conditions:
+      # Only alert during daytime hours (not expected to be off overnight)
+      - condition: time
+        after: "08:00:00"
+        before: "22:00:00"
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Air Filter — Check Required"
+          message: >-
+            Lucas's room air filter shows no power draw.
+            Check if filter needs replacing or device needs attention.
+          data:
+            push:
+              sound: default
+    mode: single

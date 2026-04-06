@@ -1,0 +1,203 @@
+##############################################################
+# Lucas Alerts Package
+# Automations: #25, #26, #27
+##############################################################
+
+automation:
+
+  ##############################################################
+  # #25 · Lucas Door Night Alert
+  # Per master plan v6: Trigger = lucas_sleeping turns ON,
+  # delay 1 min, then enable door monitoring automation.
+  # The actual door-open alert is handled by lucas_door_monitoring.
+  ##############################################################
+  - id: "lucas_door_night_alert"
+    alias: "Lucas Door Night Alert"
+    description: >-
+      When lucas_sleeping turns ON, wait 1 minute then enable the
+      door monitoring automation (prevents false alerts during bedtime routine).
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.lucas_sleeping
+        to: "on"
+    conditions: []
+    actions:
+      - delay: "00:01:00"
+      - action: automation.turn_on
+        target:
+          entity_id: automation.lucas_door_monitoring
+    mode: single
+
+  # The actual door sensor watcher — enabled by the above automation
+  - id: "lucas_door_monitoring"
+    alias: "Lucas Door Monitoring"
+    description: >-
+      When Lucas's room door opens while he's sleeping, flash lounge lights
+      red/blue 4 times then restore via scene snapshot.
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.lucas_room_door_contact
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.lucas_sleeping
+        state: "on"
+    actions:
+      # Save current lounge light state
+      - action: scene.create
+        data:
+          scene_id: lucas_door_alert_snapshot
+          snapshot_entities:
+            - light.lounge_spotlights
+      # Flash red/blue 4 times
+      - repeat:
+          count: 4
+          sequence:
+            - action: light.turn_on
+              target:
+                entity_id: light.lounge_spotlights
+              data:
+                rgb_color: [255, 0, 0]
+                brightness_pct: 100
+                transition: 0
+            - delay: "00:00:00.5"
+            - action: light.turn_on
+              target:
+                entity_id: light.lounge_spotlights
+              data:
+                rgb_color: [0, 0, 255]
+                brightness_pct: 100
+                transition: 0
+            - delay: "00:00:00.5"
+      # Restore previous lounge state
+      - action: scene.turn_on
+        target:
+          entity_id: scene.lucas_door_alert_snapshot
+      # Notify Edward
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Lucas Door Alert"
+          message: "Lucas's room door opened while he's sleeping!"
+          data:
+            push:
+              sound:
+                name: default
+                critical: 1
+                volume: 1.0
+      # Disable this automation until next sleep cycle
+      - action: automation.turn_off
+        target:
+          entity_id: automation.lucas_door_monitoring
+    mode: single
+
+  ##############################################################
+  # #26 · Edward Bedroom Lucas Door Alert
+  # Door opens + edward_bedroom=on → flash bedroom AND lounge
+  # lights red/blue 4 times, then restore.
+  ##############################################################
+  - id: "edward_bedroom_lucas_door_alert"
+    alias: "Edward Bedroom Lucas Door Alert"
+    description: >-
+      When Lucas's door opens while Edward's bedroom flag is on,
+      flash bedroom and lounge lights red/blue 4 times then restore.
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.lucas_room_door_contact
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.edward_bedroom
+        state: "on"
+    actions:
+      # Save current state of both bedroom and lounge lights
+      - action: scene.create
+        data:
+          scene_id: edward_bedroom_door_alert_snapshot
+          snapshot_entities:
+            - light.lounge_spotlights
+      # Flash red/blue 4 times on both light groups
+      - repeat:
+          count: 4
+          sequence:
+            - action: light.turn_on
+              target:
+                entity_id:
+                  - light.lounge_spotlights
+              data:
+                rgb_color: [255, 0, 0]
+                brightness_pct: 100
+                transition: 0
+            - delay: "00:00:00.5"
+            - action: light.turn_on
+              target:
+                entity_id:
+                  - light.lounge_spotlights
+              data:
+                rgb_color: [0, 0, 255]
+                brightness_pct: 100
+                transition: 0
+            - delay: "00:00:00.5"
+      # Restore previous state
+      - action: scene.turn_on
+        target:
+          entity_id: scene.edward_bedroom_door_alert_snapshot
+      # Notify Edward
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Lucas Door Alert"
+          message: "Lucas's room door just opened!"
+          data:
+            push:
+              sound:
+                name: default
+                critical: 1
+                volume: 1.0
+    mode: single
+
+  ##############################################################
+  # #27 · Lucas Wake Notification
+  # Motion sensor ON + time 05:00-09:00 + lucas_sleeping=on
+  # → notify Edward, turn off lucas_sleeping
+  ##############################################################
+  - id: "lucas_wake_notification"
+    alias: "Lucas Wake Notification"
+    description: >-
+      Between 05:00-09:00, if Lucas's room motion detects movement
+      and lucas_sleeping is on, notify Edward and turn off sleeping flag.
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.lucass_room_motion_2
+        to: "on"
+    conditions:
+      - condition: time
+        after: "05:00:00"
+        before: "09:00:00"
+      - condition: state
+        entity_id: input_boolean.lucas_sleeping
+        state: "on"
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Lucas is Awake"
+          message: >-
+            Motion detected in Lucas's room at
+            {{ now().strftime('%H:%M') }}.
+          data:
+            push:
+              sound: default
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Lucas is Awake"
+                  message: >-
+                    Motion detected in Lucas's room at
+                    {{ now().strftime('%H:%M') }}.
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.lucas_sleeping
+    mode: single

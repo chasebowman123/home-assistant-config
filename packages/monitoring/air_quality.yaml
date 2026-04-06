@@ -1,0 +1,470 @@
+##############################################################
+# Monitoring — Air Quality Package
+# Automation: #33
+#
+# Monitors:
+#   Office AQ Monitor
+#   Lucas's Room AQ Monitor
+#   Loretta's Bedside AQ (bedroom)
+#   Levoit Core 400S Air Purifier (PM2.5 only)
+#
+# Note: AQ index scale = 0-100 where HIGHER = BETTER.
+#   Alert threshold: AQ index < 50 (poor air quality)
+#
+# Edward's bedside monitor is fully unavailable — excluded.
+##############################################################
+
+automation:
+
+  ##############################################################
+  # #33a · Office Air Quality Alerts
+  ##############################################################
+  - id: "air_quality_office"
+    alias: "Office Air Quality Alert"
+    description: "Alert when Office air quality sensors exceed thresholds"
+    triggers:
+      # AQI drops below 50 (poor quality — higher is better on this scale)
+      - trigger: numeric_state
+        entity_id: sensor.office_air_quality_monitor_air_quality_index
+        below: 50
+        id: "office_aqi"
+        for:
+          minutes: 5
+      # PM2.5 above 25 µg/m³
+      - trigger: numeric_state
+        entity_id: sensor.office_air_quality_monitor_pm2_5
+        above: 25
+        id: "office_pm25"
+        for:
+          minutes: 5
+      # VOC Index above 50
+      - trigger: numeric_state
+        entity_id: sensor.office_air_quality_monitor_volatile_organic_compounds_index
+        above: 50
+        id: "office_voc"
+        for:
+          minutes: 5
+      # CO above 5 ppm — CRITICAL
+      - trigger: numeric_state
+        entity_id: sensor.office_air_quality_monitor_carbon_monoxide_2
+        above: 5
+        id: "office_co"
+      # Humidity comfort alerts
+      - trigger: numeric_state
+        entity_id: sensor.office_air_quality_monitor_humidity
+        below: 30
+        id: "office_humidity_low"
+        for:
+          minutes: 10
+      - trigger: numeric_state
+        entity_id: sensor.office_air_quality_monitor_humidity
+        above: 60
+        id: "office_humidity_high"
+        for:
+          minutes: 10
+    conditions: []
+    actions:
+      - choose:
+          # CRITICAL: Carbon Monoxide
+          - conditions:
+              - condition: trigger
+                id: "office_co"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "CARBON MONOXIDE ALERT — Office"
+                  message: >-
+                    CO level: {{ states('sensor.office_air_quality_monitor_carbon_monoxide_2') }} ppm
+                    — OPEN WINDOWS AND EVACUATE
+                  data:
+                    push:
+                      sound:
+                        name: default
+                        critical: 1
+                        volume: 1.0
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.loretta_notifications
+                        state: "on"
+                    sequence:
+                      - action: notify.mobile_app_lorettas_phone
+                        data:
+                          title: "CARBON MONOXIDE ALERT — Office"
+                          message: >-
+                            CO level: {{ states('sensor.office_air_quality_monitor_carbon_monoxide_2') }} ppm
+                            — OPEN WINDOWS AND EVACUATE
+                          data:
+                            push:
+                              sound:
+                                name: default
+                                critical: 1
+                                volume: 1.0
+          # AQI Low
+          - conditions:
+              - condition: trigger
+                id: "office_aqi"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Office"
+                  message: >-
+                    Air Quality Index: {{ states('sensor.office_air_quality_monitor_air_quality_index') }}
+                    (below 50 threshold). Check ventilation or air purifier.
+                  data:
+                    push:
+                      sound: default
+          # PM2.5 High
+          - conditions:
+              - condition: trigger
+                id: "office_pm25"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Office"
+                  message: >-
+                    PM2.5: {{ states('sensor.office_air_quality_monitor_pm2_5') }} µg/m³
+                    (above 25 threshold). Check ventilation or air purifier.
+                  data:
+                    push:
+                      sound: default
+          # VOC High
+          - conditions:
+              - condition: trigger
+                id: "office_voc"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Office"
+                  message: >-
+                    VOC Index: {{ states('sensor.office_air_quality_monitor_volatile_organic_compounds_index') }}
+                    (above 50 threshold). Check ventilation or air purifier.
+                  data:
+                    push:
+                      sound: default
+          # Humidity Low
+          - conditions:
+              - condition: trigger
+                id: "office_humidity_low"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Office"
+                  message: >-
+                    Humidity: {{ states('sensor.office_air_quality_monitor_humidity') }}%
+                    (below 30% — dry air). Consider humidifier.
+          # Humidity High
+          - conditions:
+              - condition: trigger
+                id: "office_humidity_high"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Office"
+                  message: >-
+                    Humidity: {{ states('sensor.office_air_quality_monitor_humidity') }}%
+                    (above 60% — high humidity). Check ventilation.
+    mode: queued
+    max: 5
+
+  ##############################################################
+  # #33b · Lucas's Room Air Quality Alerts
+  ##############################################################
+  - id: "air_quality_lucas"
+    alias: "Lucas's Room Air Quality Alert"
+    description: "Alert when Lucas's room air quality sensors exceed thresholds"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.lucass_room_air_quality_monitor_air_quality_index
+        below: 50
+        id: "lucas_aqi"
+        for:
+          minutes: 5
+      - trigger: numeric_state
+        entity_id: sensor.lucass_room_air_quality_monitor_pm2_5
+        above: 25
+        id: "lucas_pm25"
+        for:
+          minutes: 5
+      - trigger: numeric_state
+        entity_id: sensor.lucass_room_air_quality_monitor_volatile_organic_compounds_index
+        above: 50
+        id: "lucas_voc"
+        for:
+          minutes: 5
+      - trigger: numeric_state
+        entity_id: sensor.lucass_room_air_quality_monitor_carbon_monoxide_2
+        above: 5
+        id: "lucas_co"
+      - trigger: numeric_state
+        entity_id: sensor.lucass_room_air_quality_monitor_humidity
+        below: 30
+        id: "lucas_humidity_low"
+        for:
+          minutes: 10
+      - trigger: numeric_state
+        entity_id: sensor.lucass_room_air_quality_monitor_humidity
+        above: 60
+        id: "lucas_humidity_high"
+        for:
+          minutes: 10
+    conditions: []
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: "lucas_co"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "CARBON MONOXIDE ALERT — Lucas's Room"
+                  message: >-
+                    CO level: {{ states('sensor.lucass_room_air_quality_monitor_carbon_monoxide_2') }} ppm
+                    — OPEN WINDOWS AND EVACUATE
+                  data:
+                    push:
+                      sound:
+                        name: default
+                        critical: 1
+                        volume: 1.0
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.loretta_notifications
+                        state: "on"
+                    sequence:
+                      - action: notify.mobile_app_lorettas_phone
+                        data:
+                          title: "CARBON MONOXIDE ALERT — Lucas's Room"
+                          message: >-
+                            CO level: {{ states('sensor.lucass_room_air_quality_monitor_carbon_monoxide_2') }} ppm
+                            — OPEN WINDOWS AND EVACUATE
+                          data:
+                            push:
+                              sound:
+                                name: default
+                                critical: 1
+                                volume: 1.0
+          - conditions:
+              - condition: trigger
+                id: "lucas_aqi"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Lucas's Room"
+                  message: >-
+                    Air Quality Index: {{ states('sensor.lucass_room_air_quality_monitor_air_quality_index') }}
+                    (below 50 threshold). Check ventilation or air purifier.
+                  data:
+                    push:
+                      sound: default
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.loretta_notifications
+                        state: "on"
+                    sequence:
+                      - action: notify.mobile_app_lorettas_phone
+                        data:
+                          title: "Air Quality Alert — Lucas's Room"
+                          message: >-
+                            Air Quality Index: {{ states('sensor.lucass_room_air_quality_monitor_air_quality_index') }}
+                            (below 50 threshold). Check ventilation.
+          - conditions:
+              - condition: trigger
+                id: "lucas_pm25"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Lucas's Room"
+                  message: >-
+                    PM2.5: {{ states('sensor.lucass_room_air_quality_monitor_pm2_5') }} µg/m³
+                    (above 25 threshold). Check ventilation or air purifier.
+          - conditions:
+              - condition: trigger
+                id: "lucas_voc"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Lucas's Room"
+                  message: >-
+                    VOC Index: {{ states('sensor.lucass_room_air_quality_monitor_volatile_organic_compounds_index') }}
+                    (above 50 threshold). Check ventilation.
+          - conditions:
+              - condition: trigger
+                id: "lucas_humidity_low"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Lucas's Room"
+                  message: >-
+                    Humidity: {{ states('sensor.lucass_room_air_quality_monitor_humidity') }}%
+                    (below 30% — very dry). Consider humidifier.
+          - conditions:
+              - condition: trigger
+                id: "lucas_humidity_high"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Lucas's Room"
+                  message: >-
+                    Humidity: {{ states('sensor.lucass_room_air_quality_monitor_humidity') }}%
+                    (above 60% — high humidity).
+    mode: queued
+    max: 5
+
+  ##############################################################
+  # #33c · Bedroom (Loretta's Bedside) Air Quality Alerts
+  ##############################################################
+  - id: "air_quality_bedroom"
+    alias: "Bedroom Air Quality Alert"
+    description: "Alert when Loretta's bedside air quality sensors exceed thresholds"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.lorettas_bedside_air_quality_air_quality_index
+        below: 50
+        id: "bedroom_aqi"
+        for:
+          minutes: 5
+      - trigger: numeric_state
+        entity_id: sensor.lorettas_bedside_air_quality_pm2_5
+        above: 25
+        id: "bedroom_pm25"
+        for:
+          minutes: 5
+      - trigger: numeric_state
+        entity_id: sensor.lorettas_bedside_air_quality_volatile_organic_compounds_index
+        above: 50
+        id: "bedroom_voc"
+        for:
+          minutes: 5
+      - trigger: numeric_state
+        entity_id: sensor.lorettas_bedside_air_quality_carbon_monoxide_2
+        above: 5
+        id: "bedroom_co"
+      - trigger: numeric_state
+        entity_id: sensor.lorettas_bedside_air_quality_humidity
+        below: 30
+        id: "bedroom_humidity_low"
+        for:
+          minutes: 10
+      - trigger: numeric_state
+        entity_id: sensor.lorettas_bedside_air_quality_humidity
+        above: 60
+        id: "bedroom_humidity_high"
+        for:
+          minutes: 10
+    conditions: []
+    actions:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: "bedroom_co"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "CARBON MONOXIDE ALERT — Bedroom"
+                  message: >-
+                    CO level: {{ states('sensor.lorettas_bedside_air_quality_carbon_monoxide_2') }} ppm
+                    — OPEN WINDOWS AND EVACUATE
+                  data:
+                    push:
+                      sound:
+                        name: default
+                        critical: 1
+                        volume: 1.0
+              - choose:
+                  - conditions:
+                      - condition: state
+                        entity_id: input_boolean.loretta_notifications
+                        state: "on"
+                    sequence:
+                      - action: notify.mobile_app_lorettas_phone
+                        data:
+                          title: "CARBON MONOXIDE ALERT — Bedroom"
+                          message: >-
+                            CO level: {{ states('sensor.lorettas_bedside_air_quality_carbon_monoxide_2') }} ppm
+                            — OPEN WINDOWS AND EVACUATE
+                          data:
+                            push:
+                              sound:
+                                name: default
+                                critical: 1
+                                volume: 1.0
+          - conditions:
+              - condition: trigger
+                id: "bedroom_aqi"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Bedroom"
+                  message: >-
+                    Air Quality Index: {{ states('sensor.lorettas_bedside_air_quality_air_quality_index') }}
+                    (below 50 threshold). Check ventilation.
+          - conditions:
+              - condition: trigger
+                id: "bedroom_pm25"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Bedroom"
+                  message: >-
+                    PM2.5: {{ states('sensor.lorettas_bedside_air_quality_pm2_5') }} µg/m³
+                    (above 25 threshold).
+          - conditions:
+              - condition: trigger
+                id: "bedroom_voc"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Bedroom"
+                  message: >-
+                    VOC Index: {{ states('sensor.lorettas_bedside_air_quality_volatile_organic_compounds_index') }}
+                    (above 50 threshold).
+          - conditions:
+              - condition: trigger
+                id: "bedroom_humidity_low"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Bedroom"
+                  message: >-
+                    Humidity: {{ states('sensor.lorettas_bedside_air_quality_humidity') }}%
+                    (below 30% — very dry).
+          - conditions:
+              - condition: trigger
+                id: "bedroom_humidity_high"
+            sequence:
+              - action: notify.mobile_app_ee_iphone_16_pro_max
+                data:
+                  title: "Air Quality Alert — Bedroom"
+                  message: >-
+                    Humidity: {{ states('sensor.lorettas_bedside_air_quality_humidity') }}%
+                    (above 60%).
+    mode: queued
+    max: 5
+
+  ##############################################################
+  # #33d · Levoit Core 400S PM2.5 Alert
+  ##############################################################
+  - id: "air_quality_levoit"
+    alias: "Levoit Air Purifier PM2.5 Alert"
+    description: "Alert when Levoit Core 400S PM2.5 reading exceeds 25 µg/m³"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.core_400s_pm2_5
+        above: 25
+        for:
+          minutes: 5
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Air Quality Alert — Levoit Purifier"
+          message: >-
+            Levoit Core 400S PM2.5: {{ states('sensor.core_400s_pm2_5') }} µg/m³
+            (above 25 threshold). Check ventilation.
+          data:
+            push:
+              sound: default
+    mode: single

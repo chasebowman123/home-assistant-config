@@ -1,0 +1,34 @@
+##############################################################
+# Scripts — Lights Package
+# Script: S2 (All Lights Off)
+##############################################################
+
+script:
+
+  ##############################################################
+  # S2 · All Lights Off
+  # Universal off — turns off every light group in the house
+  # and all smart switches.
+  ##############################################################
+  all_lights_off:
+    alias: "All Lights Off"
+    description: "Turn off all lights and smart switches throughout the house"
+    sequence:
+      # Turn off all lights via the all_lights group
+      - action: light.turn_off
+        target:
+          entity_id: light.all_lights
+
+      # Turn off smart switches
+      - action: switch.turn_off
+        target:
+          entity_id:
+            - switch.bubble_light          # FIXME: currently unavailable — check device
+            - switch.banana_light          # FIXME: currently unavailable — check device
+            - switch.disco_lights          # FIXME: currently unavailable — check device
+            - switch.bar_light             # FIXME: currently unavailable — check device
+            - switch.office_edison_light
+            - switch.cloud_lamp            # FIXME: currently unavailable — check device
+
+    mode: single
+    icon: mdi:lightbulb-off

@@ -1,0 +1,219 @@
+# ============================================================
+# Package: climate/tado.yaml
+# Part of Edward's HA Fresh Start Build — Master Plan v4
+# Automations: #19 Daytime Heating, #20 Night Setback,
+#              #21 Office Heating Lock
+# Also includes: Sensibo AC (climate.lounge_ac) config reference
+#
+# ⚠ NOTE: All Tado climate entities are currently UNAVAILABLE
+# due to an expired auth token. Before these automations work:
+#   Settings → Integrations → Tado → Reconfigure (enter credentials)
+# ============================================================
+
+automation:
+
+  # ----------------------------------------------------------
+  # #19 · Daytime Heating Schedule
+  # Trigger: 06:30 daily
+  # Actions: set all Tado zones to their day temperature
+  #          from existing input_number helpers
+  # ----------------------------------------------------------
+  - id: daytime_heating
+    alias: "Daytime Heating Schedule"
+    description: "06:30 — set all Tado zones to daytime temperatures from input_number helpers"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "06:30:00"
+    actions:
+      # Lounge
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lounge
+        data:
+          temperature: "{{ states('input_number.lounge_day_temperature') | float }}"
+          hvac_mode: heat
+      # Kitchen
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.kitchen
+        data:
+          temperature: "{{ states('input_number.kitchen_day_temperature') | float }}"
+          hvac_mode: heat
+      # Hallway
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.hallway
+        data:
+          temperature: "{{ states('input_number.hallway_day_temperature') | float }}"
+          hvac_mode: heat
+      # Bedroom
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.bedroom
+        data:
+          temperature: "{{ states('input_number.bedroom_day_temperature') | float }}"
+          hvac_mode: heat
+      # Office
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.office
+        data:
+          temperature: "{{ states('input_number.office_day_temperature') | float }}"
+          hvac_mode: heat
+      # Lucas's Room
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lucas_s_room
+        data:
+          temperature: "{{ states('input_number.lucas_s_room_day_temperature') | float }}"
+          hvac_mode: heat
+      # Notify Edward
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Heating On"
+          message: >
+            Daytime heating active. Lounge {{ states('input_number.lounge_day_temperature') }}°C,
+            Office {{ states('input_number.office_day_temperature') }}°C.
+
+  # ----------------------------------------------------------
+  # #20 · Night Setback
+  # Trigger: 23:00 daily
+  # Actions: set all Tado zones to night setback temperatures
+  # ----------------------------------------------------------
+  - id: night_setback
+    alias: "Night Setback"
+    description: "23:00 — set all Tado zones to night setback temperatures"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "23:00:00"
+    actions:
+      # Lounge
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lounge
+        data:
+          temperature: "{{ states('input_number.lounge_night_temperature') | float }}"
+          hvac_mode: heat
+      # Kitchen
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.kitchen
+        data:
+          temperature: "{{ states('input_number.kitchen_night_temperature') | float }}"
+          hvac_mode: heat
+      # Hallway
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.hallway
+        data:
+          temperature: "{{ states('input_number.hallway_night_temperature') | float }}"
+          hvac_mode: heat
+      # Bedroom
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.bedroom
+        data:
+          temperature: "{{ states('input_number.bedroom_night_temperature') | float }}"
+          hvac_mode: heat
+      # Office — night setback (low, Loretta not working at this hour)
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.office
+        data:
+          temperature: "{{ states('input_number.office_night_temperature') | float }}"
+          hvac_mode: heat
+      # Lucas's Room
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lucas_s_room
+        data:
+          temperature: "{{ states('input_number.lucas_s_room_night_temperature') | float }}"
+          hvac_mode: heat
+
+  # ----------------------------------------------------------
+  # #21 · Office Heating Lock — When Loretta Working ON
+  # Trigger: input_boolean.loretta_working turns ON
+  # Action: lock office Tado to current temperature
+  #         (prevent schedule from changing it)
+  # ----------------------------------------------------------
+  - id: office_heating_lock_on
+    alias: "Office Heating Lock — On (Loretta Working)"
+    description: "Loretta working → hold office temperature at comfortable level"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.loretta_working
+        to: "on"
+    actions:
+      # Lock office to a comfortable working temperature
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.office
+        data:
+          temperature: "{{ states('input_number.office_day_temperature') | float }}"
+          hvac_mode: heat
+      # Notify
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Office Heating Locked"
+          message: >
+            Office held at {{ states('input_number.office_day_temperature') }}°C
+            while Loretta is working.
+
+  # ----------------------------------------------------------
+  # #21b · Office Heating Lock — When Loretta Working OFF
+  # Trigger: input_boolean.loretta_working turns OFF
+  # Action: release office Tado back to auto schedule
+  # ----------------------------------------------------------
+  - id: office_heating_lock_off
+    alias: "Office Heating Lock — Off (Loretta Done)"
+    description: "Loretta done working → release office Tado to auto schedule"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.loretta_working
+        to: "off"
+    actions:
+      # Set back to night setback if after 23:00, day temp otherwise
+      - choose:
+          - conditions:
+              - condition: time
+                after: "23:00:00"
+                before: "06:30:00"
+            sequence:
+              - action: climate.set_temperature
+                target:
+                  entity_id: climate.office
+                data:
+                  temperature: "{{ states('input_number.office_night_temperature') | float }}"
+                  hvac_mode: heat
+        default:
+          - action: climate.set_temperature
+            target:
+              entity_id: climate.office
+            data:
+              temperature: "{{ states('input_number.office_day_temperature') | float }}"
+              hvac_mode: heat
+
+# ============================================================
+# Sensibo AC — climate.lounge_ac
+# Dashboard reference block (no automations needed here)
+# Entity: climate.lounge_ac (edward's device — Sensibo)
+# Current state: heat (available)
+# Related switches:
+#   switch.lounge_ac_climate_react (on) — Climate React enabled
+#   switch.lounge_ac_timer (off)        — Timer
+# This entity is ready for dashboard display without automation.
+# Add to the Climate dashboard view as a thermostat card:
+#
+#   type: thermostat
+#   entity: climate.lounge_ac
+#   name: "AC — Edward's Device"
+#
+# Climate React switch can be displayed as:
+#   type: entity
+#   entity: switch.lounge_ac_climate_react
+#   name: "Climate React"
+# ============================================================

@@ -1,0 +1,140 @@
+# ============================================================
+# Package: lighting/time_of_day.yaml
+# Part of Edward's HA Fresh Start Build — Master Plan v4
+# Automations: #3 Day Start, #4 Evening/Sunset, #5 End Goodnight
+# ============================================================
+
+automation:
+
+  # ----------------------------------------------------------
+  # #3 · Day Start
+  # Trigger: time 07:30 daily
+  # Actions: lounge natural light scene, hallway daytime, bubble light on
+  # ----------------------------------------------------------
+  - id: day_start
+    alias: "Day Start"
+    description: "Morning light routine — natural scenes and daytime brightness"
+    mode: single
+    triggers:
+      - trigger: time
+        at: "07:30:00"
+    actions:
+      # Lounge — Natural Light scene
+      - action: scene.turn_on
+        target:
+          entity_id: scene.lounge_natural_light
+      # Hallway — daytime 100%
+      - action: light.turn_on
+        target:
+          entity_id:
+            - light.hallway_lamp_post
+            - light.hallway_signe_light
+        data:
+          brightness_pct: 100
+          transition: 30
+      # Bubble light on
+      - action: switch.turn_on
+        target:
+          entity_id: switch.bubble_light
+      # Kitchen spotlights on at 60%
+      - action: light.turn_on
+        target:
+          entity_id: light.kitchen_spotlights
+        data:
+          brightness_pct: 60
+      # Flo table lamp on
+      - action: light.turn_on
+        target:
+          entity_id: light.hue_color_lamp_1
+      # Turn off hallway lamp post (per spec: lamp post off during day)
+      - action: light.turn_off
+        target:
+          entity_id: light.hallway_lamp_post
+      # Update house mode
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.house
+        data:
+          option: "Day"
+
+  # ----------------------------------------------------------
+  # #4 · Evening / Sunset
+  # Trigger: sun.sun → sunset event
+  # Actions: lounge rolling hills (Lounge Chill), hallway evening
+  #          brightness (60%), bubble light off, set house = Evening
+  # ----------------------------------------------------------
+  - id: evening_sunset
+    alias: "Evening — Sunset Routine"
+    description: "Activates evening lighting at sunset — Lounge Chill scene, hallway dims"
+    mode: single
+    triggers:
+      - trigger: sun
+        event: sunset
+    actions:
+      # Lounge — Rolling Hills scene ("Lounge Chill")
+      - action: scene.turn_on
+        target:
+          entity_id: scene.lounge_rolling_hills
+      # Hallway — evening 60%
+      - action: light.turn_on
+        target:
+          entity_id:
+            - light.hallway_lamp_post
+            - light.hallway_signe_light
+        data:
+          brightness_pct: 60
+          transition: 60
+      # Hallway lamp post — back on at 100% per spec (default on at sunset)
+      - action: light.turn_on
+        target:
+          entity_id: light.hallway_lamp_post
+        data:
+          brightness_pct: 100
+          transition: 60
+      # Bubble light off
+      - action: switch.turn_off
+        target:
+          entity_id: switch.bubble_light
+      # Update house mode to Evening
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.house
+        data:
+          option: "Evening"
+
+  # ----------------------------------------------------------
+  # #5 · End Goodnight at Sunrise
+  # Trigger: sun.sun → sunrise event
+  # Actions: turn off goodnight_active flag, restore morning state
+  # ----------------------------------------------------------
+  - id: end_goodnight_at_sunrise
+    alias: "End Goodnight at Sunrise"
+    description: "Clears goodnight mode and restores morning state at sunrise"
+    mode: single
+    triggers:
+      - trigger: sun
+        event: sunrise
+    actions:
+      # Turn off goodnight flag
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.goodnight_active
+      # Update house mode
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.house
+        data:
+          option: "Day"
+      # Hallway — morning brightness (sunrise to 07:30 transition)
+      - action: light.turn_on
+        target:
+          entity_id:
+            - light.hallway_lamp_post
+            - light.hallway_signe_light
+        data:
+          brightness_pct: 60
+          transition: 120
+      # Lounge — natural light
+      - action: scene.turn_on
+        target:
+          entity_id: scene.lounge_natural_light

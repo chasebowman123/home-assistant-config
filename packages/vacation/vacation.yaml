@@ -1,0 +1,184 @@
+##############################################################
+# Vacation Package
+# Automations: #49, #50
+##############################################################
+
+automation:
+
+  ##############################################################
+  # #49 · Vacation Mode On
+  # input_boolean.vacation_mode turns ON
+  # → set all Tado zones to away temp, activate security lights
+  #   cycling, send confirmation notification
+  ##############################################################
+  - id: "vacation_mode_on"
+    alias: "Vacation Mode On"
+    description: "Activate vacation mode: set Tado to away, enable security lights, notify"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.vacation_mode
+        to: "on"
+    conditions: []
+    actions:
+      # Set all Tado zones to away temperature
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lounge
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.bedroom
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.kitchen
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.hallway
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lucas_s_room
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.office
+        data:
+          temperature: "{{ states('input_number.away_temperature') | float }}"
+          hvac_mode: heat
+      # Update house mode to Vacation
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.house_mode
+        data:
+          option: Vacation
+      # Turn off all lights to start fresh
+      - action: light.turn_off
+        target:
+          entity_id: light.all_lights
+      # Security: turn on hallway lamp post (security presence simulation)
+      - action: light.turn_on
+        target:
+          entity_id: light.hue_color_lamp_1  # Hallway Flo Table Lamp
+        data:
+          brightness_pct: 60
+      # Send confirmation notification
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Vacation Mode Active"
+          message: >-
+            Vacation mode is ON. Tado set to {{ states('input_number.away_temperature') }}°C away temp.
+            Security lights active. Have a great trip!
+          data:
+            push:
+              sound: default
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Vacation Mode Active"
+                  message: >-
+                    Vacation mode is ON. Tado set to {{ states('input_number.away_temperature') }}°C away temp.
+                    Have a great trip!
+    mode: single
+
+  ##############################################################
+  # #50 · Vacation Mode Off
+  # input_boolean.vacation_mode turns OFF
+  # → restore Tado to daytime schedule, disable security lights,
+  #   send confirmation notification
+  ##############################################################
+  - id: "vacation_mode_off"
+    alias: "Vacation Mode Off"
+    description: "Deactivate vacation mode: restore Tado to daytime temps, disable security lights, notify"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.vacation_mode
+        to: "off"
+    conditions: []
+    actions:
+      # Restore all Tado zones to daytime temperatures
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lounge
+        data:
+          temperature: "{{ states('input_number.lounge_day_temperature') | float }}"
+          hvac_mode: heat
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.bedroom
+        data:
+          temperature: "{{ states('input_number.bedroom_day_temperature') | float }}"
+          hvac_mode: heat
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.kitchen
+        data:
+          temperature: "{{ states('input_number.kitchen_day_temperature') | float }}"
+          hvac_mode: heat
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.hallway
+        data:
+          temperature: "{{ states('input_number.hallway_day_temperature') | float }}"
+          hvac_mode: heat
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.lucas_s_room
+        data:
+          temperature: "{{ states('input_number.lucas_s_room_day_temperature') | float }}"
+          hvac_mode: heat
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.office
+        data:
+          temperature: "{{ states('input_number.office_day_temperature') | float }}"
+          hvac_mode: heat
+      # Restore house mode to Home
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.house_mode
+        data:
+          option: Home
+      # Turn off vacation security lighting
+      - action: light.turn_off
+        target:
+          entity_id: light.hue_color_lamp_1
+      # Send confirmation notification
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Welcome Home!"
+          message: >-
+            Vacation mode is OFF. Tado restored to normal daytime temperatures.
+            Security lights disabled. Welcome back!
+          data:
+            push:
+              sound: default
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Welcome Home!"
+                  message: >-
+                    Vacation mode is OFF. Tado restored to normal daytime temperatures.
+                    Welcome back!
+    mode: single

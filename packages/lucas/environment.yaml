@@ -1,0 +1,137 @@
+##############################################################
+# Lucas Environment Package
+# Automations: #29, #30, #31
+# Uses:
+#   sensor.lucass_room_air_quality_monitor_temperature  (Lucas AQ monitor)
+#   sensor.lucass_room_air_quality_monitor_humidity     (Lucas AQ monitor)
+#   humidifier.bedroom_humidifier_humidifier            (Lucas Room Humidifier)
+##############################################################
+
+automation:
+
+  ##############################################################
+  # #29 · Lucas Temp Cold
+  # Sensor: Lucas room temp drops below 18°C for 10 min → notification
+  ##############################################################
+  - id: "lucas_temp_cold"
+    alias: "Lucas Temp Cold"
+    description: "Alert when Lucas's room temperature drops below 18°C for 10 minutes"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.lucass_room_air_quality_monitor_temperature
+        below: 18
+        for:
+          minutes: 10
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Lucas's Room is Cold"
+          message: >-
+            Lucas's room temperature is {{ states('sensor.lucass_room_air_quality_monitor_temperature') }}°C — below 18°C threshold.
+          data:
+            push:
+              sound: default
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Lucas's Room is Cold"
+                  message: >-
+                    Lucas's room temperature is {{ states('sensor.lucass_room_air_quality_monitor_temperature') }}°C — below 18°C threshold.
+    mode: single
+
+  ##############################################################
+  # #30 · Lucas Temp Hot
+  # Sensor: Lucas room temp goes above 24°C for 10 min → notification
+  ##############################################################
+  - id: "lucas_temp_hot"
+    alias: "Lucas Temp Hot"
+    description: "Alert when Lucas's room temperature rises above 24°C for 10 minutes"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.lucass_room_air_quality_monitor_temperature
+        above: 24
+        for:
+          minutes: 10
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Lucas's Room is Hot"
+          message: >-
+            Lucas's room temperature is {{ states('sensor.lucass_room_air_quality_monitor_temperature') }}°C — above 24°C threshold.
+          data:
+            push:
+              sound: default
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Lucas's Room is Hot"
+                  message: >-
+                    Lucas's room temperature is {{ states('sensor.lucass_room_air_quality_monitor_temperature') }}°C — above 24°C threshold.
+    mode: single
+
+  ##############################################################
+  # #31 · Lucas Humidity Low — turn on humidifier
+  ##############################################################
+  - id: "lucas_humidity_low"
+    alias: "Lucas Humidity Low"
+    description: "When Lucas's room humidity drops below 40%, notify and turn on humidifier"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.lucass_room_air_quality_monitor_humidity
+        below: 40
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Lucas's Room Humidity Low"
+          message: >-
+            Humidity is {{ states('sensor.lucass_room_air_quality_monitor_humidity') }}% — turning on humidifier.
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Lucas's Room Humidity Low"
+                  message: >-
+                    Humidity is {{ states('sensor.lucass_room_air_quality_monitor_humidity') }}% — turning on humidifier.
+      - action: humidifier.turn_on
+        target:
+          entity_id: humidifier.bedroom_humidifier_humidifier
+    mode: single
+
+  ##############################################################
+  # #31b · Lucas Humidity OK — turn off humidifier
+  ##############################################################
+  - id: "lucas_humidity_ok"
+    alias: "Lucas Humidity OK"
+    description: "When Lucas's room humidity recovers above 45%, turn off humidifier"
+    triggers:
+      - trigger: numeric_state
+        entity_id: sensor.lucass_room_air_quality_monitor_humidity
+        above: 45
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Lucas's Room Humidity OK"
+          message: >-
+            Humidity is {{ states('sensor.lucass_room_air_quality_monitor_humidity') }}% — turning off humidifier.
+      - action: humidifier.turn_off
+        target:
+          entity_id: humidifier.bedroom_humidifier_humidifier
+    mode: single

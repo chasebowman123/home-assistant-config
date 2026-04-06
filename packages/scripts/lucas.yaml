@@ -1,0 +1,266 @@
+##############################################################
+# Scripts — Lucas Package
+# Scripts: S3 (Lucas Wind Down), S4 (Lucas Bedtime),
+#          S5 (Lucas Nightlight), S6 (Lucas Bathtime),
+#          S7 (Lucas Morning Routine)
+##############################################################
+
+script:
+
+  ##############################################################
+  # S3 · Lucas Wind Down
+  # Iris at 30% 2000K, spots at 20%, cloud lamp ON, pendant OFF.
+  # Echo Show volume 0.3, play "Following the Leader" muted
+  # for 11s then fade to 25%. Then play Spotify playlist.
+  ##############################################################
+  lucas_wind_down:
+    alias: "Lucas Wind Down"
+    description: "Wind-down lighting and Spotify sequence for Lucas's room"
+    sequence:
+      # Lighting: Iris warm at 30%
+      - action: light.turn_on
+        target:
+          entity_id: light.lucass_room_iris
+        data:
+          brightness_pct: 30
+          color_temp_kelvin: 2000
+
+      # Lighting: Spots at 20%
+      - action: light.turn_on
+        target:
+          entity_id: light.lucass_room_spot_lights
+        data:
+          brightness_pct: 20
+
+      # Cloud lamp ON
+      - action: switch.turn_on
+        target:
+          entity_id: switch.cloud_lamp
+
+      # Pendant OFF (confirm entity ID for Lucas room pendant)
+      - action: light.turn_off
+        target:
+          entity_id: light.lucass_room_pendant_light
+
+      # Spotify — Following the Leader (Oliver Wallace)
+      # Start muted, play, wait 11s, fade in to 25%
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          volume_level: 0
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          media_content_id: "spotify:track:6SVWpFA6p0nQrxM4z4dGVb"
+          media_content_type: music
+
+      - delay: "00:00:11"
+
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          volume_level: 0.25
+
+    mode: single
+    icon: mdi:weather-night
+
+  ##############################################################
+  # S4 · Lucas Bedtime
+  # Turn off all Lucas room lights + cloud lamp.
+  # Turn ON lucas_sleeping.
+  # Set Echo Show volume 0.25, play Disney Lullaby playlist.
+  # After 15 min reduce to 0.1, after 5 more min stop.
+  ##############################################################
+  lucas_bedtime:
+    alias: "Lucas Bedtime"
+    description: "Full Lucas bedtime sequence — lights off, sleeping ON, lullaby playlist"
+    sequence:
+      # Turn off all Lucas room lights
+      - action: light.turn_off
+        target:
+          entity_id:
+            - light.lucass_room_iris
+            - light.lucass_room_spot_lights
+            - light.lucass_room_pendant_light
+
+      # Turn off cloud lamp
+      - action: switch.turn_off
+        target:
+          entity_id: switch.cloud_lamp
+
+      # Turn ON lucas_sleeping flag
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.lucas_sleeping
+
+      # Spotify — Disney Lullaby playlist (Walt Disney Records)
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          volume_level: 0.25
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          media_content_id: "spotify:playlist:37i9dQZF1DX0zmsulfyDdq"
+          media_content_type: music
+
+      # After 15 minutes, reduce volume
+      - delay: "00:15:00"
+
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          volume_level: 0.10
+
+      # After 5 more minutes, stop playback
+      - delay: "00:05:00"
+
+      - action: media_player.media_stop
+        target:
+          entity_id: media_player.lucas_s_echo_show
+
+    mode: single
+    icon: mdi:sleep
+
+  ##############################################################
+  # S5 · Lucas Nightlight
+  # Turn off spots, pendant, cloud lamp.
+  # Turn on iris at 2% brightness, RGB 255,100,50 (warm orange).
+  ##############################################################
+  lucas_nightlight:
+    alias: "Lucas Nightlight"
+    description: "Nightlight mode — dim warm iris only"
+    sequence:
+      # Turn off spots and pendant
+      - action: light.turn_off
+        target:
+          entity_id:
+            - light.lucass_room_spot_lights
+            - light.lucass_room_pendant_light
+
+      # Turn off cloud lamp
+      - action: switch.turn_off
+        target:
+          entity_id: switch.cloud_lamp
+
+      # Turn on iris: 2% brightness, warm orange RGB 255,100,50
+      - action: light.turn_on
+        target:
+          entity_id: light.lucass_room_iris
+        data:
+          brightness_pct: 2
+          rgb_color: [255, 100, 50]
+
+    mode: single
+    icon: mdi:lightbulb-night
+
+  ##############################################################
+  # S6 · Lucas Bathtime
+  # Activate scene.lucass_bathroom_relax.
+  # Turn on iris at 40% blue (100,149,237).
+  # Start timer.lucas_bath_timer 20 min.
+  ##############################################################
+  lucas_bathtime:
+    alias: "Lucas Bathtime"
+    description: "Bathtime lighting and bath timer sequence"
+    sequence:
+      # Activate bathroom relax scene
+      - action: scene.turn_on
+        target:
+          entity_id: scene.lucass_bathroom_relax
+
+      # Lucas room iris: 40% blue
+      - action: light.turn_on
+        target:
+          entity_id: light.lucass_room_iris
+        data:
+          brightness_pct: 40
+          rgb_color: [100, 149, 237]
+
+      # Cloud lamp ON for bathtime ambiance
+      - action: switch.turn_on
+        target:
+          entity_id: switch.cloud_lamp
+
+      # Start 20-minute bath timer
+      - action: timer.start
+        target:
+          entity_id: timer.lucas_bath_timer
+        data:
+          duration: "00:20:00"
+
+      # Spotify — Following the Leader (Oliver Wallace) — start muted, fade in
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          volume_level: 0
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          media_content_id: "spotify:track:6SVWpFA6p0nQrxM4z4dGVb"
+          media_content_type: music
+
+      - delay: "00:00:11"
+
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          volume_level: 0.25
+
+    mode: single
+    icon: mdi:bathtub
+
+  ##############################################################
+  # S7 · Lucas Morning Routine
+  # Same as S9 (Morning Routine) — activates arise scene,
+  # turns off lucas_sleeping, plays Spotify, notifies Edward.
+  ##############################################################
+  lucas_morning_routine:
+    alias: "Lucas Morning Routine"
+    description: "Morning wake-up sequence for Lucas — called by Lucas Is Up automation"
+    sequence:
+      # 1. Activate Lucas's room arise scene
+      - action: scene.turn_on
+        target:
+          entity_id: scene.lucass_room_arise
+
+      # 2. Turn off lucas_sleeping
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.lucas_sleeping
+
+      # 3. Set Echo Show volume and play morning music
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          volume_level: 0.4
+
+      - action: media_player.play_media
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          media_content_id: "spotify:track:6SVWpFA6p0nQrxM4z4dGVb"  # Following the Leader
+          media_content_type: music
+
+      # 4. Notify Edward
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Good Morning!"
+          message: >-
+            Lucas is up! Morning routine started at {{ now().strftime('%H:%M') }}.
+
+    mode: single
+    icon: mdi:weather-sunny-alert

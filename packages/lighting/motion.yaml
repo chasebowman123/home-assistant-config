@@ -1,0 +1,209 @@
+# ============================================================
+# Package: lighting/motion.yaml
+# Part of Edward's HA Fresh Start Build — Master Plan v4
+# Automations: #6 Cloakroom Motion, #7 Lucas Bathroom Door,
+#              #8 Office Motion, #9 Garden Motion,
+#              #10 Kitchen Motion, #11 Garden Door
+# ============================================================
+
+automation:
+
+  # ----------------------------------------------------------
+  # #6 · Cloakroom Motion Lights
+  # Trigger: binary_sensor.cloakroom_sensor_contact opens
+  # (Door-based: contact sensor is the existing cloakroom sensor)
+  # Note: No dedicated cloakroom PIR exists in entity ref —
+  # using cloakroom_sensor_contact (door opens → lights on)
+  # Lights off after 3 min with no re-trigger.
+  # ----------------------------------------------------------
+  - id: cloakroom_motion_lights
+    alias: "Cloakroom Motion Lights"
+    description: "Cloakroom door/motion → turn on spotlights, off after 3 min"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.cloakroom_sensor_contact
+        to: "off"   # contact "off" = door open (Zigbee contact sensors)
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.cloakroom_spotlights
+        data:
+          brightness_pct: 100
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: binary_sensor.cloakroom_sensor_contact
+            to: "on"   # door closed
+            for:
+              minutes: 3
+        timeout: "00:03:00"
+        continue_on_timeout: true
+      - action: light.turn_off
+        target:
+          entity_id: light.cloakroom_spotlights
+
+  # ----------------------------------------------------------
+  # #7 · Lucas Bathroom Door Lights
+  # Trigger: binary_sensor.lucas_bathroom_sensor_contact opens
+  # Action: turn on Lucas bathroom spotlights at brightness 200, transition 3
+  # Mode: restart (prevents stacking on quick open/close)
+  # ----------------------------------------------------------
+  - id: lucas_bathroom_door_lights
+    alias: "Lucas Bathroom Door Lights"
+    description: "Lucas bathroom door opens → spotlights on (brightness 200, transition 3)"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.lucas_bathroom_sensor_contact
+        to: "off"   # contact "off" = door open
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.lucass_bathroom_spotlights
+        data:
+          brightness: 200
+          transition: 3
+    # Turn off when door is closed
+    # Note: add a separate off-trigger below
+
+  # --- Lucas bathroom door closed → lights off ---
+  - id: lucas_bathroom_door_lights_off
+    alias: "Lucas Bathroom Door Lights — Off"
+    description: "Lucas bathroom door closes → spotlights off"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.lucas_bathroom_sensor_contact
+        to: "on"    # contact "on" = door closed
+        for:
+          seconds: 30
+    actions:
+      - action: light.turn_off
+        target:
+          entity_id: light.lucass_bathroom_spotlights
+
+  # ----------------------------------------------------------
+  # #8 · Office Motion Lights
+  # Trigger: binary_sensor.office_motion becomes on
+  # Condition: input_boolean.motion_detection is on
+  # Lights off after 10 min no motion (wait_for_trigger pattern)
+  # Safety: 2-hour hard timeout to prevent lights-forever scenario
+  # ----------------------------------------------------------
+  - id: office_motion_lights
+    alias: "Office Motion Lights"
+    description: "Office motion → lights on; off after 10 min no motion (2hr failsafe)"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.office_motion
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.motion_detection
+        state: "on"
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.office
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: binary_sensor.office_motion
+            to: "off"
+            for:
+              minutes: 10
+        timeout: "02:00:00"
+        continue_on_timeout: true
+      - action: light.turn_off
+        target:
+          entity_id: light.office
+
+  # ----------------------------------------------------------
+  # #9 · Garden Motion Lights
+  # Trigger: binary_sensor.garden_motion becomes on
+  # Condition: sun is below horizon (after sunset, before sunrise)
+  # Lights off after 5 min no motion
+  # ----------------------------------------------------------
+  - id: garden_motion_lights
+    alias: "Garden Motion Lights"
+    description: "Garden motion at night → garden lights on; off after 5 min"
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.garden_motion
+        to: "on"
+    conditions:
+      - condition: sun
+        after: sunset
+        before: sunrise
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.garden_lights
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: binary_sensor.garden_motion
+            to: "off"
+            for:
+              minutes: 5
+        timeout: "00:30:00"
+        continue_on_timeout: true
+      - action: light.turn_off
+        target:
+          entity_id: light.garden_lights
+
+  # ----------------------------------------------------------
+  # #10 · Kitchen Motion Lights
+  # Trigger: binary_sensor.kitchen_motion_sensor_occupancy becomes on
+  # (Entity renamed from binary_sensor.0x8c65a3fffef76686_occupancy
+  #  — see Pre-Install renames in master plan)
+  # Condition: input_boolean.motion_detection is on
+  # Lights off after 5 min no motion
+  # ----------------------------------------------------------
+  - id: kitchen_motion_lights
+    alias: "Kitchen Motion Lights"
+    description: "Kitchen motion → spotlights on; off after 5 min. Requires motion_detection on."
+    mode: restart
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.kitchen_motion_sensor_occupancy
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.motion_detection
+        state: "on"
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.kitchen_spotlights
+        data:
+          brightness_pct: 80
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: binary_sensor.kitchen_motion_sensor_occupancy
+            to: "off"
+            for:
+              minutes: 5
+        timeout: "01:00:00"
+        continue_on_timeout: true
+      - action: light.turn_off
+        target:
+          entity_id: light.kitchen_spotlights
+
+  # ----------------------------------------------------------
+  # #11 · Garden Door Lights
+  # Trigger: binary_sensor.garden_door_contact (placeholder)
+  # Note: Hardware fix needed on outside door sensor.
+  # Entity ID is a placeholder — update once sensor is fixed.
+  # ----------------------------------------------------------
+  - id: garden_door_lights
+    alias: "Garden Door Lights"
+    description: "Garden door opens → garden lights on. PLACEHOLDER: fix sensor hardware first."
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.garden_door_contact   # PLACEHOLDER — fix sensor hardware
+        to: "off"   # contact "off" = door open
+    actions:
+      - action: light.turn_on
+        target:
+          entity_id: light.garden_lights

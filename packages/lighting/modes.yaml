@@ -1,0 +1,367 @@
+# ============================================================
+# Package: lighting/modes.yaml
+# Part of Edward's HA Fresh Start Build — Master Plan v4
+# Automations: #12 Bedroom Default Lights, #13 Disco On,
+#              #14 Disco Off, #15 Quiet Mode On,
+#              #16 Quiet Mode Off, #17 DND, #18 Away Security Lights
+# ============================================================
+
+automation:
+
+  # ----------------------------------------------------------
+  # #12 · Bedroom Default Lights
+  # Trigger: input_boolean.edward_bedroom turns ON
+  # Action: Activate scene.bedroom_rolling_hills
+  # ----------------------------------------------------------
+  - id: bedroom_default_lights
+    alias: "Bedroom Default Lights"
+    description: "Edward Bedroom mode on → activate Rolling Hills scene, spotlights off"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.edward_bedroom
+        to: "on"
+    actions:
+      - action: scene.turn_on
+        target:
+          entity_id: scene.bedroom_rolling_hills
+      - action: light.turn_off
+        target:
+          entity_id: light.bedroom_spot_lights
+
+  # ----------------------------------------------------------
+  # #13 · Disco Mode On
+  # Trigger: input_boolean.disco_disco turns ON
+  # Action: snapshot current state, then activate scene.lounge_soho
+  #         on lounge, kitchen, hallway, bedroom lights
+  # Uses scene.create to snapshot before activating disco
+  # ----------------------------------------------------------
+  - id: disco_mode_on
+    alias: "Disco Mode On"
+    description: "Disco on → snapshot pre-disco state, activate Soho scene everywhere"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.disco_disco
+        to: "on"
+    actions:
+      # Snapshot current state so disco_off can restore it
+      - action: scene.create
+        data:
+          scene_id: disco_pre_snapshot
+          snapshot_entities:
+            - light.lounge
+            - light.lounge_corner_lamp
+            - light.lounge_iris
+            - light.lounge_pendant_lights
+            - light.lounge_piano_lamp
+            - light.lounge_signe_light
+            - light.lounge_spotlights
+            - light.lounge_strip_light
+            - light.lounge_wall_lights
+            - light.kitchen
+            - light.kitchen_spotlights
+            - light.hallway
+            - light.hallway_lamp_post
+            - light.hallway_signe_light
+            - light.bedroom
+            - light.bedroom_signe_light
+            - light.bedroom_spot_lights
+            - light.bedroom_tv_strip_light
+      # Activate Soho scene across all rooms
+      - action: scene.turn_on
+        target:
+          entity_id: scene.lounge_soho
+      - action: scene.turn_on
+        target:
+          entity_id: scene.bedroom_soho
+      # Hallway — Soho-style: full colour brightness
+      - action: light.turn_on
+        target:
+          entity_id:
+            - light.hallway_lamp_post
+            - light.hallway_signe_light
+        data:
+          brightness_pct: 100
+          rgb_color: [255, 0, 128]
+      # Kitchen — Soho colours
+      - action: light.turn_on
+        target:
+          entity_id: light.kitchen_spotlights
+        data:
+          brightness_pct: 80
+          rgb_color: [255, 0, 255]
+
+  # ----------------------------------------------------------
+  # #14 · Disco Mode Off
+  # Trigger: input_boolean.disco_disco turns OFF
+  # Action: restore pre-disco snapshot
+  # ----------------------------------------------------------
+  - id: disco_mode_off
+    alias: "Disco Mode Off"
+    description: "Disco off → restore pre-disco lighting state from snapshot"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.disco_disco
+        to: "off"
+    actions:
+      - action: scene.turn_on
+        target:
+          entity_id: scene.disco_pre_snapshot
+        data:
+          transition: 3
+
+  # ----------------------------------------------------------
+  # #15 · Quiet Mode On
+  # Trigger: input_boolean.quiet_mode turns ON
+  # Actions: mute all Alexa/Echo devices, disable TTS automations
+  # ----------------------------------------------------------
+  - id: quiet_mode_on
+    alias: "Quiet Mode On"
+    description: "Quiet mode → silence all Alexa speakers, disable doorbell & TTS automations"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.quiet_mode
+        to: "on"
+    actions:
+      # Mute all Alexa/Echo media players
+      - action: media_player.volume_set
+        target:
+          entity_id:
+            - media_player.lounge_echo_hub
+            - media_player.lounge_hub
+            - media_player.echo_show_15
+            - media_player.edward_s_echo_show_21
+            - media_player.loretta_s_echo_show
+            - media_player.lucas_s_echo_show
+            - media_player.bedroom
+            - media_player.office
+        data:
+          volume_level: 0
+      # Disable doorbell announcement automation
+      - action: automation.turn_off
+        target:
+          entity_id: automation.doorbell_unified
+      # Reduce all lights to 30% brightness
+      - action: light.turn_on
+        target:
+          entity_id: light.all_lights
+        data:
+          brightness_pct: 30
+
+  # ----------------------------------------------------------
+  # #16 · Quiet Mode Off
+  # Trigger: input_boolean.quiet_mode turns OFF
+  # Actions: restore Alexa volumes to defaults, re-enable automations
+  # ----------------------------------------------------------
+  - id: quiet_mode_off
+    alias: "Quiet Mode Off"
+    description: "Quiet mode off → restore speaker volumes, re-enable doorbell"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.quiet_mode
+        to: "off"
+    actions:
+      # Restore Alexa volumes to sensible defaults
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lounge_echo_hub
+        data:
+          volume_level: 0.5
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lounge_hub
+        data:
+          volume_level: 0.5
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.echo_show_15
+        data:
+          volume_level: 0.5
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.edward_s_echo_show_21
+        data:
+          volume_level: 0.5
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.loretta_s_echo_show
+        data:
+          volume_level: 0.4
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.lucas_s_echo_show
+        data:
+          volume_level: 0.3
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.bedroom
+        data:
+          volume_level: 0.4
+      - action: media_player.volume_set
+        target:
+          entity_id: media_player.office
+        data:
+          volume_level: 0.4
+      # Re-enable doorbell
+      - action: automation.turn_on
+        target:
+          entity_id: automation.doorbell_unified
+
+  # ----------------------------------------------------------
+  # #17 · Do Not Disturb On
+  # Trigger: input_boolean.do_not_disturb turns ON
+  # Action: set a DND flag (enable Alexa DND switches)
+  # ----------------------------------------------------------
+  - id: do_not_disturb_on
+    alias: "Do Not Disturb On"
+    description: "DND on → enable do-not-disturb on all Alexa devices"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.do_not_disturb
+        to: "on"
+    actions:
+      - action: switch.turn_on
+        target:
+          entity_id:
+            - switch.lounge_echo_hub_do_not_disturb_switch
+            - switch.echo_show_15_do_not_disturb_switch
+            - switch.edward_s_echo_show_21_do_not_disturb_switch
+            - switch.loretta_s_echo_show_do_not_disturb_switch
+            - switch.lucas_s_echo_show_do_not_disturb_switch
+            - switch.lounge_fire_cube_do_not_disturb_switch
+      # Send confirmation notification to Edward
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Do Not Disturb"
+          message: "DND is now ON. All notifications suppressed."
+
+  # ----------------------------------------------------------
+  # #17b · Do Not Disturb Off
+  # Trigger: input_boolean.do_not_disturb turns OFF
+  # Action: disable Alexa DND on all devices
+  # ----------------------------------------------------------
+  - id: do_not_disturb_off
+    alias: "Do Not Disturb Off"
+    description: "DND off → disable do-not-disturb on Alexa devices"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.do_not_disturb
+        to: "off"
+    actions:
+      - action: switch.turn_off
+        target:
+          entity_id:
+            - switch.lounge_echo_hub_do_not_disturb_switch
+            - switch.echo_show_15_do_not_disturb_switch
+            - switch.edward_s_echo_show_21_do_not_disturb_switch
+            - switch.loretta_s_echo_show_do_not_disturb_switch
+            - switch.lucas_s_echo_show_do_not_disturb_switch
+            - switch.lounge_fire_cube_do_not_disturb_switch
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Do Not Disturb"
+          message: "DND is now OFF."
+
+  # ----------------------------------------------------------
+  # #18 · Away Security Lights
+  # Trigger: both person.edward_eidam AND person.loretta_eidam = not_home
+  # Action: start random light cycling to simulate occupancy
+  # Stops when either person returns home
+  # ----------------------------------------------------------
+  - id: away_security_lights_start
+    alias: "Away Security Lights — Start"
+    description: "Everyone away → simulate occupancy with random light cycling"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.adults_away
+        to: "on"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.vacation_mode
+        state: "off"
+    actions:
+      # Set house mode to Away
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.house
+        data:
+          option: "Away"
+      # Notify Edward
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "House Empty"
+          message: "Nobody home. Security light simulation active."
+      # Begin light cycling sequence (lounge and hallway alternating)
+      - repeat:
+          while:
+            - condition: state
+              entity_id: binary_sensor.adults_away
+              state: "on"
+          sequence:
+            # Cycle 1: Lounge on, hallway dim
+            - action: light.turn_on
+              target:
+                entity_id: light.lounge_corner_lamp
+              data:
+                brightness_pct: 60
+            - action: light.turn_on
+              target:
+                entity_id: light.hallway_lamp_post
+              data:
+                brightness_pct: 40
+            - delay:
+                minutes: "{{ range(15, 45) | random }}"
+            # Cycle 2: Switch rooms
+            - action: light.turn_off
+              target:
+                entity_id: light.lounge_corner_lamp
+            - action: light.turn_on
+              target:
+                entity_id: light.bedroom_signe_light
+              data:
+                brightness_pct: 30
+            - delay:
+                minutes: "{{ range(10, 30) | random }}"
+            # Cycle 3: Reset
+            - action: light.turn_off
+              target:
+                entity_id: light.bedroom_signe_light
+            - action: light.turn_on
+              target:
+                entity_id: light.lounge_iris
+              data:
+                brightness_pct: 50
+            - delay:
+                minutes: "{{ range(20, 40) | random }}"
+            - action: light.turn_off
+              target:
+                entity_id: light.lounge_iris
+
+  - id: away_security_lights_stop
+    alias: "Away Security Lights — Stop"
+    description: "Someone arrives home → stop security simulation, restore normal mode"
+    mode: single
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.adults_away
+        to: "off"
+    actions:
+      # Turn off any lights left on by simulation
+      - action: light.turn_off
+        target:
+          entity_id:
+            - light.lounge_corner_lamp
+            - light.bedroom_signe_light
+            - light.lounge_iris
+      # House mode restored by Welcome Home automation (#1)
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Welcome Back"
+          message: "Security light simulation stopped."

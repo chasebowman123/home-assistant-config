@@ -1,0 +1,165 @@
+##############################################################
+# Lucas Routines Package
+# Automations: #22, #23, #24, #28, #32
+##############################################################
+
+automation:
+
+  ##############################################################
+  # #22 · Lucas Bathtime
+  # Trigger: dashboard button → calls script.lucas_bathtime
+  ##############################################################
+  - id: "lucas_bathtime"
+    alias: "Lucas Bathtime"
+    description: "Dashboard button triggers Lucas bathtime script (lights + Spotify)"
+    triggers:
+      - trigger: event
+        event_type: lucas_bathtime_button
+    conditions: []
+    actions:
+      - action: script.lucas_bathtime
+    mode: single
+
+  ##############################################################
+  # #23 · Lucas Wind Down
+  # Trigger: 18:45, condition: lucas_sleeping=off
+  # Send notification with actionable button → call script.lucas_wind_down
+  ##############################################################
+  - id: "lucas_wind_down_routine"
+    alias: "Lucas Wind Down"
+    description: "At 18:45, if Lucas is not sleeping, send wind-down notification with action button"
+    triggers:
+      - trigger: time
+        at: "18:45:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.lucas_sleeping
+        state: "off"
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Lucas Wind Down"
+          message: "Time to start Lucas's wind-down routine."
+          data:
+            actions:
+              - action: LUCAS_WIND_DOWN_START
+                title: "Start Wind Down"
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Lucas Wind Down"
+                  message: "Time to start Lucas's wind-down routine."
+                  data:
+                    actions:
+                      - action: LUCAS_WIND_DOWN_START
+                        title: "Start Wind Down"
+    mode: single
+
+  - id: "lucas_wind_down_button_handler"
+    alias: "Lucas Wind Down Button Handler"
+    description: "Handles actionable notification button press for Lucas Wind Down"
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: LUCAS_WIND_DOWN_START
+    conditions: []
+    actions:
+      - action: script.lucas_wind_down
+    mode: single
+
+  ##############################################################
+  # #24 · Lucas Bedtime
+  # Trigger: 19:30, send notification with actionable button
+  # When button pressed → call script.lucas_bedtime
+  ##############################################################
+  - id: "lucas_bedtime_routine"
+    alias: "Lucas Bedtime"
+    description: "At 19:30, send bedtime notification with action button"
+    triggers:
+      - trigger: time
+        at: "19:30:00"
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Lucas Bedtime"
+          message: "Time for Lucas's bedtime routine."
+          data:
+            actions:
+              - action: LUCAS_BEDTIME_START
+                title: "Start Bedtime"
+      - choose:
+          - conditions:
+              - condition: state
+                entity_id: input_boolean.loretta_notifications
+                state: "on"
+            sequence:
+              - action: notify.mobile_app_lorettas_phone
+                data:
+                  title: "Lucas Bedtime"
+                  message: "Time for Lucas's bedtime routine."
+                  data:
+                    actions:
+                      - action: LUCAS_BEDTIME_START
+                        title: "Start Bedtime"
+    mode: single
+
+  - id: "lucas_bedtime_button_handler"
+    alias: "Lucas Bedtime Button Handler"
+    description: "Handles actionable notification button press for Lucas Bedtime"
+    triggers:
+      - trigger: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: LUCAS_BEDTIME_START
+    conditions: []
+    actions:
+      - action: script.lucas_bedtime
+    mode: single
+
+  ##############################################################
+  # #28 · Lucas Is Up
+  # Trigger: 07:00 + lucas_sleeping=on → call script.lucas_morning_routine
+  ##############################################################
+  - id: "lucas_is_up"
+    alias: "Lucas Is Up"
+    description: "At 07:00, if lucas_sleeping is on, run morning routine"
+    triggers:
+      - trigger: time
+        at: "07:00:00"
+    conditions:
+      - condition: state
+        entity_id: input_boolean.lucas_sleeping
+        state: "on"
+    actions:
+      - action: script.lucas_morning_routine
+    mode: single
+
+  ##############################################################
+  # #32 · Lucas Sleeping Toggle
+  # Trigger: input_boolean.lucas_sleeping turns ON
+  # Turn off hallway Flo table lamp and wall light with 10s transition
+  ##############################################################
+  - id: "lucas_sleeping_toggle"
+    alias: "Lucas Sleeping Toggle"
+    description: "When lucas_sleeping turns on, dim hallway lights off with 10s transition"
+    triggers:
+      - trigger: state
+        entity_id: input_boolean.lucas_sleeping
+        to: "on"
+    conditions: []
+    actions:
+      - action: light.turn_off
+        target:
+          entity_id:
+            - light.hue_color_lamp_1    # Hallway Flo Table Lamp
+            - light.hue_white_light_2   # Hallway Wall Light
+        data:
+          transition: 10
+    mode: single

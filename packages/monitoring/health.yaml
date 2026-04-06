@@ -1,0 +1,150 @@
+##############################################################
+# Monitoring — Health Package
+# Automations: #46, #47, #48
+##############################################################
+
+automation:
+
+  ##############################################################
+  # #46 · Low Battery Alert
+  # Any battery sensor drops below 20% → notification
+  ##############################################################
+  - id: "low_battery_alert"
+    alias: "Low Battery Alert"
+    description: "Alert when any battery sensor drops below 20%"
+    triggers:
+      - trigger: numeric_state
+        entity_id:
+          - sensor.basement_door_battery
+          - sensor.basement_door_battery_2
+          - sensor.basement_stairs_battery
+          - sensor.basement_stairs_battery_2
+          - sensor.bathroom_sensor_battery
+          - sensor.bathroom_temp_sensor_battery
+          - sensor.bathroom_th_battery
+          - sensor.bedroom_battery
+          - sensor.bedroom_battery_2
+          - sensor.cloakroom_sensor_battery
+          - sensor.cloakroom_sensor_battery_2
+          - sensor.edtemp_and_humidity_sensor_battery
+          - sensor.edward_bedside_sensor_battery
+          - sensor.edward_bedside_switch_battery
+          - sensor.garden_battery
+          - sensor.garden_battery_2
+          - sensor.hallway_temp_battery
+          - sensor.lounge_temperature_and_humidity_sensor_battery
+          - sensor.temperature_humidity_sensor_battery
+          - sensor.upstairs_motion_sensor_battery
+        below: 20
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "Low Battery"
+          message: >-
+            {{ trigger.to_state.attributes.friendly_name | default(trigger.entity_id) }}
+            battery is at {{ trigger.to_state.state }}%.
+          data:
+            push:
+              sound: default
+    mode: queued
+    max: 10
+
+  ##############################################################
+  # #47 · Critical Battery Alert
+  # Any battery sensor drops below 5% → urgent notification
+  ##############################################################
+  - id: "critical_battery_alert"
+    alias: "Critical Battery Alert"
+    description: "Urgent alert when any battery sensor drops below 5%"
+    triggers:
+      - trigger: numeric_state
+        entity_id:
+          - sensor.basement_door_battery
+          - sensor.basement_door_battery_2
+          - sensor.basement_stairs_battery
+          - sensor.basement_stairs_battery_2
+          - sensor.bathroom_sensor_battery
+          - sensor.bathroom_temp_sensor_battery
+          - sensor.bathroom_th_battery
+          - sensor.bedroom_battery
+          - sensor.bedroom_battery_2
+          - sensor.cloakroom_sensor_battery
+          - sensor.cloakroom_sensor_battery_2
+          - sensor.edtemp_and_humidity_sensor_battery
+          - sensor.edward_bedside_sensor_battery
+          - sensor.edward_bedside_switch_battery
+          - sensor.garden_battery
+          - sensor.garden_battery_2
+          - sensor.hallway_temp_battery
+          - sensor.lounge_temperature_and_humidity_sensor_battery
+          - sensor.temperature_humidity_sensor_battery
+          - sensor.upstairs_motion_sensor_battery
+        below: 5
+    conditions: []
+    actions:
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "CRITICAL — Battery Dead"
+          message: >-
+            {{ trigger.to_state.attributes.friendly_name | default(trigger.entity_id) }}
+            battery critically low at {{ trigger.to_state.state }}% — replace now.
+          data:
+            push:
+              sound:
+                name: default
+                critical: 1
+                volume: 1.0
+    mode: queued
+    max: 10
+
+  ##############################################################
+  # #48 · Integration Health Monitor
+  # Any entity goes unavailable for 5 min → push notification
+  # with entity name and list of ALL currently unavailable entities.
+  ##############################################################
+  - id: "integration_health_monitor"
+    alias: "Integration Health Monitor"
+    description: >-
+      When any sensor, binary_sensor, switch, or light goes unavailable
+      for 5 minutes, send a push notification with entity details and
+      a full list of all currently unavailable entities.
+    triggers:
+      - trigger: state
+        entity_id: all
+        to: "unavailable"
+        for:
+          minutes: 5
+    conditions:
+      # Only alert for domains worth monitoring
+      - condition: template
+        value_template: >-
+          {{ trigger.entity_id.split('.')[0] in
+             ['sensor', 'binary_sensor', 'switch', 'light', 'climate',
+              'media_player', 'camera', 'humidifier', 'lock'] }}
+      # Ignore entities that are frequently/expectedly unavailable
+      - condition: template
+        value_template: >-
+          {{ trigger.entity_id not in [
+            'sensor.browser_mod_0d114c6e_5d58ff12_browser_battery',
+            'sensor.edward_bedside_air_quality_monitor_air_quality_index',
+            'sensor.edward_bedside_air_quality_monitor_carbon_monoxide_2'
+          ] }}
+    actions:
+      - variables:
+          offline_entity_id: "{{ trigger.entity_id }}"
+          offline_friendly_name: >-
+            {{ trigger.to_state.attributes.friendly_name | default(trigger.entity_id) }}
+          offline_domain: "{{ trigger.entity_id.split('.')[0] }}"
+      - action: notify.mobile_app_ee_iphone_16_pro_max
+        data:
+          title: "HA Integration Alert"
+          message: >-
+            {{ offline_friendly_name }} ({{ offline_entity_id }}) has been
+            unavailable for 5 minutes.
+          data:
+            push:
+              sound: default
+            tag: "ha_health_{{ trigger.entity_id }}"
+    mode: queued
+    max: 20
