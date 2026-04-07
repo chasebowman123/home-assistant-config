@@ -1,0 +1,99 @@
+type: custom:navbar-card
+routes:
+  # Speed Dial
+  - url: /dashboard-eidam/speed-dial
+    icon: mdi:lightning-bolt
+    label: Speed Dial
+
+  # Home
+  - url: /dashboard-eidam/home
+    icon: mdi:home
+    label: Home
+
+  # Rooms
+  - url: /dashboard-eidam/rooms
+    icon: mdi:floor-plan
+    label: Rooms
+    selected: '[[[ return window.location.pathname.startsWith("/dashboard-eidam/rooms") ]]]'
+    hold_action:
+      action: open-popup
+    popup:
+      - url: /dashboard-eidam/rooms-lounge
+        icon: mdi:sofa
+        label: Lounge
+      - url: /dashboard-eidam/rooms-bedroom
+        icon: mdi:bed-king
+        label: Bedroom
+      - url: /dashboard-eidam/rooms-lucas-room
+        icon: mdi:baby-face-outline
+        label: Lucas
+      - url: /dashboard-eidam/rooms-kitchen
+        icon: mdi:silverware-fork-knife
+        label: Kitchen
+      - url: /dashboard-eidam/rooms-office
+        icon: mdi:laptop
+        label: Office
+      - url: /dashboard-eidam/rooms-hallway
+        icon: mdi:door
+        label: Hallway
+
+  # Environment
+  - url: /dashboard-eidam/environment
+    icon: mdi:leaf
+    label: Environment
+
+  # Cameras
+  - url: /dashboard-eidam/cameras
+    icon: mdi:cctv
+    label: Cameras
+
+  # Lucas
+  - url: /dashboard-eidam/lucas
+    icon: mdi:baby-face
+    label: Lucas
+
+haptic:
+  url: true
+  tap_action: true
+  hold_action: true
+  double_tap_action: true
+mobile:
+  show_labels: true
+  show_popup_label_backgrounds: true
+styles: |
+  .navbar-card {
+    border: none;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    width: 100%;
+    max-width: 500px;
+    bottom: -1px;
+    padding-bottom: 40px;
+  }
+
+  .button.active {
+    background: transparent;
+  }
+
+  .icon {
+    fill: #B2BEC3 !important;
+  }
+
+  .icon.active {
+    fill: #74B9FF !important;
+  }
+
+  .label {
+    color: #8395A7 !important;
+    font-size: 10px !important;
+  }
+
+  .label.active {
+    color: #74B9FF !important;
+  }
+
+  ha-ripple {
+    display: none !important;
+  }

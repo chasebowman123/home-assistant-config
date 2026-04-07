@@ -1,0 +1,147 @@
+---
+eidam-pastel:
+  # Typography
+  ha-font-family-body: "Inter"
+  ha-font-family-heading: "Inter"
+
+  # Background - soft warm gradient
+  background-image: "linear-gradient(160deg, #F5F7FA 0%, #EBF0F6 50%, #E8ECF1 100%)"
+  lovelace-background: var(--background-image)
+  app-header-background-color: "#F5F7FA"
+  primary-background-color: "#F5F7FA"
+
+  # Text
+  primary-text-color: "#2C3E50"
+  secondary-text-color: "#8395A7"
+  text-primary-color: "#2C3E50"
+  text-light-primary-color: "#8395A7"
+  disabled-text-color: "#BDC3C7"
+
+  # Main interface colors - pastel blue
+  primary-color: "#74B9FF"
+  dark-primary-color: "#FFFFFF"
+  darker-primary-color: "#F5F7FA"
+  light-primary-color: "#A3D4FF"
+  accent-color: "#FECA57"
+
+  # Semantic colors
+  divider-color: "#DFE6E9"
+  light-grey-color: "#B2BEC3"
+  semi-dark-grey-color: "#B2BEC3"
+  red-color: "#E17055"
+  orange-color: "#E17055"
+
+  error-color: var(--red-color)
+  warning-color: "#FDCB6E"
+  success-color: "#00B894"
+  info-color: var(--light-primary-color)
+
+  # Backgrounds - frosted glass white cards
+  card-background-color: "rgba(255, 255, 255, 0.85)"
+  secondary-background-color: "#F0F3F6"
+
+  # States and Badges
+  state-icon-color: var(--light-grey-color)
+  state-inactive-color: var(--light-grey-color)
+  state-light-active-color: "#FDCB6E"
+  state-binary_sensor-active-color: var(--primary-color)
+  state-switch-active-color: var(--primary-color)
+  switch-unchecked-track-color: var(--divider-color)
+  state-input_boolean-on-color: var(--primary-color)
+  state-input_boolean-active-color: var(--primary-color)
+  state-media_player-active-color: "#A29BFE"
+
+  # Cards - subtle border + soft shadow
+  ha-card-border-width: 1px
+  ha-card-border-color: "rgba(0, 0, 0, 0.06)"
+  ha-card-border-radius: 16px
+  ha-card-box-shadow: "0 2px 8px rgba(0, 0, 0, 0.04)"
+
+  vertical-stack-card-gap: 16px
+
+  # Sections
+  ha-section-grid-row-gap: 16px
+  ha-view-sections-row-gap: 10px
+  ha-view-sections-column-gap: 10px
+  ha-sections-row-gap: 10px
+  masonry-view-card-margin: "12px"
+
+  # Media Players
+  state-media_player-paused-color: var(--light-grey-color)
+  state-media_player-off-color: var(--light-grey-color)
+  state-media_player-idle-color: var(--light-grey-color)
+  state-light-off-color: var(--light-grey-color)
+
+  # Binary Sensors
+  state-binary_sensor-door-on-color: var(--primary-color)
+  state-binary_sensor-door-off-color: var(--light-grey-color)
+  state-binary_sensor-opening-off-color: var(--light-grey-color)
+  state-binary_sensor-window-off-color: var(--light-grey-color)
+  state-binary_sensor-window-on-color: var(--primary-color)
+  state-binary_sensor-off-color: var(--light-grey-color)
+
+  # Fans
+  state-fan-on-color: var(--primary-color)
+  state-fan-off-color: var(--light-grey-color)
+
+  # Climate
+  state-climate-cool-color: "#74B9FF"
+  state-climate-heat-color: "#E17055"
+  state-climate-heat_cool-color: var(--info-color)
+  state-climate-off-color: var(--light-grey-color)
+  state-climate-inactive-color: var(--light-grey-color)
+
+  # Switches
+  state-switch-off-color: var(--light-grey-color)
+  state-switch-on-color: var(--primary-color)
+
+  # Moisture
+  state-binary_sensor-moisture-on-color: var(--red-color)
+  state-binary_sensor-moisture-off-color: var(--light-grey-color)
+
+  # Vacuum
+  state-vacuum-docked-color: var(--light-grey-color)
+  state-vacuum-cleaning-color: var(--primary-color)
+
+  # Alarm
+  state-alarm_control_panel-disarmed-color: var(--error-color)
+  state-alarm_control_panel-armed_home-color: var(--success-color)
+  state-alarm_control_panel-armed_away-color: var(--success-color)
+
+  # Covers
+  state-cover-closed-color: var(--success-color)
+  state-cover-open-color: var(--error-color)
+
+  # Locks
+  state-lock-locked-color: var(--success-color)
+  state-lock-unlocked-color: var(--error-color)
+
+  # Automations
+  state-automation-off-color: var(--light-grey-color)
+  state-automation-on-color: var(--primary-color)
+
+  # MMPC media player
+  mmpc-on-dialog: var(--secondary-text-color)
+  mmpc-surface-higher: var(--card-background-color)
+
+  # Input
+  input-fill-color: var(--divider-color)
+  input-ink-color: var(--primary-text-color)
+  input-label-ink-color: var(--text-light-primary-color)
+
+  # Bubble Card - frosted glass
+  bubble-backdrop-background-color: "rgba(245, 247, 250, 0.90)"
+
+  # Buttons
+  wa-color-fill-normal: var(--primary-color)
+  wa-color-on-normal: "#FFFFFF"
+
+  # Dividers
+  entities-divider-color: var(--divider-color)
+
+  # People
+  state-person-home-color: var(--success-color)
+  state-person-away-color: var(--light-grey-color)
+  state-person-active-color: var(--primary-color)
+  state-person-inactive-color: var(--light-grey-color)
+  state-person-unavailable-color: var(--light-grey-color)

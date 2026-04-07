@@ -1,0 +1,38 @@
+# Eidam Smart Home Dashboard
+# Kohbo-inspired design with pastel theme
+# URL path: /dashboard-eidam
+
+button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards
+decluttering_templates: !include_dir_merge_named /config/dashboards/templates/decluttering
+
+kiosk_mode:
+  hide_header: true
+
+views:
+  # Speed Dial - Quick toggles and buttons (tab 0)
+  - !include /config/dashboards/eidam/views/speed-dial.yaml
+
+  # Home - Overview dashboard (tab 1)
+  - !include /config/dashboards/eidam/views/home.yaml
+
+  # Rooms - Room index + subviews (tab 2)
+  - !include /config/dashboards/eidam/views/rooms/rooms-index.yaml
+
+  # Room Subviews
+  - !include /config/dashboards/eidam/views/rooms/lounge.yaml
+  - !include /config/dashboards/eidam/views/rooms/bedroom.yaml
+  - !include /config/dashboards/eidam/views/rooms/lucas-room.yaml
+  - !include /config/dashboards/eidam/views/rooms/kitchen.yaml
+  - !include /config/dashboards/eidam/views/rooms/office.yaml
+  - !include /config/dashboards/eidam/views/rooms/hallway.yaml
+  - !include /config/dashboards/eidam/views/rooms/garden.yaml
+  - !include /config/dashboards/eidam/views/rooms/bathroom.yaml
+
+  # Environment - Climate + Air Quality (tab 3)
+  - !include /config/dashboards/eidam/views/environment.yaml
+
+  # Cameras (tab 4)
+  - !include /config/dashboards/eidam/views/cameras.yaml
+
+  # Lucas - Dedicated view (tab 5)
+  - !include /config/dashboards/eidam/views/lucas.yaml
