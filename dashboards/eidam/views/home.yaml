@@ -1,12 +1,9 @@
 type: custom:vertical-layout
 title: Home
 path: home
-theme: eidam-pastel
+theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  #
-  # Page Header
-  #
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
     card:
@@ -25,9 +22,6 @@ cards:
             action: navigate
             navigation_path: '#notifications'
 
-  #
-  # Quick Overview - House mode + People
-  #
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
     card:
@@ -44,13 +38,10 @@ cards:
           card_mod:
             style:
               hui-horizontal-stack-card$: |
-                #root {
-                  gap: 5px !important;
-                }
+                #root { gap: 5px !important; }
           card:
             type: horizontal-stack
             cards:
-              # House Mode Chip
               - type: custom:button-card
                 template: kohbo_chip_card
                 entity: input_select.house
@@ -74,8 +65,6 @@ cards:
                   action: navigate
                   navigation_path: '#house_mode'
                   haptic: light
-
-              # Energy
               - type: custom:button-card
                 template: kohbo_chip_card
                 name: Energy
@@ -85,22 +74,13 @@ cards:
                 styles:
                   state:
                     - margin-left: 3px
-
-        # People
         - type: custom:mod-card
           card_mod:
             style:
               hui-horizontal-stack-card$: |
-                #root {
-                  display: flex;
-                  justify-content: flex-end;
-                  align-items: start;
-                }
+                #root { display: flex; justify-content: flex-end; align-items: start; }
               .: |
-                ha-card {
-                  height: 100% !important;
-                  align-self: center !important;
-                }
+                ha-card { height: 100% !important; align-self: center !important; }
           card:
             type: horizontal-stack
             cards:
@@ -111,24 +91,18 @@ cards:
                   action: more-info
                   haptic: light
 
-
-  #
-  # Security Overview
-  #
   - type: custom:stack-in-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
       - type: custom:button-card
         template: kohbo_card_small_header
         name: Security
-
       - type: custom:stack-in-card
         mode: vertical
         card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
         cards:
           - type: horizontal-stack
             cards:
-              # Ring Doorbell - Basement
               - type: custom:button-card
                 entity: binary_sensor.basement_door_ding
                 name: Basement
@@ -143,8 +117,6 @@ cards:
                     icon: mdi:doorbell
                     color: var(--success-color)
                     state_display: Clear
-
-              # Ring Doorbell - Upstairs
               - type: custom:button-card
                 entity: binary_sensor.upstairs_ding
                 name: Upstairs
@@ -157,8 +129,6 @@ cards:
                   - value: 'off'
                     color: var(--success-color)
                     state_display: Clear
-
-              # Ring Doorbell - Lobby
               - type: custom:button-card
                 entity: binary_sensor.lobby_ding
                 name: Lobby
@@ -171,10 +141,8 @@ cards:
                   - value: 'off'
                     color: var(--success-color)
                     state_display: Clear
-
           - type: horizontal-stack
             cards:
-              # Cameras link
               - type: custom:button-card
                 name: Cameras
                 icon: mdi:cctv
@@ -183,8 +151,6 @@ cards:
                   action: navigate
                   navigation_path: '/dashboard-eidam/cameras'
                   haptic: light
-
-              # Water Leak Status
               - type: custom:button-card
                 name: Leaks
                 icon: mdi:water-alert
@@ -192,19 +158,13 @@ cards:
                 tap_action:
                   action: more-info
 
-
-  #
-  # Climate Overview
-  #
   - type: custom:button-card
     template: section_title
     name: Climate
-
   - type: grid
     columns: 2
     square: false
     cards:
-      # Interior Lights count
       - type: custom:button-card
         entity: light.lounge_spots
         name: Lights
@@ -228,8 +188,6 @@ cards:
           action: navigate
           navigation_path: '/dashboard-eidam/rooms'
           haptic: light
-
-      # Lounge Climate
       - type: custom:button-card
         entity: climate.lounge
         name: Lounge
@@ -237,8 +195,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
-      # Bedroom Climate
       - type: custom:button-card
         entity: climate.bedroom
         name: Bedroom
@@ -246,8 +202,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
-      # Lucas Climate
       - type: custom:button-card
         entity: climate.lucas_room
         name: Lucas's Room
@@ -255,8 +209,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
-      # Office Climate
       - type: custom:button-card
         entity: climate.office
         name: Office
@@ -264,8 +216,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
-      # AC (Sensibo)
       - type: custom:button-card
         entity: climate.lounge_ac
         name: Lounge AC
@@ -274,10 +224,6 @@ cards:
           action: more-info
           haptic: light
 
-
-  #
-  # House Mode Popup
-  #
   - type: vertical-stack
     cards:
       - type: custom:bubble-card
@@ -287,18 +233,13 @@ cards:
         styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
         margin_top_mobile: calc(100vh - 450px)
         margin_top_desktop: calc(100vh - 450px)
-
       - type: custom:button-card
         template: kohbo_popup_page_title
         name: House Mode
-
       - type: entities
         entities:
           - entity: input_select.house
             name: House Mode
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
-  #
-  # Navbar
-  #
   - !include /config/dashboards/eidam/includes/navbar.yaml

@@ -1,12 +1,9 @@
 type: custom:vertical-layout
 title: Speed Dial
 path: speed-dial
-theme: eidam-pastel
+theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  #
-  # Page Header
-  #
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
     card:
@@ -20,13 +17,9 @@ cards:
         - type: custom:button-card
           template: empty_column
 
-  #
-  # House Mode
-  #
   - type: custom:button-card
     template: section_title
     name: House Mode
-
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack.yaml
     entities:
@@ -35,13 +28,9 @@ cards:
         icon: mdi:home
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
-  #
-  # Quick Toggles
-  #
   - type: custom:button-card
     template: section_title
     name: Quick Toggles
-
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack.yaml
     entities:
@@ -88,18 +77,13 @@ cards:
         secondary_info: last-changed
         state_color: true
 
-  #
-  # Quick Actions
-  #
   - type: custom:button-card
     template: section_title
     name: Quick Actions
-
   - type: grid
     columns: 3
     square: false
     cards:
-      # Lobby Buzzer
       - type: custom:button-card
         entity: button.lobby_open_door
         name: Lobby Buzzer
@@ -115,13 +99,9 @@ cards:
           icon:
             - color: var(--warning-color)
 
-  #
-  # Room Modes
-  #
   - type: custom:button-card
     template: section_title
     name: Room Modes
-
   - type: entities
     card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_vertical_stack.yaml
     entities:
@@ -138,7 +118,4 @@ cards:
         name: Office Mode
         card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
-  #
-  # Navbar
-  #
   - !include /config/dashboards/eidam/includes/navbar.yaml

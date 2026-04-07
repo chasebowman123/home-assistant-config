@@ -1,12 +1,9 @@
 type: custom:vertical-layout
 title: Cameras
 path: cameras
-theme: eidam-pastel
+theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  #
-  # Page Header
-  #
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
     card:
@@ -20,14 +17,9 @@ cards:
         - type: custom:button-card
           template: empty_column
 
-  #
-  # Ring Cameras
-  #
   - type: custom:button-card
     template: section_title
     name: Ring Cameras
-
-  # Lucas Room Ring Camera (live feed)
   - type: picture-entity
     entity: camera.lucas_ring
     name: Lucas's Room
@@ -35,13 +27,9 @@ cards:
     show_name: true
     camera_view: live
 
-  #
-  # Doorbell Status
-  #
   - type: custom:button-card
     template: section_title
     name: Doorbells
-
   - type: grid
     columns: 3
     square: false
@@ -57,7 +45,6 @@ cards:
             color: var(--warning-color)
           - value: 'off'
             color: var(--success-color)
-
       - type: custom:button-card
         entity: binary_sensor.upstairs_ding
         name: Upstairs
@@ -69,7 +56,6 @@ cards:
             color: var(--warning-color)
           - value: 'off'
             color: var(--success-color)
-
       - type: custom:button-card
         entity: binary_sensor.lobby_ding
         name: Lobby
@@ -82,30 +68,21 @@ cards:
           - value: 'off'
             color: var(--success-color)
 
-  #
-  # Nanit Baby Monitor
-  #
   - type: custom:button-card
     template: section_title
     name: Baby Monitor
-
   - type: markdown
     content: >
       Nanit streams are available on Echo Show devices via Alexa.
       The Nanit camera does not integrate natively with Home Assistant.
 
-  #
-  # Quick Actions
-  #
   - type: custom:button-card
     template: section_title
     name: Quick Actions
-
   - type: grid
     columns: 2
     square: false
     cards:
-      # Lobby Buzzer
       - type: custom:button-card
         entity: button.lobby_open_door
         name: Lobby Buzzer
@@ -121,7 +98,4 @@ cards:
           icon:
             - color: var(--warning-color)
 
-  #
-  # Navbar
-  #
   - !include /config/dashboards/eidam/includes/navbar.yaml

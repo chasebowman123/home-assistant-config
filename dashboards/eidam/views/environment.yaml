@@ -1,12 +1,9 @@
 type: custom:vertical-layout
 title: Environment
 path: environment
-theme: eidam-pastel
+theme: kohbo
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  #
-  # Page Header
-  #
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
     card:
@@ -20,13 +17,9 @@ cards:
         - type: custom:button-card
           template: empty_column
 
-  #
-  # Heating Overview
-  #
   - type: custom:button-card
     template: section_title
     name: Heating (Tado)
-
   - type: grid
     columns: 2
     square: false
@@ -38,7 +31,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
       - type: custom:button-card
         entity: climate.bedroom
         name: Bedroom
@@ -46,7 +38,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
       - type: custom:button-card
         entity: climate.lucas_room
         name: Lucas's Room
@@ -54,7 +45,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
       - type: custom:button-card
         entity: climate.office
         name: Office
@@ -62,7 +52,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
       - type: custom:button-card
         entity: climate.kitchen
         name: Kitchen
@@ -70,7 +59,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
       - type: custom:button-card
         entity: climate.hallway
         name: Hallway
@@ -79,13 +67,9 @@ cards:
           action: more-info
           haptic: light
 
-  #
-  # Air Conditioning
-  #
   - type: custom:button-card
     template: section_title
     name: Air Conditioning
-
   - type: tile
     entity: climate.lounge_ac
     name: Lounge AC (Sensibo)
@@ -93,18 +77,13 @@ cards:
       - type: climate-hvac-modes
       - type: target-temperature
 
-  #
-  # Air Quality
-  #
   - type: custom:button-card
     template: section_title
     name: Air Quality
-
   - type: grid
     columns: 2
     square: false
     cards:
-      # Lucas Room AQ
       - type: custom:button-card
         entity: sensor.lucass_room_air_quality_monitor_indoor_air_quality
         name: Lucas's Room
@@ -113,8 +92,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
-      # Air Purifier
       - type: custom:button-card
         entity: fan.core_400s
         name: Air Purifier
@@ -123,8 +100,6 @@ cards:
         tap_action:
           action: more-info
           haptic: light
-
-      # PM2.5
       - type: custom:button-card
         entity: sensor.core_400s_pm2_5
         name: PM2.5
@@ -134,31 +109,27 @@ cards:
           action: more-info
           haptic: light
 
-  #
-  # Temperature Graphs
-  #
   - type: custom:button-card
     template: section_title
     name: Temperature History
-
   - type: custom:mini-graph-card
     name: All Zones (24h)
     entities:
       - entity: sensor.lucas_room_temperature
         name: Lucas
-        color: "#74B9FF"
+        color: "#59A5D8"
       - entity: climate.lounge
         attribute: current_temperature
         name: Lounge
-        color: "#00B894"
+        color: "#06D6A0"
       - entity: climate.bedroom
         attribute: current_temperature
         name: Bedroom
-        color: "#A29BFE"
+        color: "#FFD166"
       - entity: climate.office
         attribute: current_temperature
         name: Office
-        color: "#FDCB6E"
+        color: "#ED4747"
     hours_to_show: 24
     points_per_hour: 4
     line_width: 2
@@ -167,13 +138,9 @@ cards:
       points: false
       legend: true
 
-  #
-  # Humidity
-  #
   - type: custom:button-card
     template: section_title
     name: Humidity
-
   - type: grid
     columns: 2
     square: false
@@ -187,7 +154,4 @@ cards:
           action: toggle
           haptic: light
 
-  #
-  # Navbar
-  #
   - !include /config/dashboards/eidam/includes/navbar.yaml
