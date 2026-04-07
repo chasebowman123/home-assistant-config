@@ -1,7 +1,7 @@
 type: custom:vertical-layout
 title: Lucas's Room
 path: rooms-lucas-room
-theme: eidam-pastel
+theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
@@ -11,7 +11,6 @@ cards:
       - name: "Lucas's Room"
       - navigation_path: /dashboard-eidam/rooms
       - settings_path: '#lucas_room_settings_popup'
-
   - type: custom:stack-in-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
@@ -37,7 +36,6 @@ cards:
               [[[
                 return entity.state == "on" ? "Sleeping" : "Awake";
               ]]]
-
   - type: custom:button-card
     template: section_title
     name: Environment
@@ -92,7 +90,6 @@ cards:
         tap_action:
           action: toggle
           haptic: light
-
   - type: custom:button-card
     template: section_title
     name: Climate
@@ -110,7 +107,6 @@ cards:
       - type: fan-speed
     features_position: inline
     vertical: false
-
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -156,7 +152,6 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
-
   - type: custom:button-card
     template: section_title
     name: Media
@@ -166,13 +161,11 @@ cards:
       - media_player: media_player.lucas_room_sonos
       - room_name: Lucas's Room
       - navigation_path: '#lucas_room_sonos_media_player'
-
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.lucas_room_sonos
       - hash: '#lucas_room_sonos_media_player'
-
   - type: vertical-stack
     cards:
       - type: custom:bubble-card
@@ -204,5 +197,4 @@ cards:
             card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
             secondary_info: last-changed
             state_color: true
-
   - !include /config/dashboards/eidam/includes/navbar.yaml
