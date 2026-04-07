@@ -1,5 +1,5 @@
 # Eidam Smart Home Dashboard
-# Kohbo-inspired design with pastel theme
+# Kohbo dark theme - original colours
 # URL path: /dashboard-eidam
 
 button_card_templates: !include_dir_merge_named /config/dashboards/templates/button_cards

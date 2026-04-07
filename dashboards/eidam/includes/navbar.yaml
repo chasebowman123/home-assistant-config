@@ -63,10 +63,8 @@ mobile:
 styles: |
   .navbar-card {
     border: none;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    background: rgb(33, 37, 41, .90);
+    backdrop-filter: blur(4px);
     width: 100%;
     max-width: 500px;
     bottom: -1px;
@@ -78,20 +76,11 @@ styles: |
   }
 
   .icon {
-    fill: #B2BEC3 !important;
+    fill: #AAAAAA !important;
   }
 
   .icon.active {
-    fill: #74B9FF !important;
-  }
-
-  .label {
-    color: #8395A7 !important;
-    font-size: 10px !important;
-  }
-
-  .label.active {
-    color: #74B9FF !important;
+    fill: white !important;
   }
 
   ha-ripple {
