@@ -1,383 +1,304 @@
-views:
-  ###############################################################################
-  # OVERVIEW DASHBOARD
-  # Main home screen - quick glance at everything
-  ###############################################################################
+type: custom:vertical-layout
+title: Home
+path: home
+theme: eidam-pastel
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  #
+  # Page Header
+  #
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        - type: custom:button-card
+          template: empty_column
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Eidam
+        - type: custom:button-card
+          template: kohbo_header_chip_card
+          icon: mdi:bell
+          icon_color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#notifications'
 
-  - title: Home
-    path: home
-    icon: mdi:home
-
-    type: sections
-    max_columns: 4
-
-    sections:
-      # ===========================================================================
-      # WELCOME HEADER
-      # ===========================================================================
-      - type: grid
-        cards:
-          - type: custom:mushroom-template-card
-            primary: >
-              {% set hour = now().hour %}
-              {% if hour < 12 %}Good morning{% elif hour < 17 %}Good afternoon{% else %}Good evening{% endif %}, Edward
-            secondary: "{{ now().strftime('%A, %d %B') }}"
-            icon: mdi:home
-            icon_color: amber
-            card_mod:
-              style: |
-                ha-card {
-                  background: transparent;
-                  border: none;
-                  --card-primary-font-size: 24px;
+  #
+  # Quick Overview - House mode + People
+  #
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
+    card:
+      type: custom:layout-card
+      layout_type: custom:grid-layout
+      layout:
+        grid-template-columns: 60% 40%
+        margin: 0px
+        padding: 0px
+        card_margin: 0px
+        gap: 5px
+      cards:
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  gap: 5px !important;
                 }
-
-          - type: custom:mushroom-chips-card
-            alignment: end
-            chips:
-              - type: template
-                icon: mdi:thermometer
-                content: "{{ states('sensor.home_outdoor_temperature') | round(0) }}°C"
-                icon_color: cyan
-              - type: weather
-                entity: weather.forecast_home
-                show_temperature: false
-                show_conditions: true
-              - type: template
-                icon: mdi:weather-sunset-down
-                content: "{{ as_timestamp(state_attr('sun.sun', 'next_setting')) | timestamp_custom('%H:%M') }}"
-                icon_color: orange
-
-      # ===========================================================================
-      # ROOM CARDS - Click to navigate
-      # ===========================================================================
-      - type: grid
-        title: Rooms
-        cards:
-          # LOUNGE
-          - type: custom:mushroom-template-card
-            primary: Lounge
-            secondary: >
-              {{ state_attr('climate.lounge', 'current_temperature') | round(0) }}°C
-              {% if is_state('light.lounge', 'on') %} • Lights on{% endif %}
-            icon: mdi:sofa
-            icon_color: "{% if is_state('light.lounge', 'on') %}amber{% else %}disabled{% endif %}"
-            badge_icon: "{% if is_state('media_player.lounge_tv_2', 'on') %}mdi:television{% endif %}"
-            tap_action:
-              action: navigate
-              navigation_path: /lounge-room
-            card_mod:
-              style: |
-                ha-card {
-                  background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(234, 88, 12, 0.05) 100%);
-                  border: 1px solid rgba(245, 158, 11, 0.2);
-                }
-
-          # BEDROOM
-          - type: custom:mushroom-template-card
-            primary: Bedroom
-            secondary: >
-              {{ state_attr('climate.bedroom_2', 'current_temperature') | round(0) }}°C
-              {% if is_state('light.bedroom', 'on') %} • Lights on{% endif %}
-            icon: mdi:bed
-            icon_color: "{% if is_state('light.bedroom', 'on') %}violet{% else %}disabled{% endif %}"
-            badge_icon: "{% if is_state('media_player.lg_webos_tv_oled55g54lw', 'on') %}mdi:television{% endif %}"
-            tap_action:
-              action: navigate
-              navigation_path: /bedroom-room
-            card_mod:
-              style: |
-                ha-card {
-                  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(124, 58, 237, 0.05) 100%);
-                  border: 1px solid rgba(139, 92, 246, 0.2);
-                }
-
-          # LUCAS'S ROOM
-          - type: custom:mushroom-template-card
-            primary: Lucas's Room
-            secondary: >
-              {{ state_attr('climate.lucas_s_room', 'current_temperature') | round(0) }}°C • {{ state_attr('climate.lucas_s_room', 'current_humidity') | round(0) }}%
-              {% if is_state('input_boolean.lucas_napping', 'on') %} • 😴{% endif %}
-            icon: mdi:baby-face-outline
-            icon_color: "{% if is_state('light.lucass_room', 'on') %}cyan{% else %}disabled{% endif %}"
-            badge_icon: "{% if is_state('input_boolean.lucas_napping', 'on') %}mdi:sleep{% endif %}"
-            badge_color: indigo
-            tap_action:
-              action: navigate
-              navigation_path: /lucas-room
-            card_mod:
-              style: |
-                ha-card {
-                  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
-                  border: 1px solid rgba(6, 182, 212, 0.2);
-                }
-
-          # KITCHEN & OFFICE
-          - type: custom:mushroom-template-card
-            primary: Kitchen & Office
-            secondary: >
-              {{ state_attr('climate.kitchen', 'current_temperature') | round(0) }}°C
-              {% if is_state('light.kitchen_spotlights', 'on') or is_state('light.office_spotlights', 'on') %} • Lights on{% endif %}
-            icon: mdi:chef-hat
-            icon_color: "{% if is_state('light.kitchen_spotlights', 'on') %}teal{% else %}disabled{% endif %}"
-            tap_action:
-              action: navigate
-              navigation_path: /kitchen-office
-            card_mod:
-              style: |
-                ha-card {
-                  background: linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(13, 148, 136, 0.05) 100%);
-                  border: 1px solid rgba(20, 184, 166, 0.2);
-                }
-
-          # HALLWAY
-          - type: custom:mushroom-template-card
-            primary: Hallway
-            secondary: >
-              {{ state_attr('climate.hallway', 'current_temperature') | round(0) }}°C
-              {% if is_state('light.hallway', 'on') %} • Lights on{% endif %}
-            icon: mdi:door
-            icon_color: "{% if is_state('light.hallway', 'on') %}orange{% else %}disabled{% endif %}"
-            tap_action:
-              action: navigate
-              navigation_path: /lighting
-            card_mod:
-              style: |
-                ha-card {
-                  background: linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(249, 115, 22, 0.05) 100%);
-                  border: 1px solid rgba(251, 146, 60, 0.2);
-                }
-
-          # BATHROOMS
-          - type: custom:mushroom-template-card
-            primary: Bathrooms
-            secondary: "{{ states('sensor.bathroom_th_humidity') | round(0) }}% humidity"
-            icon: mdi:shower
-            icon_color: "{% if is_state('light.bathroom_spotlights', 'on') %}cyan{% else %}disabled{% endif %}"
-            tap_action:
-              action: navigate
-              navigation_path: /bathrooms
-            card_mod:
-              style: |
-                ha-card {
-                  background: linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(6, 182, 212, 0.05) 100%);
-                  border: 1px solid rgba(14, 165, 233, 0.2);
-                }
-
-      # ===========================================================================
-      # SECURITY SUMMARY
-      # ===========================================================================
-      - type: grid
-        title: Security
-        cards:
-          - type: custom:mushroom-alarm-control-panel-card
-            entity: alarm_control_panel.home_alarm
-            states:
-              - armed_away
-              - armed_home
-            show_keypad: false
-
-          - type: custom:mushroom-chips-card
-            chips:
-              - type: template
-                icon: mdi:account
-                content: Edward
-                icon_color: "{% if is_state('person.edward_eidam', 'home') %}green{% else %}grey{% endif %}"
-              - type: template
-                icon: mdi:account
-                content: Loretta
-                icon_color: "{% if is_state('person.loretta_eidam', 'home') %}green{% else %}grey{% endif %}"
-              - type: template
-                icon: mdi:dog
-                content: Dogs
-                icon_color: "{% if is_state('input_boolean.dogs_are_out', 'off') %}green{% else %}orange{% endif %}"
+          card:
+            type: horizontal-stack
+            cards:
+              # House Mode Chip
+              - type: custom:button-card
+                template: kohbo_chip_card
+                entity: input_select.house
+                state:
+                  - value: "Away"
+                    icon: mdi:home-export-outline
+                    color: var(--warning-color)
+                  - value: "All Out"
+                    icon: mdi:home-off-outline
+                    color: var(--error-color)
+                  - value: "Day Time"
+                    icon: mdi:weather-sunny
+                    color: var(--primary-color)
+                  - value: "Evening Time"
+                    icon: mdi:weather-sunset
+                    color: var(--success-color)
+                  - value: "Night Time"
+                    icon: mdi:weather-night
+                    color: var(--secondary-text-color)
                 tap_action:
-                  action: toggle
-                  entity: input_boolean.dogs_are_out
+                  action: navigate
+                  navigation_path: '#house_mode'
+                  haptic: light
 
-          - type: custom:mushroom-template-card
-            primary: Cameras
-            secondary: >
-              {% set offline = states.camera | selectattr('state', 'eq', 'unavailable') | list | count %}
-              {% if offline > 0 %}{{ offline }} offline{% else %}All online{% endif %}
-            icon: mdi:cctv
-            icon_color: "{% if states.camera | selectattr('state', 'eq', 'unavailable') | list | count > 0 %}red{% else %}green{% endif %}"
-            tap_action:
-              action: navigate
-              navigation_path: /security
+              # Energy
+              - type: custom:button-card
+                template: kohbo_chip_card
+                name: Energy
+                icon: mdi:lightning-bolt
+                entity: sensor.energy_daily
+                show_state: true
+                styles:
+                  state:
+                    - margin-left: 3px
 
-      # ===========================================================================
-      # CLIMATE & ENERGY
-      # ===========================================================================
-      - type: grid
-        title: ""
-        cards:
-          - type: custom:mushroom-template-card
-            primary: Climate
-            secondary: >
-              {% set heating = states.climate | selectattr('attributes.hvac_action', 'eq', 'heating') | list | count %}
-              {% if heating > 0 %}{{ heating }} zones heating{% else %}Idle{% endif %}
-            icon: mdi:thermostat
-            icon_color: "{% if states.climate | selectattr('attributes.hvac_action', 'eq', 'heating') | list | count > 0 %}orange{% else %}grey{% endif %}"
-            tap_action:
-              action: navigate
-              navigation_path: /climate
+        # People
+        - type: custom:mod-card
+          card_mod:
+            style:
+              hui-horizontal-stack-card$: |
+                #root {
+                  display: flex;
+                  justify-content: flex-end;
+                  align-items: start;
+                }
+              .: |
+                ha-card {
+                  height: 100% !important;
+                  align-self: center !important;
+                }
+          card:
+            type: horizontal-stack
+            cards:
+              - type: custom:button-card
+                entity: person.edward
+                template: kohbo_person_entity
+                tap_action:
+                  action: more-info
+                  haptic: light
 
-          - type: custom:mushroom-template-card
-            primary: Energy
-            secondary: >
-              {% set lights = states.light | selectattr('state', 'eq', 'on') | list | count %}
-              {{ lights }} lights on
-            icon: mdi:lightning-bolt
-            icon_color: yellow
-            tap_action:
-              action: navigate
-              navigation_path: /energy
 
-      # ===========================================================================
-      # QUICK ACTIONS
-      # ===========================================================================
-      - type: grid
-        title: Quick Actions
+  #
+  # Security Overview
+  #
+  - type: custom:stack-in-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_small_header
+        name: Security
+
+      - type: custom:stack-in-card
+        mode: vertical
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
         cards:
           - type: horizontal-stack
             cards:
-              - type: custom:mushroom-template-card
-                primary: Morning
-                icon: mdi:weather-sunset-up
-                icon_color: amber
-                layout: vertical
-                tap_action:
-                  action: call-service
-                  service: script.morning_routine
-                card_mod:
-                  style: "ha-card { background: rgba(245, 158, 11, 0.15); }"
+              # Ring Doorbell - Basement
+              - type: custom:button-card
+                entity: binary_sensor.basement_door_ding
+                name: Basement
+                template: kohbo_security_item
+                icon: mdi:doorbell
+                state:
+                  - value: 'on'
+                    icon: mdi:doorbell
+                    color: var(--warning-color)
+                    state_display: Ringing
+                  - value: 'off'
+                    icon: mdi:doorbell
+                    color: var(--success-color)
+                    state_display: Clear
 
-              - type: custom:mushroom-template-card
-                primary: Evening
-                icon: mdi:weather-night
-                icon_color: purple
-                layout: vertical
-                tap_action:
-                  action: call-service
-                  service: script.sunset_routine
-                card_mod:
-                  style: "ha-card { background: rgba(147, 51, 234, 0.15); }"
+              # Ring Doorbell - Upstairs
+              - type: custom:button-card
+                entity: binary_sensor.upstairs_ding
+                name: Upstairs
+                template: kohbo_security_item
+                icon: mdi:doorbell
+                state:
+                  - value: 'on'
+                    color: var(--warning-color)
+                    state_display: Ringing
+                  - value: 'off'
+                    color: var(--success-color)
+                    state_display: Clear
 
-              - type: custom:mushroom-template-card
-                primary: Movie
-                icon: mdi:movie-open
-                icon_color: blue
-                layout: vertical
-                tap_action:
-                  action: call-service
-                  service: scene.turn_on
-                  target:
-                    entity_id: scene.lounge_tv_tokyo
-                card_mod:
-                  style: "ha-card { background: rgba(59, 130, 246, 0.15); }"
+              # Ring Doorbell - Lobby
+              - type: custom:button-card
+                entity: binary_sensor.lobby_ding
+                name: Lobby
+                template: kohbo_security_item
+                icon: mdi:doorbell
+                state:
+                  - value: 'on'
+                    color: var(--warning-color)
+                    state_display: Ringing
+                  - value: 'off'
+                    color: var(--success-color)
+                    state_display: Clear
 
-              - type: custom:mushroom-template-card
-                primary: Goodnight
-                icon: mdi:bed
-                icon_color: indigo
-                layout: vertical
-                tap_action:
-                  action: call-service
-                  service: script.goodnight_routine
-                card_mod:
-                  style: "ha-card { background: rgba(99, 102, 241, 0.15); }"
-
-              - type: custom:mushroom-template-card
-                primary: All Off
-                icon: mdi:lightbulb-off
-                icon_color: grey
-                layout: vertical
-                tap_action:
-                  action: call-service
-                  service: script.all_lights_off
-                card_mod:
-                  style: "ha-card { background: rgba(100, 100, 100, 0.15); }"
-
-      # ===========================================================================
-      # MODES
-      # ===========================================================================
-      - type: grid
-        title: Modes
-        cards:
-          - type: custom:mushroom-chips-card
-            chips:
-              - type: entity
-                entity: input_boolean.lucas_napping
-                tap_action:
-                  action: toggle
-              - type: entity
-                entity: input_boolean.do_not_disturb
-                tap_action:
-                  action: toggle
-              - type: entity
-                entity: input_boolean.loretta_meeting_mode
-                tap_action:
-                  action: toggle
-              - type: entity
-                entity: input_boolean.vacation_mode
-                tap_action:
-                  action: toggle
-
-      # ===========================================================================
-      # APPLIANCES
-      # ===========================================================================
-      - type: grid
-        title: Appliances
-        cards:
-          - type: custom:mushroom-chips-card
-            chips:
-              - type: template
-                icon: mdi:washing-machine
-                content: "{% if is_state('sensor.washing_machine_machine_state', 'run') %}Running{% else %}Idle{% endif %}"
-                icon_color: "{% if is_state('sensor.washing_machine_machine_state', 'run') %}blue{% else %}grey{% endif %}"
+          - type: horizontal-stack
+            cards:
+              # Cameras link
+              - type: custom:button-card
+                name: Cameras
+                icon: mdi:cctv
+                template: kohbo_security_item
                 tap_action:
                   action: navigate
-                  navigation_path: /appliances
-              - type: template
-                icon: mdi:tumble-dryer
-                content: "{% if is_state('sensor.tumble_dryer_machine_state', 'run') %}Running{% else %}Idle{% endif %}"
-                icon_color: "{% if is_state('sensor.tumble_dryer_machine_state', 'run') %}orange{% else %}grey{% endif %}"
-              - type: template
-                icon: mdi:dishwasher
-                content: "{% if is_state('sensor.dishwasher_operation_state', 'run') %}Running{% else %}Ready{% endif %}"
-                icon_color: "{% if is_state('sensor.dishwasher_operation_state', 'run') %}green{% else %}grey{% endif %}"
-              - type: template
-                icon: mdi:stove
-                content: "{% if not is_state('sensor.oven', 'off') %}On{% else %}Off{% endif %}"
-                icon_color: "{% if not is_state('sensor.oven', 'off') %}red{% else %}grey{% endif %}"
+                  navigation_path: '/dashboard-eidam/cameras'
+                  haptic: light
 
-      # ===========================================================================
-      # ALERTS
-      # ===========================================================================
-      - type: grid
-        title: ""
-        cards:
-          - type: conditional
-            conditions:
-              - condition: numeric_state
-                entity: sensor.garden_battery
-                below: 20
-            card:
-              type: custom:mushroom-template-card
-              primary: "⚠️ Garden Camera"
-              secondary: "Battery {{ states('sensor.garden_battery') }}% - Charge needed"
-              icon: mdi:battery-alert
-              icon_color: red
+              # Water Leak Status
+              - type: custom:button-card
+                name: Leaks
+                icon: mdi:water-alert
+                template: kohbo_security_item
+                tap_action:
+                  action: more-info
 
-          - type: conditional
-            conditions:
-              - condition: state
-                entity: sensor.dishwasher_salt_nearly_empty
-                state: "present"
-            card:
-              type: custom:mushroom-template-card
-              primary: "⚠️ Dishwasher"
-              secondary: "Salt refill needed"
-              icon: mdi:shaker-outline
-              icon_color: amber
+
+  #
+  # Climate Overview
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Climate
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      # Interior Lights count
+      - type: custom:button-card
+        entity: light.lounge_spots
+        name: Lights
+        template: kohbo_device_entity
+        icon: mdi:lightbulb-group
+        state_display: >
+          [[[
+            const lights = [
+              'light.lounge_spots','light.lounge_play_light_bar','light.lounge_light_strip',
+              'light.lounge_piano_lamp','light.lounge_iris','light.hallway_spots',
+              'light.hallway_lamp_post','light.hallway_signe_light','light.bedroom_spots',
+              'light.bedroom_signe','light.bedroom_tv_strip','light.lucas_room_spots',
+              'light.lucas_room_iris','light.lucas_cloud_lamp','light.lucas_go_nightlight',
+              'light.kitchen_spotlights','light.office_spots','light.cloakroom_light',
+              'light.bathroom_spots','light.lucas_bathroom_lights','light.garden_lights'
+            ];
+            const onCount = lights.filter(id => states[id]?.state === 'on').length;
+            return onCount > 0 ? `${onCount} On` : 'All Off';
+          ]]]
+        tap_action:
+          action: navigate
+          navigation_path: '/dashboard-eidam/rooms'
+          haptic: light
+
+      # Lounge Climate
+      - type: custom:button-card
+        entity: climate.lounge
+        name: Lounge
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Bedroom Climate
+      - type: custom:button-card
+        entity: climate.bedroom
+        name: Bedroom
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Lucas Climate
+      - type: custom:button-card
+        entity: climate.lucas_room
+        name: Lucas's Room
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # Office Climate
+      - type: custom:button-card
+        entity: climate.office
+        name: Office
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+      # AC (Sensibo)
+      - type: custom:button-card
+        entity: climate.lounge_ac
+        name: Lounge AC
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+
+
+  #
+  # House Mode Popup
+  #
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#house_mode'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 450px)
+        margin_top_desktop: calc(100vh - 450px)
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: House Mode
+
+      - type: entities
+        entities:
+          - entity: input_select.house
+            name: House Mode
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/eidam/includes/navbar.yaml

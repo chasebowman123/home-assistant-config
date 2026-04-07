@@ -1,0 +1,190 @@
+type: custom:vertical-layout
+title: Rooms
+path: rooms
+theme: eidam-pastel
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  #
+  # Page Header
+  #
+  - type: custom:mod-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_nested_page_toolbar.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        - type: custom:button-card
+          template: empty_column
+        - type: custom:button-card
+          template: kohbo_header_page_title
+          name: Rooms
+        - type: custom:button-card
+          template: empty_column
+
+  #
+  # Overview chips
+  #
+  - type: custom:mod-card
+    style: !include /config/dashboards/templates/includes/card_mod/chips/page_chip_layout.yaml
+    card:
+      type: horizontal-stack
+      cards:
+        - type: custom:button-card
+          template: kohbo_chip_card
+          entity: input_select.house
+          icon: mdi:home
+          state:
+            - value: "Away"
+              icon: mdi:home-export-outline
+              color: var(--warning-color)
+            - value: "Day Time"
+              icon: mdi:weather-sunny
+              color: var(--primary-color)
+            - value: "Evening Time"
+              icon: mdi:weather-sunset
+              color: var(--success-color)
+            - value: "Night Time"
+              icon: mdi:weather-night
+              color: var(--secondary-text-color)
+          tap_action:
+            action: navigate
+            navigation_path: '#house_mode'
+            haptic: light
+
+        - type: custom:button-card
+          entity: person.edward
+          template: kohbo_chip_card
+          icon: mdi:account
+          state_display: >
+            [[[
+              return entity.state;
+            ]]]
+
+  #
+  # Room Cards
+  #
+  - type: vertical-stack
+    cards:
+      # Lounge
+      - type: custom:button-card
+        entity: input_select.lounge
+        name: Lounge
+        template: kohbo_device_entity
+        icon: mdi:sofa
+        show_state: true
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-eidam/rooms-lounge
+          haptic: light
+
+      # Bedroom
+      - type: custom:button-card
+        entity: input_select.bedroom
+        name: Bedroom
+        template: kohbo_device_entity
+        icon: mdi:bed-king
+        show_state: true
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-eidam/rooms-bedroom
+          haptic: light
+
+      # Lucas's Room
+      - type: custom:button-card
+        entity: input_select.lucas_room
+        name: "Lucas's Room"
+        template: kohbo_device_entity
+        icon: mdi:baby-face-outline
+        show_state: true
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-eidam/rooms-lucas-room
+          haptic: light
+
+      # Kitchen
+      - type: custom:button-card
+        entity: light.kitchen_spotlights
+        name: Kitchen
+        template: kohbo_device_entity
+        icon: mdi:silverware-fork-knife
+        show_state: true
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-eidam/rooms-kitchen
+          haptic: light
+
+      # Office
+      - type: custom:button-card
+        entity: input_select.office
+        name: Office
+        template: kohbo_device_entity
+        icon: mdi:laptop
+        show_state: true
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-eidam/rooms-office
+          haptic: light
+
+      # Hallway
+      - type: custom:button-card
+        entity: light.hallway_spots
+        name: Hallway
+        template: kohbo_device_entity
+        icon: mdi:door
+        show_state: true
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-eidam/rooms-hallway
+          haptic: light
+
+      # Garden
+      - type: custom:button-card
+        entity: light.garden_lights
+        name: Garden
+        template: kohbo_device_entity
+        icon: mdi:tree
+        show_state: true
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-eidam/rooms-garden
+          haptic: light
+
+      # Bathroom
+      - type: custom:button-card
+        entity: light.bathroom_spots
+        name: Bathroom
+        template: kohbo_device_entity
+        icon: mdi:shower
+        show_state: true
+        tap_action:
+          action: navigate
+          navigation_path: /dashboard-eidam/rooms-bathroom
+          haptic: light
+
+
+  #
+  # House Mode Popup
+  #
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#house_mode'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 450px)
+        margin_top_desktop: calc(100vh - 450px)
+
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: House Mode
+
+      - type: entities
+        entities:
+          - entity: input_select.house
+            name: House Mode
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/eidam/includes/navbar.yaml
