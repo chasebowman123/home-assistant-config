@@ -1,7 +1,7 @@
 type: custom:vertical-layout
 title: Bedroom
 path: rooms-bedroom
-theme: eidam-pastel
+theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
@@ -11,7 +11,6 @@ cards:
       - name: Bedroom
       - navigation_path: /dashboard-eidam/rooms
       - settings_path: '#bedroom_settings_popup'
-
   - type: custom:stack-in-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
@@ -24,7 +23,6 @@ cards:
           - entity: input_select.bedroom
             name: Bedroom Mode
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
-
   - type: custom:button-card
     template: section_title
     name: Climate
@@ -34,7 +32,6 @@ cards:
     features:
       - type: climate-hvac-modes
       - type: target-temperature
-
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -63,7 +60,6 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
-
   - type: custom:button-card
     template: section_title
     name: Media
@@ -73,7 +69,6 @@ cards:
       - media_player: media_player.bedroom_sonos
       - room_name: Bedroom
       - navigation_path: '#bedroom_sonos_media_player'
-
   - type: custom:button-card
     template: section_title
     name: Devices
@@ -86,13 +81,11 @@ cards:
         name: Bedroom TV
         template: kohbo_device_entity
         icon: mdi:television
-
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.bedroom_sonos
       - hash: '#bedroom_sonos_media_player'
-
   - type: vertical-stack
     cards:
       - type: custom:bubble-card
@@ -113,5 +106,4 @@ cards:
           - entity: input_select.bedroom
             name: Bedroom Mode
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
-
   - !include /config/dashboards/eidam/includes/navbar.yaml

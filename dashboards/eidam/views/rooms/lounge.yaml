@@ -1,13 +1,10 @@
 type: custom:vertical-layout
 title: Lounge
 path: rooms-lounge
-theme: eidam-pastel
+theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
-  #
-  # Page Header
-  #
   - type: custom:decluttering-card
     template: room_page_top_toolbar
     variables:
@@ -15,9 +12,6 @@ cards:
       - navigation_path: /dashboard-eidam/rooms
       - settings_path: '#lounge_settings_popup'
 
-  #
-  # Room Mode
-  #
   - type: custom:stack-in-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
@@ -31,20 +25,15 @@ cards:
             name: Lounge Mode
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
-  #
-  # Climate
-  #
   - type: custom:button-card
     template: section_title
     name: Climate
-
   - type: tile
     entity: climate.lounge
     name: Lounge Heating
     features:
       - type: climate-hvac-modes
       - type: target-temperature
-
   - type: tile
     entity: climate.lounge_ac
     name: Lounge AC
@@ -52,13 +41,9 @@ cards:
       - type: climate-hvac-modes
       - type: target-temperature
 
-  #
-  # Lights
-  #
   - type: custom:button-card
     template: section_title
     name: Lights
-
   - type: tile
     entity: light.lounge_spots
     name: Spots
@@ -67,7 +52,6 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
-
   - type: tile
     entity: light.lounge_play_light_bar
     name: Play Light Bar
@@ -77,7 +61,6 @@ cards:
       - type: light-color-temp
     features_position: inline
     vertical: false
-
   - type: tile
     entity: light.lounge_light_strip
     name: Light Strip
@@ -86,7 +69,6 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
-
   - type: tile
     entity: light.lounge_piano_lamp
     name: Piano Lamp
@@ -95,7 +77,6 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
-
   - type: tile
     entity: light.lounge_iris
     name: Iris
@@ -105,8 +86,6 @@ cards:
       - type: light-color-temp
     features_position: inline
     vertical: false
-
-  # Accent Switches
   - type: grid
     columns: 2
     square: false
@@ -132,13 +111,9 @@ cards:
         template: kohbo_device_entity
         icon: mdi:disco
 
-  #
-  # Media
-  #
   - type: custom:button-card
     template: section_title
     name: Media
-
   - type: custom:decluttering-card
     template: media_player
     variables:
@@ -146,13 +121,9 @@ cards:
       - room_name: Lounge
       - navigation_path: '#lounge_sonos_media_player'
 
-  #
-  # Devices
-  #
   - type: custom:button-card
     template: section_title
     name: Devices
-
   - type: grid
     columns: 2
     square: false
@@ -168,15 +139,11 @@ cards:
         template: kohbo_device_entity
         icon: mdi:sync
 
-  #
-  # Popups
-  #
   - type: custom:decluttering-card
     template: media_player_pop_up
     variables:
       - media_player: media_player.lounge_sonos
       - hash: '#lounge_sonos_media_player'
-
   - type: vertical-stack
     cards:
       - type: custom:bubble-card
@@ -198,7 +165,4 @@ cards:
             name: Lounge Mode
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
 
-  #
-  # Navbar
-  #
   - !include /config/dashboards/eidam/includes/navbar.yaml

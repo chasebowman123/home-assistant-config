@@ -1,7 +1,7 @@
 type: custom:vertical-layout
 title: Office
 path: rooms-office
-theme: eidam-pastel
+theme: kohbo
 subview: true
 layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
 cards:
@@ -11,7 +11,6 @@ cards:
       - name: Office
       - navigation_path: /dashboard-eidam/rooms
       - settings_path: '#office_settings_popup'
-
   - type: custom:stack-in-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
@@ -37,7 +36,6 @@ cards:
               [[[
                 return entity.state == "on" ? "Active" : "Off";
               ]]]
-
   - type: custom:button-card
     template: section_title
     name: Climate
@@ -47,7 +45,6 @@ cards:
     features:
       - type: climate-hvac-modes
       - type: target-temperature
-
   - type: custom:button-card
     template: section_title
     name: Lights
@@ -59,7 +56,6 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
-
   - type: custom:button-card
     template: section_title
     name: Quick Settings
@@ -72,7 +68,6 @@ cards:
         card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
         secondary_info: last-changed
         state_color: true
-
   - type: vertical-stack
     cards:
       - type: custom:bubble-card
@@ -93,5 +88,4 @@ cards:
           - entity: input_select.office
             name: Office Mode
             card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
-
   - !include /config/dashboards/eidam/includes/navbar.yaml
