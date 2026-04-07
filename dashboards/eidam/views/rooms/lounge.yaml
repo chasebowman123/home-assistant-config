@@ -1,0 +1,204 @@
+type: custom:vertical-layout
+title: Lounge
+path: rooms-lounge
+theme: eidam-pastel
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  #
+  # Page Header
+  #
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: Lounge
+      - navigation_path: /dashboard-eidam/rooms
+      - settings_path: '#lounge_settings_popup'
+
+  #
+  # Room Mode
+  #
+  - type: custom:stack-in-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_small_header
+        name: Lounge Mode
+      - type: entities
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+        entities:
+          - entity: input_select.lounge
+            name: Lounge Mode
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+  #
+  # Climate
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Climate
+
+  - type: tile
+    entity: climate.lounge
+    name: Lounge Heating
+    features:
+      - type: climate-hvac-modes
+      - type: target-temperature
+
+  - type: tile
+    entity: climate.lounge_ac
+    name: Lounge AC
+    features:
+      - type: climate-hvac-modes
+      - type: target-temperature
+
+  #
+  # Lights
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+
+  - type: tile
+    entity: light.lounge_spots
+    name: Spots
+    icon: mdi:ceiling-light-multiple
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  - type: tile
+    entity: light.lounge_play_light_bar
+    name: Play Light Bar
+    icon: mdi:television-ambient-light
+    features:
+      - type: light-brightness
+      - type: light-color-temp
+    features_position: inline
+    vertical: false
+
+  - type: tile
+    entity: light.lounge_light_strip
+    name: Light Strip
+    icon: mdi:led-strip-variant
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  - type: tile
+    entity: light.lounge_piano_lamp
+    name: Piano Lamp
+    icon: mdi:floor-lamp
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  - type: tile
+    entity: light.lounge_iris
+    name: Iris
+    icon: mdi:lightbulb
+    features:
+      - type: light-brightness
+      - type: light-color-temp
+    features_position: inline
+    vertical: false
+
+  # Accent Switches
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: switch.bubble_light
+        name: Bubble Light
+        template: kohbo_device_entity
+        icon: mdi:lightbulb-outline
+      - type: custom:button-card
+        entity: switch.banana_light
+        name: Banana Light
+        template: kohbo_device_entity
+        icon: mdi:lightbulb-outline
+      - type: custom:button-card
+        entity: switch.bar_light
+        name: Bar Light
+        template: kohbo_device_entity
+        icon: mdi:lightbulb-outline
+      - type: custom:button-card
+        entity: switch.disco_lights
+        name: Disco Lights
+        template: kohbo_device_entity
+        icon: mdi:disco
+
+  #
+  # Media
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Media
+
+  - type: custom:decluttering-card
+    template: media_player
+    variables:
+      - media_player: media_player.lounge_sonos
+      - room_name: Lounge
+      - navigation_path: '#lounge_sonos_media_player'
+
+  #
+  # Devices
+  #
+  - type: custom:button-card
+    template: section_title
+    name: Devices
+
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: media_player.lounge_tv
+        name: Lounge TV
+        template: kohbo_device_entity
+        icon: mdi:television
+      - type: custom:button-card
+        entity: switch.lounge_hue_sync_box
+        name: Hue Sync Box
+        template: kohbo_device_entity
+        icon: mdi:sync
+
+  #
+  # Popups
+  #
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.lounge_sonos
+      - hash: '#lounge_sonos_media_player'
+
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#lounge_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 500px)
+        margin_top_desktop: calc(100vh - 500px)
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Lounge Settings
+      - type: custom:button-card
+        template: section_title
+        name: Mode
+      - type: entities
+        entities:
+          - entity: input_select.lounge
+            name: Lounge Mode
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+
+  #
+  # Navbar
+  #
+  - !include /config/dashboards/eidam/includes/navbar.yaml

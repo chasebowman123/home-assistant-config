@@ -1,0 +1,208 @@
+type: custom:vertical-layout
+title: Lucas's Room
+path: rooms-lucas-room
+theme: eidam-pastel
+subview: true
+layout: !include /config/dashboards/templates/includes/layouts/kohbo_page_layout.yaml
+cards:
+  - type: custom:decluttering-card
+    template: room_page_top_toolbar
+    variables:
+      - name: "Lucas's Room"
+      - navigation_path: /dashboard-eidam/rooms
+      - settings_path: '#lucas_room_settings_popup'
+
+  - type: custom:stack-in-card
+    card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
+    cards:
+      - type: custom:button-card
+        template: kohbo_card_small_header
+        name: Room Mode
+      - type: entities
+        card_mod: !include /config/dashboards/templates/includes/people/kohbo_person_entities_layout.yaml
+        entities:
+          - entity: input_select.lucas_room
+            name: Room Mode
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+      - type: custom:stack-in-card
+        mode: horizontal
+        card_mod: !include /config/dashboards/templates/includes/card_mod/base/kohbo_horizontal_stack_bg.yaml
+        cards:
+          - type: custom:button-card
+            entity: input_boolean.lucas_sleeping
+            name: Sleeping
+            icon: mdi:baby-face-outline
+            template: kohbo_security_item
+            state_display: |
+              [[[
+                return entity.state == "on" ? "Sleeping" : "Awake";
+              ]]]
+
+  - type: custom:button-card
+    template: section_title
+    name: Environment
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: climate.lucas_room
+        name: Temperature
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
+      - type: custom:button-card
+        entity: sensor.lucass_room_air_quality_monitor_indoor_air_quality
+        name: Air Quality
+        template: kohbo_device_entity
+        icon: mdi:air-filter
+        tap_action:
+          action: more-info
+          haptic: light
+      - type: custom:button-card
+        entity: sensor.lucas_room_temperature
+        name: Room Temp
+        template: kohbo_device_entity
+        icon: mdi:thermometer
+        tap_action:
+          action: more-info
+          haptic: light
+      - type: custom:button-card
+        entity: sensor.lucas_bath_temp_sensor_temperature
+        name: Bath Temp
+        template: kohbo_device_entity
+        icon: mdi:bathtub-outline
+        tap_action:
+          action: more-info
+          haptic: light
+      - type: custom:button-card
+        entity: sensor.core_400s_pm2_5
+        name: PM2.5
+        template: kohbo_device_entity
+        icon: mdi:weather-dust
+        tap_action:
+          action: more-info
+          haptic: light
+      - type: custom:button-card
+        entity: switch.lucas_strip_humidifier
+        name: Humidifier
+        template: kohbo_device_entity
+        icon: mdi:air-humidifier
+        tap_action:
+          action: toggle
+          haptic: light
+
+  - type: custom:button-card
+    template: section_title
+    name: Climate
+  - type: tile
+    entity: climate.lucas_room
+    name: Lucas's Room
+    features:
+      - type: climate-hvac-modes
+      - type: target-temperature
+  - type: tile
+    entity: fan.core_400s
+    name: Air Purifier
+    icon: mdi:air-purifier
+    features:
+      - type: fan-speed
+    features_position: inline
+    vertical: false
+
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+  - type: tile
+    entity: light.lucas_room_spots
+    name: Spots
+    icon: mdi:ceiling-light-multiple
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+  - type: tile
+    entity: light.lucas_room_iris
+    name: Iris
+    icon: mdi:lightbulb
+    features:
+      - type: light-brightness
+      - type: light-color-temp
+    features_position: inline
+    vertical: false
+  - type: tile
+    entity: light.lucas_cloud_lamp
+    name: Cloud Lamp
+    icon: mdi:cloud
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+  - type: tile
+    entity: light.lucas_go_nightlight
+    name: Go Nightlight
+    icon: mdi:lightbulb-night
+    features:
+      - type: light-brightness
+      - type: light-color-temp
+    features_position: inline
+    vertical: false
+  - type: tile
+    entity: light.lucas_bathroom_lights
+    name: Lucas Bathroom
+    icon: mdi:shower
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
+
+  - type: custom:button-card
+    template: section_title
+    name: Media
+  - type: custom:decluttering-card
+    template: media_player
+    variables:
+      - media_player: media_player.lucas_room_sonos
+      - room_name: Lucas's Room
+      - navigation_path: '#lucas_room_sonos_media_player'
+
+  - type: custom:decluttering-card
+    template: media_player_pop_up
+    variables:
+      - media_player: media_player.lucas_room_sonos
+      - hash: '#lucas_room_sonos_media_player'
+
+  - type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '#lucas_room_settings_popup'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 500px)
+        margin_top_desktop: calc(100vh - 500px)
+      - type: custom:button-card
+        template: kohbo_popup_page_title
+        name: Lucas's Room Settings
+      - type: custom:button-card
+        template: section_title
+        name: Mode
+      - type: entities
+        entities:
+          - entity: input_select.lucas_room
+            name: Room Mode
+            card_mod: !include /config/dashboards/templates/includes/card_mod/entities/entity_no_icon.yaml
+      - type: custom:button-card
+        template: section_title
+        name: Booleans
+      - type: entities
+        entities:
+          - entity: input_boolean.lucas_sleeping
+            name: Lucas Sleeping
+            icon: mdi:baby-face-outline
+            card_mod: !include /config/dashboards/templates/includes/kohbo_boolean_entity_layout.yaml
+            secondary_info: last-changed
+            state_color: true
+
+  - !include /config/dashboards/eidam/includes/navbar.yaml
