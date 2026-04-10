@@ -1,0 +1,28 @@
+eidam_media_player_pop_up:
+  card:
+    type: vertical-stack
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: '[[hash]]'
+        close_by_clicking_outside: true
+        styles: !include /config/dashboards/templates/includes/kohbo_popup_styles.yaml
+        margin_top_mobile: calc(100vh - 850px)
+        margin_top_desktop: calc(100vh - 850px)
+
+      - type: "custom:mediocre-massive-media-player-card"
+        entity_id: '[[media_player]]'
+        ma_entity_id: '[[media_player]]'
+        mode: in-card
+        speaker_group:
+          entities:
+            - media_player.lounge_sonos
+            - media_player.bedroom_sonos
+            - media_player.lucas_room_sonos
+            - media_player.kitchen
+            - media_player.lounge_marshall_1
+            - media_player.lounge_marshall_2
+            - media_player.bedroom_marshall_1
+            - media_player.bedroom_marshall_2
+            - media_player.roaming_marshall
+            - media_player.roaming_sonos

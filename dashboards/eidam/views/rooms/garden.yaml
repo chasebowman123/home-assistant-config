@@ -22,6 +22,14 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
+  - type: tile
+    entity: light.garden_door_light
+    name: Door Light
+    icon: mdi:outdoor-lamp
+    features:
+      - type: light-brightness
+    features_position: inline
+    vertical: false
   - type: vertical-stack
     cards:
       - type: custom:bubble-card

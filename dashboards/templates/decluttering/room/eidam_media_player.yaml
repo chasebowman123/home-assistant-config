@@ -1,0 +1,29 @@
+#
+# Eidam Media Player — adapted speaker group for Edward's home
+#
+eidam_media_player:
+  card:
+    type: "custom:mediocre-media-player-card"
+    entity_id: '[[media_player]]'
+    ma_entity_id: '[[media_player]]'
+    card_mod:
+      style: |
+        .mmpc-1pnwwh8 {
+          align-items: end !important;
+        }
+    speaker_group:
+      entities:
+        - media_player.lounge_sonos
+        - media_player.bedroom_sonos
+        - media_player.lucas_room_sonos
+        - media_player.kitchen
+        - media_player.lounge_marshall_1
+        - media_player.lounge_marshall_2
+        - media_player.bedroom_marshall_1
+        - media_player.bedroom_marshall_2
+        - media_player.roaming_marshall
+        - media_player.roaming_sonos
+    action:
+      tap_action:
+        action: navigate
+        navigation_path: '[[navigation_path]]'

@@ -115,11 +115,31 @@ cards:
     template: section_title
     name: Media
   - type: custom:decluttering-card
-    template: media_player
+    template: eidam_media_player
     variables:
       - media_player: media_player.lounge_sonos
       - room_name: Lounge
       - navigation_path: '#lounge_sonos_media_player'
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: media_player.lounge_marshall_1
+        name: Marshall 1
+        template: kohbo_device_entity
+        icon: mdi:speaker
+        tap_action:
+          action: more-info
+          haptic: light
+      - type: custom:button-card
+        entity: media_player.lounge_marshall_2
+        name: Marshall 2
+        template: kohbo_device_entity
+        icon: mdi:speaker
+        tap_action:
+          action: more-info
+          haptic: light
 
   - type: custom:button-card
     template: section_title
@@ -140,7 +160,7 @@ cards:
         icon: mdi:sync
 
   - type: custom:decluttering-card
-    template: media_player_pop_up
+    template: eidam_media_player_pop_up
     variables:
       - media_player: media_player.lounge_sonos
       - hash: '#lounge_sonos_media_player'

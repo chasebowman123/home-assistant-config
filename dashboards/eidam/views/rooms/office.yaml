@@ -56,6 +56,24 @@ cards:
       - type: light-brightness
     features_position: inline
     vertical: false
+  - type: tile
+    entity: light.office_lamp
+    name: Floor Lamp
+    icon: mdi:floor-lamp
+    features:
+      - type: light-brightness
+      - type: light-color-temp
+    features_position: inline
+    vertical: false
+  - type: grid
+    columns: 2
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: switch.office_edison_light
+        name: Edison Light
+        template: kohbo_device_entity
+        icon: mdi:lightbulb-variant-outline
   - type: custom:button-card
     template: section_title
     name: Quick Settings

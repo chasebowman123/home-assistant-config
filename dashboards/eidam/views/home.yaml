@@ -22,13 +22,14 @@ cards:
             action: navigate
             navigation_path: '#notifications'
 
+  # Status chips + People
   - type: custom:mod-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/kohbo_layout_card_mod.yaml
     card:
       type: custom:layout-card
       layout_type: custom:grid-layout
       layout:
-        grid-template-columns: 60% 40%
+        grid-template-columns: 50% 50%
         margin: 0px
         padding: 0px
         card_margin: 0px
@@ -46,6 +47,9 @@ cards:
                 template: kohbo_chip_card
                 entity: input_select.house
                 state:
+                  - value: "Home"
+                    icon: mdi:home
+                    color: var(--success-color)
                   - value: "Away"
                     icon: mdi:home-export-outline
                     color: var(--warning-color)
@@ -61,6 +65,9 @@ cards:
                   - value: "Night Time"
                     icon: mdi:weather-night
                     color: var(--secondary-text-color)
+                  - value: "Dogs Alone"
+                    icon: mdi:dog
+                    color: var(--warning-color)
                 tap_action:
                   action: navigate
                   navigation_path: '#house_mode'
@@ -78,7 +85,7 @@ cards:
           card_mod:
             style:
               hui-horizontal-stack-card$: |
-                #root { display: flex; justify-content: flex-end; align-items: start; }
+                #root { display: flex; justify-content: flex-end; align-items: start; gap: 5px !important; }
               .: |
                 ha-card { height: 100% !important; align-self: center !important; }
           card:
@@ -91,6 +98,61 @@ cards:
                   action: more-info
                   haptic: light
 
+  # People overview
+  - type: custom:button-card
+    template: section_title
+    name: People
+  - type: grid
+    columns: 4
+    square: false
+    cards:
+      - type: custom:button-card
+        entity: person.edward
+        name: Edward
+        template: kohbo_person_card
+        tap_action:
+          action: more-info
+          haptic: light
+      - type: custom:button-card
+        entity: person.lucas
+        name: Lucas
+        template: kohbo_person_card
+        icon: mdi:baby-face-outline
+        tap_action:
+          action: more-info
+          haptic: light
+      # Nanny — placeholder until device_tracker is set up
+      - type: custom:button-card
+        entity: input_boolean.nanny_present
+        name: Nanny
+        icon: mdi:account-child
+        template: kohbo_device_entity
+        state_display: |
+          [[[
+            return entity.state == "on" ? "Present" : "Away";
+          ]]]
+        state:
+          - value: 'on'
+            styles:
+              icon:
+                - color: var(--success-color)
+          - value: 'off'
+            styles:
+              icon:
+                - color: var(--secondary-text-color)
+      # Mother — placeholder until device_tracker is set up
+      - type: custom:button-card
+        name: Mother
+        icon: mdi:account-heart
+        template: kohbo_device_entity
+        show_state: false
+        styles:
+          icon:
+            - color: var(--secondary-text-color)
+          name:
+            - color: var(--secondary-text-color)
+
+  # Security
   - type: custom:stack-in-card
     card_mod: !include /config/dashboards/templates/includes/card_mod/climate_card/kohbo_climate_card_stack_styles.yaml
     cards:
@@ -157,7 +219,51 @@ cards:
                 template: kohbo_security_item
                 tap_action:
                   action: more-info
+              - type: custom:button-card
+                entity: input_boolean.lucas_sleeping
+                name: Lucas
+                icon: mdi:baby-face-outline
+                template: kohbo_security_item
+                state:
+                  - value: 'on'
+                    icon: mdi:sleep
+                    color: var(--primary-color)
+                    state_display: Sleeping
+                  - value: 'off'
+                    icon: mdi:baby-face-outline
+                    color: var(--success-color)
+                    state_display: Awake
 
+  # Lights overview
+  - type: custom:button-card
+    template: section_title
+    name: Lights
+  - type: custom:button-card
+    entity: light.lounge_spots
+    name: Lights
+    template: kohbo_device_entity
+    icon: mdi:lightbulb-group
+    state_display: >
+      [[[
+        const lights = [
+          'light.lounge_spots','light.lounge_play_light_bar','light.lounge_light_strip',
+          'light.lounge_piano_lamp','light.lounge_iris','light.hallway_spots',
+          'light.hallway_lamp_post','light.hallway_signe_light','light.bedroom_spots',
+          'light.bedroom_signe','light.bedroom_tv_strip','light.lucas_room_spots',
+          'light.lucas_room_iris','light.lucas_cloud_lamp','light.lucas_go_nightlight',
+          'light.kitchen_spotlights','light.office_spots','light.office_lamp',
+          'light.cloakroom_light','light.bathroom_spots','light.lucas_bathroom_lights',
+          'light.garden_lights','light.garden_door_light'
+        ];
+        const onCount = lights.filter(id => states[id]?.state === 'on').length;
+        return onCount > 0 ? `${onCount} On` : 'All Off';
+      ]]]
+    tap_action:
+      action: navigate
+      navigation_path: '/dashboard-eidam/rooms'
+      haptic: light
+
+  # Climate overview
   - type: custom:button-card
     template: section_title
     name: Climate
@@ -165,29 +271,6 @@ cards:
     columns: 2
     square: false
     cards:
-      - type: custom:button-card
-        entity: light.lounge_spots
-        name: Lights
-        template: kohbo_device_entity
-        icon: mdi:lightbulb-group
-        state_display: >
-          [[[
-            const lights = [
-              'light.lounge_spots','light.lounge_play_light_bar','light.lounge_light_strip',
-              'light.lounge_piano_lamp','light.lounge_iris','light.hallway_spots',
-              'light.hallway_lamp_post','light.hallway_signe_light','light.bedroom_spots',
-              'light.bedroom_signe','light.bedroom_tv_strip','light.lucas_room_spots',
-              'light.lucas_room_iris','light.lucas_cloud_lamp','light.lucas_go_nightlight',
-              'light.kitchen_spotlights','light.office_spots','light.cloakroom_light',
-              'light.bathroom_spots','light.lucas_bathroom_lights','light.garden_lights'
-            ];
-            const onCount = lights.filter(id => states[id]?.state === 'on').length;
-            return onCount > 0 ? `${onCount} On` : 'All Off';
-          ]]]
-        tap_action:
-          action: navigate
-          navigation_path: '/dashboard-eidam/rooms'
-          haptic: light
       - type: custom:button-card
         entity: climate.lounge
         name: Lounge
@@ -223,7 +306,15 @@ cards:
         tap_action:
           action: more-info
           haptic: light
+      - type: custom:button-card
+        entity: climate.kitchen
+        name: Kitchen
+        template: kohbo_thermostat_entity
+        tap_action:
+          action: more-info
+          haptic: light
 
+  # House mode popup
   - type: vertical-stack
     cards:
       - type: custom:bubble-card

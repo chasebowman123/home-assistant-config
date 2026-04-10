@@ -35,13 +35,13 @@ cards:
     template: section_title
     name: Media
   - type: custom:decluttering-card
-    template: media_player
+    template: eidam_media_player
     variables:
       - media_player: media_player.kitchen
       - room_name: Kitchen
       - navigation_path: '#kitchen_media_player'
   - type: custom:decluttering-card
-    template: media_player_pop_up
+    template: eidam_media_player_pop_up
     variables:
       - media_player: media_player.kitchen
       - hash: '#kitchen_media_player'
