@@ -3,7 +3,7 @@
   alias: "Monitoring - Ring Battery Critical"
   description: "Alert when any Ring device battery drops below 10%."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id:
         - sensor.basement_door_battery
@@ -11,16 +11,16 @@
         - sensor.lobby_battery
         - sensor.garden_camera_battery
       below: 10
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🔴 Ring Battery Critical"
         message: "{{ trigger.to_state.name }} battery is critically low at {{ trigger.to_state.state }}%. Replace immediately."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🔴 Ring Battery Critical"
         message: "{{ trigger.to_state.name }} battery is critically low at {{ trigger.to_state.state }}%. Replace immediately."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub

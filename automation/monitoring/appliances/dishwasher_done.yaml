@@ -3,22 +3,22 @@
   alias: "Monitoring - Dishwasher Done"
   description: "Notify both phones and Alexa when dishwasher finishes."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: sensor.dishwasher_operation_state
       to:
         - "Ready"
         - "Finished"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🍽️ Dishwasher Done"
         message: "Dishwasher is done! Time to unload."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🍽️ Dishwasher Done"
         message: "Dishwasher is done! Time to unload."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15
@@ -26,7 +26,7 @@
         message: "Dishwasher is done"
         data:
           type: push
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub

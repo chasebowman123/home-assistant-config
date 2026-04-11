@@ -2,12 +2,12 @@
   alias: Night Setback
   description: Reduce heating to night setback temperatures at 22:00.
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "22:00:00"
-  condition: []
-  action:
-    - service: climate.set_temperature
+  conditions: []
+  actions:
+    - action: climate.set_temperature
       target:
         entity_id:
           - climate.hallway
@@ -15,7 +15,7 @@
           - climate.kitchen
       data:
         temperature: 20
-    - service: climate.set_temperature
+    - action: climate.set_temperature
       target:
         entity_id: climate.lucas_s_room
       data:

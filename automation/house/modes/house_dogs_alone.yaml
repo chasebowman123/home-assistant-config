@@ -3,38 +3,38 @@
   alias: "House - Dogs Alone Mode"
   description: "People out, dogs home. Comfortable heat, calming music, doorbell silent."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.house
       to: "Dogs Alone"
-  action:
-    - service: light.turn_on
+  actions:
+    - action: light.turn_on
       target:
         entity_id: light.hallway_lamp_post
       data:
         brightness_pct: 40
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_signe_light
       data:
         brightness_pct: 30
         color_temp_kelvin: 2700
-    - service: media_player.volume_set
+    - action: media_player.volume_set
       target:
         entity_id: media_player.lounge
       data:
         volume_level: 0.15
-    - service: media_player.play_media
+    - action: media_player.play_media
       target:
         entity_id: media_player.lounge
       data:
         media_content_id: "Calm Dog Music"
         media_content_type: playlist
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🐕 Dogs Alone Mode"
         message: "Calming music on, doorbell silenced, comfortable heating."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🐕 Dogs Alone Mode"
         message: "Calming music on, doorbell silenced, comfortable heating."

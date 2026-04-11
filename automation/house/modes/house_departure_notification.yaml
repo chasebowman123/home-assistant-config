@@ -2,7 +2,7 @@
   alias: "House - Departure Notification"
   mode: single
   description: "Both phones left home. Actionable notification to select mode."
-  trigger:
+  triggers:
     - platform: state
       entity_id: person.edward_eidam
       from: "home"
@@ -11,7 +11,7 @@
       entity_id: person.loretta_eidam
       from: "home"
       to: "not_home"
-  condition:
+  conditions:
     - condition: state
       entity_id: person.edward_eidam
       state: "not_home"
@@ -23,8 +23,8 @@
         - condition: state
           entity_id: input_select.house
           state: "Away"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🏠 Everyone's Out"
         message: "Both phones have left. Select a mode:"

@@ -3,12 +3,12 @@
   alias: "Office - Standard Work"
   description: "Office work mode: bright, cool-white lighting for focus."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.office
       to: "Standard Work"
-  action:
-    - service: light.turn_on
+  actions:
+    - action: light.turn_on
       target:
         entity_id: light.office_spotlights
       data:

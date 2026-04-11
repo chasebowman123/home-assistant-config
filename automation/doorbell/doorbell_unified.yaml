@@ -2,16 +2,16 @@
   alias: Doorbell Unified
   description: "All doorbells → phone notification (Edward + Loretta), Echo Show 15+21 announce + camera, Fire Cubes camera PiP."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id:
         - binary_sensor.basement_door_ding
         - binary_sensor.upstairs_ding
         - binary_sensor.lobby_ding
       to: "on"
-  condition: []
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  conditions: []
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: Doorbell
         message: Someone is at the door
@@ -22,13 +22,13 @@
               name: default
               critical: 1
               volume: 1
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: Doorbell
         message: Someone is at the door
         data:
           image: /api/camera_proxy/camera.upstairs_live_view
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15
@@ -36,7 +36,7 @@
         message: Someone is at the door
         data:
           type: push
-    - service: media_player.play_media
+    - action: media_player.play_media
       target:
         entity_id:
           - media_player.echo_show_15
@@ -44,7 +44,7 @@
       data:
         media_content_type: custom
         media_content_id: show front door camera
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub
@@ -58,7 +58,7 @@
               entity_id: media_player.lounge_fire_cube
               state: "off"
       then:
-        - service: media_player.play_media
+        - action: media_player.play_media
           target:
             entity_id: media_player.lounge_fire_cube
           data:
@@ -71,7 +71,7 @@
               entity_id: media_player.bedroom_fire_cube
               state: "off"
       then:
-        - service: media_player.play_media
+        - action: media_player.play_media
           target:
             entity_id: media_player.bedroom_fire_cube
           data:

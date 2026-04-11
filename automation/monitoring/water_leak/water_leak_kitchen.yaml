@@ -2,21 +2,21 @@
   alias: Water Leak Kitchen
   description: "CRITICAL: Notify both phones and announce via Alexa when water leak detected in kitchen. Turn kitchen spotlights red."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: binary_sensor.kitchen_water_sensor_water_leak
       to: "on"
-  condition: []
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  conditions: []
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "CRITICAL: Water Leak Detected"
         message: Water leak detected in kitchen!
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "CRITICAL: Water Leak Detected"
         message: Water leak detected in kitchen!
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15
@@ -24,14 +24,14 @@
         message: Water leak detected in kitchen. Please investigate immediately.
         data:
           type: push
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub
         message: Water leak detected in kitchen. Please investigate immediately.
         data:
           type: announce
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.kitchen_spotlights
       data:

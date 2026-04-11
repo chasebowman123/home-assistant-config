@@ -2,21 +2,21 @@
   alias: Stairs Motion Camera Alert
   description: "Motion at upstairs or basement stairs → silently show camera on Echo Show 15 + Echo Show 21."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id:
         - binary_sensor.upstairs_motion
         - binary_sensor.basement_stairs_motion
       to: "on"
-  condition: []
-  action:
-    - service: media_player.play_media
+  conditions: []
+  actions:
+    - action: media_player.play_media
       target:
         entity_id: media_player.echo_show_15
       data:
         media_content_type: custom
         media_content_id: "{% if trigger.entity_id == 'binary_sensor.upstairs_motion' %}show upstairs camera{% else %}show basement stairs camera{% endif %}"
-    - service: media_player.play_media
+    - action: media_player.play_media
       target:
         entity_id: media_player.edward_s_echo_show_21
       data:

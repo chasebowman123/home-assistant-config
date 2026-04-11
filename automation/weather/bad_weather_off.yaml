@@ -2,7 +2,7 @@
   mode: single
   alias: "Weather - Bad Weather Off"
   description: "Weather clears: deactivate bad weather mode."
-  trigger:
+  triggers:
     - platform: state
       entity_id: weather.home
       to:
@@ -11,7 +11,7 @@
         - "cloudy"
         - "partlycloudy"
         - "windy"
-  action:
-    - service: input_boolean.turn_off
+  actions:
+    - action: input_boolean.turn_off
       target:
         entity_id: input_boolean.bad_weather

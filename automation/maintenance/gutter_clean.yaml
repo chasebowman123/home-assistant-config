@@ -3,18 +3,18 @@
   alias: "Maintenance - Gutter Clean Reminder"
   description: "Twice-yearly reminder to clean gutters (April and October)."
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "09:00:00"
-  condition:
+  conditions:
     - condition: template
       value_template: "{{ now().day == 1 and now().month in [4, 10] }}"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🏠 Gutter Clean Reminder"
         message: "Time to arrange a gutter clean."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🏠 Gutter Clean Reminder"
         message: "Time to arrange a gutter clean."

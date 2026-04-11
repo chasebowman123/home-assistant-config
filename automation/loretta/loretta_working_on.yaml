@@ -2,37 +2,37 @@
   alias: Loretta Working On
   description: "Activate Loretta Working mode — set office heating, turn on Edison light, boudoir spotlights, show Lucas camera on office Echo."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_boolean.loretta_working
       to: "on"
-  condition: []
-  action:
-    - service: climate.set_temperature
+  conditions: []
+  actions:
+    - action: climate.set_temperature
       target:
         entity_id: climate.office
       data:
         temperature: 18
-    - service: switch.turn_on
+    - action: switch.turn_on
       target:
         entity_id: switch.office_edison_light
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.boudoir_spotlights
       data:
         brightness: 255
         color_temp_kelvin: 3000
-    - service: media_player.play_media
+    - action: media_player.play_media
       target:
         entity_id: media_player.office
       data:
         media_content_type: custom
         media_content_id: show me lucas
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: Loretta Working
         message: Loretta Working mode activated — office set up for Loretta
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: Loretta Working
         message: Loretta Working mode activated — office set up for Loretta

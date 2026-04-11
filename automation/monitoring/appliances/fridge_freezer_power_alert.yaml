@@ -3,22 +3,22 @@
   alias: "Monitoring - Fridge/Freezer Power Alert"
   description: "Alert if fridge/freezer power draw is unusually high."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id: sensor.fridge_freezer_power
       above: 200
       for:
         minutes: 30
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🧊 Fridge/Freezer Alert"
         message: "Fridge/freezer power is unusually high at {{ states('sensor.fridge_freezer_power') }}W. Check for issues."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🧊 Fridge/Freezer Alert"
         message: "Fridge/freezer power is unusually high at {{ states('sensor.fridge_freezer_power') }}W. Check for issues."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15

@@ -3,12 +3,12 @@
   alias: "Hallway - Lights Off Night Time"
   description: "Turn off hallway spots when Night Time mode activates."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.house
       to: "Night Time"
-  action:
-    - service: light.turn_off
+  actions:
+    - action: light.turn_off
       target:
         entity_id:
           - light.hallway_spot_lights

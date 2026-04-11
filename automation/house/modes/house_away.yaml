@@ -2,21 +2,21 @@
   mode: single
   alias: "House - Away Mode"
   description: "Holiday/extended absence. Alarm armed, frost protect heating, presence simulation."
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.house
       to: "Away"
-  action:
-    - service: light.turn_off
+  actions:
+    - action: light.turn_off
       target:
         entity_id: all
-    - service: media_player.media_stop
+    - action: media_player.media_stop
       target:
         entity_id:
           - media_player.lounge
           - media_player.kitchen
           - media_player.lucass_room
-    - service: climate.set_temperature
+    - action: climate.set_temperature
       target:
         entity_id:
           - climate.hallway
@@ -27,7 +27,7 @@
           - climate.office
       data:
         temperature: 14
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🏠 Away Mode Activated"
         message: "House locked down. Heating at frost protection, all systems off."

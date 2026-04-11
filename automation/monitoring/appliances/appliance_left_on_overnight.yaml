@@ -3,10 +3,10 @@
   alias: "Monitoring - Appliance Left On Overnight"
   description: "Alert at midnight if key appliances are still on."
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "00:00:00"
-  condition:
+  conditions:
     - condition: or
       conditions:
         - condition: numeric_state
@@ -18,8 +18,8 @@
         - condition: numeric_state
           entity_id: sensor.dishwasher_power
           above: 5
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "⚠️ Appliance Left On"
         message: >
@@ -27,7 +27,7 @@
           Oven: {{ states('sensor.oven_power') }}W,
           Washing Machine: {{ states('sensor.washing_machine_power') }}W,
           Dishwasher: {{ states('sensor.dishwasher_power') }}W
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "⚠️ Appliance Left On"
         message: >
@@ -35,7 +35,7 @@
           Oven: {{ states('sensor.oven_power') }}W,
           Washing Machine: {{ states('sensor.washing_machine_power') }}W,
           Dishwasher: {{ states('sensor.dishwasher_power') }}W
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15

@@ -3,20 +3,20 @@
   alias: "Lucas Bath - Water Too Hot"
   description: "Alert if Lucas bath temperature exceeds 38°C."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id: sensor.lucas_bath_temperature
       above: 38
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🛁 Bath Too Hot!"
         message: "Lucas's bath is {{ states('sensor.lucas_bath_temperature') }}°C — too hot! Check immediately."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🛁 Bath Too Hot!"
         message: "Lucas's bath is {{ states('sensor.lucas_bath_temperature') }}°C — too hot! Check immediately."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15

@@ -3,20 +3,20 @@
   alias: "Monitoring - Humidifier Water Low"
   description: "Notify when humidifier water tank needs refilling."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: sensor.humidifier_water_level
       to: "low"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "💧 Humidifier Water Low"
         message: "The humidifier water tank is low. Please refill it."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "💧 Humidifier Water Low"
         message: "The humidifier water tank is low. Please refill it."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub

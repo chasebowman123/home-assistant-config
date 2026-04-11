@@ -3,7 +3,7 @@
   alias: "Monitoring - Ring Battery Low"
   description: "Alert when any Ring device battery drops below 25%."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id:
         - sensor.basement_door_battery
@@ -11,12 +11,12 @@
         - sensor.lobby_battery
         - sensor.garden_camera_battery
       below: 25
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🟡 Ring Battery Low"
         message: "{{ trigger.to_state.name }} battery is low at {{ trigger.to_state.state }}%. Charge or replace soon."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🟡 Ring Battery Low"
         message: "{{ trigger.to_state.name }} battery is low at {{ trigger.to_state.state }}%. Charge or replace soon."

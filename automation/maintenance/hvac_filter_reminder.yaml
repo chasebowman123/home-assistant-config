@@ -3,18 +3,18 @@
   alias: "Maintenance - HVAC Filter Reminder"
   description: "Quarterly reminder to check and replace HVAC filters."
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "09:00:00"
-  condition:
+  conditions:
     - condition: template
       value_template: "{{ now().day == 1 and now().month in [1, 4, 7, 10] }}"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "💨 HVAC Filter Check"
         message: "Quarterly reminder: check and replace HVAC filters if needed."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "💨 HVAC Filter Check"
         message: "Quarterly reminder: check and replace HVAC filters if needed."

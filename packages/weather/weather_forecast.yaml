@@ -1,17 +1,17 @@
 # Weather Forecast Sensors (Trigger-Based)
 #
 # The forecast attribute was removed from weather entities in HA 2024.4.
-# These sensors use weather.get_forecasts service to fetch daily forecast data.
+# These sensors use the weather.get_forecasts action to fetch daily forecast data.
 # They update every 30 minutes and on HA start.
 
 template:
-  - trigger:
+  - triggers:
       - platform: time_pattern
         minutes: "/30"
       - platform: homeassistant
         event: start
-    action:
-      - service: weather.get_forecasts
+    actions:
+      - action: weather.get_forecasts
         data:
           type: daily
         target:

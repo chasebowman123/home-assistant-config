@@ -3,34 +3,34 @@
   alias: "House - Evening Time Mode"
   description: "Lucas in bed, adults up. Mood lighting, doorbell silent, Alexa announcement."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.house
       to: "Evening Time"
-  action:
-    - service: input_boolean.turn_on
+  actions:
+    - action: input_boolean.turn_on
       target:
         entity_id: input_boolean.lucas_sleeping
-    - service: light.turn_off
+    - action: light.turn_off
       target:
         entity_id:
           - light.hallway_lamp_post
           - light.hallway_signe_light
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.hallway_spot_lights
       data:
         brightness_pct: 15
         color_temp_kelvin: 2200
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🌙 Evening Time"
         message: "Lucas sleeping mode on, doorbell silenced, mood lighting active."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🌙 Evening Time"
         message: "Lucas sleeping mode on, doorbell silenced, mood lighting active."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub

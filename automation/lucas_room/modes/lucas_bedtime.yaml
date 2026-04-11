@@ -3,27 +3,27 @@
   alias: "Lucas Room - Bedtime"
   description: "Lucas bedtime: nightlight on, lullaby announcement, sleeping flag on."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.lucas_room
       to: "Bedtime"
-  action:
-    - service: light.turn_off
+  actions:
+    - action: light.turn_off
       target:
         entity_id:
           - light.lucass_room_spotlights
           - light.lucass_room_pendant_light
           - light.lucass_room_iris
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lucas_s_room_go
       data:
         brightness_pct: 3
         color_temp_kelvin: 2200
-    - service: input_boolean.turn_on
+    - action: input_boolean.turn_on
       target:
         entity_id: input_boolean.lucas_sleeping
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lucas_s_echo_show

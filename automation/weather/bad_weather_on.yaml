@@ -2,7 +2,7 @@
   mode: single
   alias: "Weather - Bad Weather On"
   description: "Auto-detect rain/storm conditions and activate bad weather mode."
-  trigger:
+  triggers:
     - platform: state
       entity_id: weather.home
       to:
@@ -13,7 +13,7 @@
         - "hail"
         - "snowy"
         - "snowy-rainy"
-  action:
-    - service: input_boolean.turn_on
+  actions:
+    - action: input_boolean.turn_on
       target:
         entity_id: input_boolean.bad_weather

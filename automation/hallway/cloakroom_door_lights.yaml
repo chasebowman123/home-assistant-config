@@ -2,7 +2,7 @@
   alias: Cloakroom Door Lights
   description: "Door open or close turns on cloakroom spotlight for 10 minutes, then slow 30s fade to off."
   mode: restart
-  trigger:
+  triggers:
     - platform: state
       entity_id: binary_sensor.cloakroom_sensor_contact
       from: "off"
@@ -11,9 +11,9 @@
       entity_id: binary_sensor.cloakroom_sensor_contact
       from: "on"
       to: "off"
-  condition: []
-  action:
-    - service: light.turn_on
+  conditions: []
+  actions:
+    - action: light.turn_on
       target:
         entity_id: light.cloakroom_spotlights
       data:
@@ -21,7 +21,7 @@
         transition: 1
     - delay:
         minutes: 10
-    - service: light.turn_off
+    - action: light.turn_off
       target:
         entity_id: light.cloakroom_spotlights
       data:

@@ -3,25 +3,25 @@
   alias: "Lucas Room - Bathtime"
   description: "Set up Lucas bathtime: bathroom lights, warm scene, Alexa announcement."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.lucas_room
       to: "Bathtime"
-  action:
-    - service: light.turn_on
+  actions:
+    - action: light.turn_on
       target:
         entity_id: light.lucass_bathroom_spotlights
       data:
         brightness_pct: 80
         color_temp_kelvin: 2700
         transition: 3
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lucass_room_spotlights
       data:
         brightness_pct: 60
         color_temp_kelvin: 3000
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lucas_s_echo_show

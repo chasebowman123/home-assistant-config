@@ -3,7 +3,7 @@
   alias: "Lucas - Morning Wake Up"
   description: "Lucas wakes up: lights on, clear sleeping flag, Alexa good morning."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: binary_sensor.lucas_room_door_contact
       to: "off"
@@ -12,34 +12,34 @@
       entity_id: binary_sensor.lucass_room_motion
       to: "on"
       id: motion
-  condition:
+  conditions:
     - condition: time
       after: "05:30:00"
       before: "09:00:00"
     - condition: state
       entity_id: input_boolean.lucas_sleeping
       state: "on"
-  action:
-    - service: input_boolean.turn_off
+  actions:
+    - action: input_boolean.turn_off
       target:
         entity_id: input_boolean.lucas_sleeping
-    - service: input_select.select_option
+    - action: input_select.select_option
       target:
         entity_id: input_select.lucas_room
       data:
         option: "Standard"
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lucas_s_echo_show
         message: "Good morning Lucas! Time to rise and shine!"
         data:
           type: announce
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "👶 Lucas is Awake"
         message: "Lucas woke up at {{ now().strftime('%H:%M') }}."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "👶 Lucas is Awake"
         message: "Lucas woke up at {{ now().strftime('%H:%M') }}."

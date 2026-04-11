@@ -5,10 +5,10 @@
   alias: "Nanny - No Show Alert"
   description: "Alert if Ankii hasn't arrived by 10am on an expected day."
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "10:00:00"
-  condition:
+  conditions:
     - condition: time
       weekday:
         - mon
@@ -22,12 +22,12 @@
     - condition: state
       entity_id: input_boolean.nanny_present
       state: "off"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "⚠️ Nanny No-Show"
         message: "Ankii hasn't arrived yet and it's 10am. Have you heard from her?"
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "⚠️ Nanny No-Show"
         message: "Ankii hasn't arrived yet and it's 10am. Have you heard from her?"

@@ -3,20 +3,20 @@
   alias: "Monitoring - Air Purifier Filter Low"
   description: "Notify when air purifier filter needs replacing."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id: sensor.air_purifier_filter_life_remaining
       below: 20
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🌀 Air Purifier Filter"
         message: "Air purifier filter is at {{ states('sensor.air_purifier_filter_life_remaining') }}% — order a replacement."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🌀 Air Purifier Filter"
         message: "Air purifier filter is at {{ states('sensor.air_purifier_filter_life_remaining') }}% — order a replacement."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub

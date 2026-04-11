@@ -2,13 +2,13 @@
   alias: Lucas Sleeping Toggle On
   description: "When lucas_sleeping turns on, turn off hallway Flo table lamp and wall lights with slow fade."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_boolean.lucas_sleeping
       to: "on"
-  condition: []
-  action:
-    - service: light.turn_off
+  conditions: []
+  actions:
+    - action: light.turn_off
       target:
         entity_id:
           - light.hue_color_lamp_1

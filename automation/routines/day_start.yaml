@@ -2,13 +2,13 @@
   alias: Day Start
   description: "Morning routine — natural light scenes, kitchen on, lamp post candle."
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "07:30:00"
     - platform: state
       entity_id: binary_sensor.lucas_room_door_contact
       to: "off"
-  condition:
+  conditions:
     - condition: or
       conditions:
         - condition: time
@@ -17,30 +17,30 @@
         - condition: time
           after: "06:30:00"
           before: "07:30:00"
-  action:
-    - service: input_select.select_option
+  actions:
+    - action: input_select.select_option
       target:
         entity_id: input_select.house
       data:
         option: Day Time
-    - service: scene.turn_on
+    - action: scene.turn_on
       target:
         entity_id: scene.lounge_natural_light
-    - service: scene.turn_on
+    - action: scene.turn_on
       target:
         entity_id: scene.hallway_daytime
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.kitchen_spotlights
       data:
         brightness: 255
         color_temp_kelvin: 3000
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.hallway_lamp_post
       data:
         brightness: 255
         effect: candle
-    - service: input_boolean.turn_off
+    - action: input_boolean.turn_off
       target:
         entity_id: input_boolean.lucas_sleeping

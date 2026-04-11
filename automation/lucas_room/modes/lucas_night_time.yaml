@@ -3,18 +3,18 @@
   alias: "Lucas Room - Night Time"
   description: "All lights off except very dim nightlight."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.lucas_room
       to: "Night Time"
-  action:
-    - service: light.turn_off
+  actions:
+    - action: light.turn_off
       target:
         entity_id:
           - light.lucass_room_spotlights
           - light.lucass_room_pendant_light
           - light.lucass_room_iris
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lucas_s_room_go
       data:

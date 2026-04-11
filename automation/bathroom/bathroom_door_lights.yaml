@@ -3,12 +3,12 @@
   alias: "Bathroom - Door Lights"
   description: "Main bathroom door opens: lights on. Off 5 min after close."
   mode: restart
-  trigger:
+  triggers:
     - platform: state
       entity_id: binary_sensor.bathroom_sensor_contact
       to: "on"
-  action:
-    - service: light.turn_on
+  actions:
+    - action: light.turn_on
       target:
         entity_id: light.bathroom_spotlights
       data:
@@ -20,7 +20,7 @@
           to: "off"
           for:
             minutes: 5
-    - service: light.turn_off
+    - action: light.turn_off
       target:
         entity_id: light.bathroom_spotlights
       data:

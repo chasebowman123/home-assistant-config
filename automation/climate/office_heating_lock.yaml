@@ -2,17 +2,17 @@
   alias: Office Heating Lock 15C
   description: "Keep office thermostat at 15°C at all times."
   mode: single
-  trigger:
+  triggers:
     - platform: homeassistant
       event: start
     - platform: state
       entity_id: climate.office
       attribute: temperature
-  condition:
+  conditions:
     - condition: template
       value_template: "{{ state_attr('climate.office', 'temperature') | float != 15 }}"
-  action:
-    - service: climate.set_temperature
+  actions:
+    - action: climate.set_temperature
       target:
         entity_id: climate.office
       data:

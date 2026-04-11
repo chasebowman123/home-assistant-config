@@ -2,11 +2,11 @@
   alias: Daily System Health Check
   description: "At 09:00, check all cameras and critical devices. Notify both phones only if something is offline."
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "09:00:00"
-  condition: []
-  action:
+  conditions: []
+  actions:
     - variables:
         offline_items: >
           {% set ns = namespace(items=[]) %}
@@ -28,11 +28,11 @@
         - condition: template
           value_template: "{{ offline_items | length > 0 }}"
       then:
-        - service: notify.mobile_app_ee_iphone_16_pro_max
+        - action: notify.mobile_app_ee_iphone_16_pro_max
           data:
             title: "Daily Health Check — Issues Found"
             message: "Offline: {{ offline_items }}"
-        - service: notify.mobile_app_lorettas_phone
+        - action: notify.mobile_app_lorettas_phone
           data:
             title: "Daily Health Check — Issues Found"
             message: "Offline: {{ offline_items }}"

@@ -4,13 +4,13 @@ silent_doorbell_flash:
   icon: mdi:bell-ring
   mode: single
   sequence:
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_io
       data:
         color_name: blue
         brightness_pct: 100
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.hallway_signe_light
       data:
@@ -18,7 +18,7 @@ silent_doorbell_flash:
         brightness_pct: 100
     - delay:
         seconds: 2
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id:
           - light.lounge_io
@@ -28,7 +28,7 @@ silent_doorbell_flash:
         brightness_pct: 100
     - delay:
         seconds: 2
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id:
           - light.lounge_io
@@ -38,7 +38,7 @@ silent_doorbell_flash:
         brightness_pct: 100
     - delay:
         seconds: 2
-    - service: light.turn_off
+    - action: light.turn_off
       target:
         entity_id:
           - light.lounge_io

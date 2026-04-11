@@ -3,7 +3,7 @@
   alias: "Edward Alone - All Door Sensor Lights"
   description: "Door sensors activate relevant room lights when Edward is alone."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: binary_sensor.outside_door_contact
       to: "on"
@@ -16,17 +16,17 @@
       entity_id: binary_sensor.bathroom_sensor_contact
       to: "on"
       id: bathroom_door
-  condition:
+  conditions:
     - condition: state
       entity_id: input_boolean.edward_alone
       state: "on"
-  action:
+  actions:
     - choose:
         - conditions:
             - condition: trigger
               id: front_door
           sequence:
-            - service: light.turn_on
+            - action: light.turn_on
               target:
                 entity_id: light.hallway_spot_lights
               data:
@@ -35,7 +35,7 @@
             - condition: trigger
               id: lucas_door
           sequence:
-            - service: light.turn_on
+            - action: light.turn_on
               target:
                 entity_id:
                   - light.hallway_spot_lights
@@ -46,7 +46,7 @@
             - condition: trigger
               id: bathroom_door
           sequence:
-            - service: light.turn_on
+            - action: light.turn_on
               target:
                 entity_id: light.bathroom_spotlights
               data:

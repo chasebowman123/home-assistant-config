@@ -3,22 +3,22 @@
   alias: "Monitoring - House Air Quality Poor"
   description: "Notify both phones when house-wide air quality is poor."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id: sensor.lounge_air_quality_index
       above: 100
       for:
         minutes: 10
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🌬️ Poor Air Quality"
         message: "House air quality is poor (AQI: {{ states('sensor.lounge_air_quality_index') }}). Open windows or run purifier."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🌬️ Poor Air Quality"
         message: "House air quality is poor (AQI: {{ states('sensor.lounge_air_quality_index') }}). Open windows or run purifier."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15

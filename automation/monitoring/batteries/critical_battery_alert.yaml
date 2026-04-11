@@ -2,7 +2,7 @@
   alias: Critical Battery Alert
   description: "Notify when any monitored sensor battery drops below 10%. Includes 6-hour debounce to prevent spam."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id:
         - sensor.hallway_temp_battery
@@ -14,13 +14,13 @@
       below: 10
       for:
         hours: 6
-  condition: []
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  conditions: []
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "CRITICAL: Battery Critically Low"
         message: "{{ trigger.entity_id }} battery is {{ states(trigger.entity_id) }}% - replace immediately"
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "CRITICAL: Battery Critically Low"
         message: "{{ trigger.entity_id }} battery is {{ states(trigger.entity_id) }}% - replace immediately"

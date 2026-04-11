@@ -2,10 +2,10 @@
   alias: Sunset Routine
   description: Run sunset_routine script 30 minutes before sunset.
   mode: single
-  trigger:
+  triggers:
     - platform: sun
       event: sunset
       offset: "-00:30:00"
-  condition: []
-  action:
-    - service: script.sunset_routine
+  conditions: []
+  actions:
+    - action: script.sunset_routine

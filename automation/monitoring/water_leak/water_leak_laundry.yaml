@@ -2,21 +2,21 @@
   alias: Water Leak Laundry
   description: "CRITICAL: Notify both phones and announce via Alexa when water leak detected in laundry."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: binary_sensor.laundry_water_sensor_water_leak
       to: "on"
-  condition: []
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  conditions: []
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "CRITICAL: Water Leak Detected"
         message: Water leak detected in laundry!
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "CRITICAL: Water Leak Detected"
         message: Water leak detected in laundry!
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15
@@ -24,7 +24,7 @@
         message: Water leak detected in laundry. Please investigate immediately.
         data:
           type: push
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub

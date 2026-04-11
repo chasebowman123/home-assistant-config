@@ -3,16 +3,16 @@
   alias: "Monitoring - High Daily Energy Usage"
   description: "Alert both phones if daily energy exceeds 30 kWh."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id: sensor.energy_daily
       above: 30
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "⚡ High Energy Day"
         message: "Daily energy usage has exceeded 30 kWh (currently {{ states('sensor.energy_daily') | float | round(2) }} kWh)."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "⚡ High Energy Day"
         message: "Daily energy usage has exceeded 30 kWh (currently {{ states('sensor.energy_daily') | float | round(2) }} kWh)."

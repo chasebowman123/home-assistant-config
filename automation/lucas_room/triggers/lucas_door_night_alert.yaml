@@ -2,17 +2,17 @@
   alias: Lucas Door Night Alert
   description: "Lucas door opens after Goodnight Lucas script runs (1 min grace) while lucas_sleeping on → red/blue flash in lounge then restore."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: binary_sensor.lucas_room_door_contact
-  condition:
+  conditions:
     - condition: state
       entity_id: input_boolean.lucas_sleeping
       state: "on"
       for:
         minutes: 1
-  action:
-    - service: scene.create
+  actions:
+    - action: scene.create
       data:
         scene_id: lucas_alert_snapshot
         snapshot_entities:
@@ -23,7 +23,7 @@
     - repeat:
         count: 4
         sequence:
-          - service: light.turn_on
+          - action: light.turn_on
             target:
               entity_id:
                 - light.lounge_signe_light
@@ -35,7 +35,7 @@
                 - 0
               brightness: 255
               transition: 0.3
-          - service: light.turn_on
+          - action: light.turn_on
             target:
               entity_id:
                 - light.lounge_iris
@@ -49,7 +49,7 @@
               transition: 0.3
           - delay:
               milliseconds: 500
-          - service: light.turn_off
+          - action: light.turn_off
             target:
               entity_id:
                 - light.lounge_signe_light
@@ -62,7 +62,7 @@
               milliseconds: 500
     - delay:
         seconds: 1
-    - service: scene.turn_on
+    - action: scene.turn_on
       target:
         entity_id: scene.lucas_alert_snapshot
       data:

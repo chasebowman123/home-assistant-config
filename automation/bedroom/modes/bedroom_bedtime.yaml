@@ -3,17 +3,17 @@
   alias: "Bedroom - Bedtime"
   description: "All lights off, pause TV."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.bedroom
       to: "Bedtime"
-  action:
-    - service: light.turn_off
+  actions:
+    - action: light.turn_off
       target:
         entity_id:
           - light.bedroom_spot_lights
           - light.bedroom_signe_light
           - light.bedroom_tv_strip_light
-    - service: media_player.media_pause
+    - action: media_player.media_pause
       target:
         entity_id: media_player.lg_webos_tv_oled55g54lw

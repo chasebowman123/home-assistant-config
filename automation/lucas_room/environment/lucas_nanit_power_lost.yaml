@@ -3,22 +3,22 @@
   alias: "Lucas Room - Nanit Power Lost"
   description: "Alert if Nanit baby monitor loses power."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: binary_sensor.lucas_nanit_power
       to: "off"
       for:
         minutes: 2
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "📷 Nanit Offline"
         message: "Lucas's Nanit baby monitor has lost power or gone offline. Please check."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "📷 Nanit Offline"
         message: "Lucas's Nanit baby monitor has lost power or gone offline. Please check."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15
