@@ -1,0 +1,17 @@
+# Set house to Home mode when someone arrives.
+- id: house_mode_home
+  alias: House Mode - Home
+  mode: single
+  description: Set house to Home mode when someone arrives.
+  triggers:
+  - trigger: state
+    entity_id:
+    - person.edward_eidam
+    - person.loretta_eidam
+    to: home
+  actions:
+  - target:
+      entity_id: input_select.house
+    data:
+      option: Home
+    action: input_select.select_option

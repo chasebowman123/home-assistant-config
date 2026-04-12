@@ -1,0 +1,31 @@
+# Silence all Alexa speakers, disable doorbell and TTS automations.
+- id: quiet_mode_on
+  alias: Quiet Mode On
+  description: Silence all Alexa speakers, disable doorbell and TTS automations.
+  triggers:
+  - trigger: state
+    entity_id: input_boolean.quiet_mode
+    to: 'on'
+  actions:
+  - action: media_player.volume_set
+    target:
+      entity_id:
+      - media_player.lounge_echo_hub
+      - media_player.lounge_hub
+      - media_player.echo_show_15
+      - media_player.edward_s_echo_show_21
+      - media_player.loretta_s_echo_show
+      - media_player.lucas_s_echo_show
+      - media_player.bedroom
+      - media_player.office
+    data:
+      volume_level: 0
+  - action: automation.turn_off
+    target:
+      entity_id: automation.doorbell_unified
+  - action: light.turn_on
+    target:
+      entity_id: light.all_lights
+    data:
+      brightness_pct: 30
+  mode: single

@@ -1,0 +1,30 @@
+# Restore lights and re-enable notifications when movie night ends.
+- id: movie_night_off
+  alias: Movie Night Off
+  description: Restore lights and re-enable notifications when movie night ends.
+  triggers:
+  - trigger: state
+    entity_id: input_boolean.movie_night
+    to: 'off'
+  conditions: []
+  actions:
+  - target:
+      area_id: lounge
+    data:
+      brightness_pct: 80
+      color_temp_kelvin: 3000
+      transition: 3
+    action: light.turn_on
+  - target:
+      area_id: hallway
+    data:
+      brightness_pct: 60
+      color_temp_kelvin: 3500
+    action: light.turn_on
+  - target:
+      entity_id: input_boolean.tv_hue_sync
+    action: input_boolean.turn_off
+  - target:
+      entity_id: input_boolean.do_not_disturb
+    action: input_boolean.turn_off
+  mode: single

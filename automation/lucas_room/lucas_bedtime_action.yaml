@@ -1,0 +1,12 @@
+# Trigger bedtime routine from dashboard button.
+- id: lucas_bedtime_action
+  alias: Lucas Room - Bedtime Action
+  mode: single
+  triggers:
+  - trigger: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: LUCAS_BEDTIME
+  actions:
+  - action: script.lucas_bedtime
+  description: Trigger bedtime routine from dashboard button.

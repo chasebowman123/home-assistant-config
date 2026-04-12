@@ -1,0 +1,30 @@
+# Dim lounge lights, activate TV Hue sync, set movie scene, mute non-critical notifications.
+- id: movie_night_on
+  alias: Movie Night On
+  description: Dim lounge lights, activate TV Hue sync, set movie scene, mute non-critical
+    notifications.
+  triggers:
+  - trigger: state
+    entity_id: input_boolean.movie_night
+    to: 'on'
+  conditions: []
+  actions:
+  - target:
+      area_id: lounge
+    data:
+      brightness_pct: 15
+      color_temp_kelvin: 2700
+      transition: 3
+    action: light.turn_on
+  - target:
+      area_id:
+      - kitchen
+      - hallway
+    action: light.turn_off
+  - target:
+      entity_id: input_boolean.tv_hue_sync
+    action: input_boolean.turn_on
+  - target:
+      entity_id: input_boolean.do_not_disturb
+    action: input_boolean.turn_on
+  mode: single

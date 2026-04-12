@@ -1,0 +1,4 @@
+# Set hallway lights to 60% brightness in the morning.
+- message: Resource not found
+  alias: Hallway - Morning Brightness 60%
+  description: Set hallway lights to 60% brightness in the morning.

@@ -1,0 +1,53 @@
+# Restore speaker volumes, re-enable doorbell.
+- id: quiet_mode_off
+  alias: Quiet Mode Off
+  description: Restore speaker volumes, re-enable doorbell.
+  triggers:
+  - trigger: state
+    entity_id: input_boolean.quiet_mode
+    to: 'off'
+  actions:
+  - action: media_player.volume_set
+    target:
+      entity_id: media_player.lounge_echo_hub
+    data:
+      volume_level: 0.5
+  - action: media_player.volume_set
+    target:
+      entity_id: media_player.lounge_hub
+    data:
+      volume_level: 0.5
+  - action: media_player.volume_set
+    target:
+      entity_id: media_player.echo_show_15
+    data:
+      volume_level: 0.5
+  - action: media_player.volume_set
+    target:
+      entity_id: media_player.edward_s_echo_show_21
+    data:
+      volume_level: 0.5
+  - action: media_player.volume_set
+    target:
+      entity_id: media_player.loretta_s_echo_show
+    data:
+      volume_level: 0.4
+  - action: media_player.volume_set
+    target:
+      entity_id: media_player.lucas_s_echo_show
+    data:
+      volume_level: 0.3
+  - action: media_player.volume_set
+    target:
+      entity_id: media_player.bedroom
+    data:
+      volume_level: 0.4
+  - action: media_player.volume_set
+    target:
+      entity_id: media_player.office
+    data:
+      volume_level: 0.4
+  - action: automation.turn_on
+    target:
+      entity_id: automation.doorbell_unified
+  mode: single

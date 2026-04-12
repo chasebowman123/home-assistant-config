@@ -1,0 +1,4 @@
+# Set welcome lighting when guests arrive.
+- message: Resource not found
+  alias: Guests Arriving Welcome Scene
+  description: Set welcome lighting when guests arrive.

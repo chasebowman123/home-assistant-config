@@ -1,0 +1,4 @@
+# Dim hallway lights to 60% at sunset.
+- message: Resource not found
+  alias: Hallway - Sunset Dim 60%
+  description: Dim hallway lights to 60% at sunset.

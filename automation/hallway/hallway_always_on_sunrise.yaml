@@ -1,0 +1,4 @@
+# Set hallway lights to 100% at sunrise.
+- message: Resource not found
+  alias: Hallway - Sunrise Full Brightness
+  description: Set hallway lights to 100% at sunrise.

@@ -1,0 +1,60 @@
+# Everyone away: simulate occupancy with random light cycling.
+- id: away_security_lights_start
+  alias: Away Security Lights
+  description: 'Everyone away: simulate occupancy with random light cycling.'
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.basement_door_motion
+    from:
+    - 'off'
+    to:
+    - 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 2
+  conditions:
+  - condition: sun
+    after: sunset
+    before: sunrise
+  - condition: state
+    entity_id: input_boolean.vacation_mode
+    state:
+    - 'on'
+  actions:
+  - action: notify.mobile_app_ee_iphone_16_pro_max
+    data:
+      title: House Empty
+      message: Nobody home. Security light simulation active.
+  - action: scene.turn_on
+    metadata: {}
+    target:
+      entity_id: scene.bedroom_rolling_hills
+    data: {}
+  - action: scene.turn_on
+    metadata: {}
+    target:
+      entity_id: scene.lounge_rolling_hills
+    data: {}
+  - action: light.turn_on
+    metadata: {}
+    target:
+      entity_id: light.office_spotlights
+    data:
+      transition: 15
+  - delay:
+      hours: 0
+      minutes: 15
+      seconds: 0
+      milliseconds: 0
+  - action: light.turn_off
+    metadata: {}
+    target:
+      area_id:
+      - lounge
+      - bedroom
+      - office
+    data:
+      transition: 5
+  mode: single

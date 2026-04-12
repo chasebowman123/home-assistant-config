@@ -1,0 +1,11 @@
+# Dashboard button triggers Lucas bathtime script (lights and Spotify).
+- id: lucas_bathtime
+  alias: Lucas Room - Bathtime
+  description: Dashboard button triggers Lucas bathtime script (lights and Spotify).
+  triggers:
+  - trigger: event
+    event_type: lucas_bathtime_button
+  conditions: []
+  actions:
+  - action: script.lucas_bathtime
+  mode: single
