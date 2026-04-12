@@ -3,7 +3,7 @@
   alias: "Monitoring - Washing Machine Done"
   description: "Notify when washing machine finishes. Dual trigger: Samsung state sensor (primary) + Tapo power fallback."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: sensor.washing_machine_machine_state
       to: "stop"
@@ -14,7 +14,7 @@
       for:
         minutes: 3
       id: tapo_power
-  condition:
+  conditions:
     - condition: or
       conditions:
         - condition: trigger
@@ -25,16 +25,16 @@
               id: tapo_power
             - condition: template
               value_template: "{{ states('sensor.washing_machine_machine_state') not in ['ready', 'stop', 'unknown', 'unavailable'] }}"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🫧 Washing Machine Done"
         message: "Washing machine is done! Time to hang the laundry."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🫧 Washing Machine Done"
         message: "Washing machine is done! Time to hang the laundry."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15
@@ -42,7 +42,7 @@
         message: "Washing machine is done"
         data:
           type: push
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub

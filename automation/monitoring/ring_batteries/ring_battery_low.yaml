@@ -1,22 +1,21 @@
-# Ring device battery low (<25%): notify both phones.
+# Alert when Ring doorbell batteries drop below 20%.
 - id: ring_battery_low
   alias: "Monitoring - Ring Battery Low"
-  description: "Alert when any Ring device battery drops below 25%."
+  description: "Alert when any Ring doorbell battery drops below 20%."
   mode: single
-  trigger:
-    - platform: numeric_state
-      entity_id:
-        - sensor.basement_door_battery
-        - sensor.upstairs_battery
-        - sensor.lobby_battery
-        - sensor.garden_camera_battery
-      below: 25
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.lobby_battery
+      below: 20
+    - trigger: numeric_state
+      entity_id: sensor.upstairs_battery
+      below: 20
+  conditions: []
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🟡 Ring Battery Low"
-        message: "{{ trigger.to_state.name }} battery is low at {{ trigger.to_state.state }}%. Charge or replace soon."
-    - service: notify.mobile_app_lorettas_phone
-      data:
-        title: "🟡 Ring Battery Low"
-        message: "{{ trigger.to_state.name }} battery is low at {{ trigger.to_state.state }}%. Charge or replace soon."
+        title: "🔋 Ring Battery Low"
+        message: >
+          Ring doorbell battery low:
+          Lobby: {{ states('sensor.lobby_battery') }}%,
+          Upstairs: {{ states('sensor.upstairs_battery') }}%

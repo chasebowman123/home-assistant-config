@@ -2,17 +2,17 @@
   alias: Air Filter Low
   description: Notify both phones when Core 400S air filter lifetime drops below 15%.
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id: sensor.core_400s_filter_lifetime
       below: 15
   condition: []
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: Air Filter Replacement
         message: "Core 400S air filter has {{ states('sensor.core_400s_filter_lifetime') }}% life remaining. Order replacement."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: Air Filter Replacement
         message: "Core 400S air filter has {{ states('sensor.core_400s_filter_lifetime') }}% life remaining. Order replacement."

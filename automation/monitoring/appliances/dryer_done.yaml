@@ -2,21 +2,21 @@
   alias: Tumble Dryer Done
   description: Notify Edward and Loretta and announce via Alexa when tumble dryer cycle completes.
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: sensor.tumble_dryer_machine_state
       to: stop
   condition: []
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: Tumble Dryer
         message: Tumble dryer is done!
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: Tumble Dryer
         message: Tumble dryer is done!
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15
@@ -24,7 +24,7 @@
         message: Tumble dryer is done
         data:
           type: push
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub

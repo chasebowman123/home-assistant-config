@@ -3,20 +3,20 @@
   alias: "Monitoring - Coffee Machine Done"
   description: "Notify when coffee machine finishes its cycle."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
-      entity_id: sensor.coffee_machine_power
+      entity_id: sensor.unnamed_p304m_coffee_pot_current_consumption
       below: 10
       for:
         minutes: 2
-  condition:
+  conditions:
     - condition: numeric_state
-      entity_id: sensor.coffee_machine_power
+      entity_id: sensor.unnamed_p304m_coffee_pot_current_consumption
       above: 0
       for:
         minutes: 0
-  action:
-    - service: notify.alexa_media
+  actions:
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub
@@ -24,11 +24,11 @@
         message: "Your coffee is ready!"
         data:
           type: announce
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "☕ Coffee Ready"
         message: "Coffee machine has finished."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "☕ Coffee Ready"
         message: "Coffee machine has finished."

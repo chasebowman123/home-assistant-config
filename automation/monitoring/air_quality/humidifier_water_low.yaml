@@ -1,25 +1,23 @@
-# Humidifier water tank low: notify both phones + Alexa.
+# Alert when living room humidifier water is low.
 - id: humidifier_water_low
   alias: "Monitoring - Humidifier Water Low"
-  description: "Notify when humidifier water tank needs refilling."
+  description: "Alert when the living room humidifier has a water shortage."
   mode: single
-  trigger:
-    - platform: state
-      entity_id: sensor.humidifier_water_level
-      to: "low"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.living_room_humidifier_water_shortage
+      to: "on"
+  conditions: []
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "💧 Humidifier Water Low"
-        message: "The humidifier water tank is low. Please refill it."
-    - service: notify.mobile_app_lorettas_phone
-      data:
-        title: "💧 Humidifier Water Low"
-        message: "The humidifier water tank is low. Please refill it."
-    - service: notify.alexa_media
+        message: "The living room humidifier needs a refill."
+    - action: notify.alexa_media
       data:
         target:
+          - media_player.echo_show_15
           - media_player.lounge_echo_hub
-        message: "Reminder: the humidifier needs refilling."
+        message: "The living room humidifier needs water. Please refill."
         data:
           type: announce

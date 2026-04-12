@@ -3,22 +3,22 @@
   alias: "Monitoring - High Power Alert"
   description: "Alert when total house power exceeds 5kW for 10+ minutes."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id: sensor.total_home_power
       above: 5000
       for:
         minutes: 10
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "⚡ High Power Alert"
         message: "Total home power is {{ states('sensor.total_home_power') }}W — unusually high."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "⚡ High Power Alert"
         message: "Total home power is {{ states('sensor.total_home_power') }}W — unusually high."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub

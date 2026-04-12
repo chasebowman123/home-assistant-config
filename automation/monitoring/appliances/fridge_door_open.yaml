@@ -2,19 +2,19 @@
   alias: Fridge Door Open
   description: Notify when fridge door has been open for 2 minutes.
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: binary_sensor.refrigerator_door
       to: "on"
       for:
         minutes: 2
   condition: []
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: Refrigerator
         message: Fridge door has been open for 2 minutes!
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: Refrigerator
         message: Fridge door has been open for 2 minutes!

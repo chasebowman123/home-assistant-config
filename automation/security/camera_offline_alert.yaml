@@ -2,7 +2,7 @@
   alias: Camera Offline Alert
   description: Notify when any camera goes offline for more than 5 minutes.
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id:
         - camera.lounge_live_view
@@ -15,12 +15,12 @@
       for:
         minutes: 5
   condition: []
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: Camera Offline
         message: "{{ trigger.entity_id }} is offline"
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: Camera Offline
         message: "{{ trigger.entity_id }} is offline"

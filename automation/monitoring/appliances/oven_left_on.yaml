@@ -3,22 +3,23 @@
   alias: "Monitoring - Oven Left On"
   description: "Alert if oven has been on for more than 3 hours."
   mode: single
-  trigger:
-    - platform: numeric_state
-      entity_id: sensor.oven_power
-      above: 50
+  triggers:
+    - trigger: state
+      entity_id: sensor.oven
+      to: "on"
       for:
         hours: 3
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  conditions: []
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🔥 Oven Left On"
-        message: "The oven has been on for over 3 hours ({{ states('sensor.oven_power') }}W). Was that intentional?"
-    - service: notify.mobile_app_lorettas_phone
+        message: "The oven has been on for over 3 hours. Was that intentional?"
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🔥 Oven Left On"
-        message: "The oven has been on for over 3 hours ({{ states('sensor.oven_power') }}W). Was that intentional?"
-    - service: notify.alexa_media
+        message: "The oven has been on for over 3 hours. Was that intentional?"
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15

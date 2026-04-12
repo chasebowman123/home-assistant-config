@@ -2,7 +2,7 @@
   alias: Low Battery Alert
   description: "Notify when any monitored sensor battery drops below 20%. Includes 6-hour debounce to prevent spam."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id:
         - sensor.hallway_temp_battery
@@ -15,12 +15,12 @@
       for:
         hours: 6
   condition: []
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: Low Battery Alert
         message: "{{ trigger.entity_id }} battery is {{ states(trigger.entity_id) }}%"
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: Low Battery Alert
         message: "{{ trigger.entity_id }} battery is {{ states(trigger.entity_id) }}%"

@@ -1,28 +1,38 @@
-# Poor house air quality: notify both phones + Alexa recommendation to ventilate.
+# Alert if any room's air quality drops below threshold.
 - id: air_quality_poor_house
   alias: "Monitoring - House Air Quality Poor"
-  description: "Notify both phones when house-wide air quality is poor."
+  description: "Alert if any air quality monitor reports poor conditions."
   mode: single
-  trigger:
-    - platform: numeric_state
-      entity_id: sensor.lounge_air_quality_index
-      above: 100
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.office_air_quality_monitor_air_quality_index
+      below: 50
       for:
-        minutes: 10
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+        minutes: 15
+    - trigger: numeric_state
+      entity_id: sensor.lucass_room_air_quality_monitor_air_quality_index
+      below: 50
+      for:
+        minutes: 15
+    - trigger: numeric_state
+      entity_id: sensor.lorettas_bedside_air_quality_air_quality_index
+      below: 50
+      for:
+        minutes: 15
+  conditions: []
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🌬️ Poor Air Quality"
-        message: "House air quality is poor (AQI: {{ states('sensor.lounge_air_quality_index') }}). Open windows or run purifier."
-    - service: notify.mobile_app_lorettas_phone
-      data:
-        title: "🌬️ Poor Air Quality"
-        message: "House air quality is poor (AQI: {{ states('sensor.lounge_air_quality_index') }}). Open windows or run purifier."
-    - service: notify.alexa_media
+        message: >
+          Air quality is poor:
+          Office: {{ states('sensor.office_air_quality_monitor_air_quality_index') }},
+          Lucas: {{ states('sensor.lucass_room_air_quality_monitor_air_quality_index') }},
+          Bedroom: {{ states('sensor.lorettas_bedside_air_quality_air_quality_index') }}
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15
-          - media_player.lounge_echo_hub
-        message: "Air quality in the house is poor. Consider opening windows or running the air purifier."
+        message: "Air quality is poor in the house. Consider opening a window or running the purifier."
         data:
           type: announce

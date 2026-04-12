@@ -1,29 +1,28 @@
-# Ring device battery critically low (<10%): notify both phones + Alexa.
+# Alert when Ring doorbell batteries drop below 10%.
 - id: ring_battery_critical
   alias: "Monitoring - Ring Battery Critical"
-  description: "Alert when any Ring device battery drops below 10%."
+  description: "Alert when any Ring doorbell battery drops below 10%."
   mode: single
-  trigger:
-    - platform: numeric_state
-      entity_id:
-        - sensor.basement_door_battery
-        - sensor.upstairs_battery
-        - sensor.lobby_battery
-        - sensor.garden_camera_battery
+  triggers:
+    - trigger: numeric_state
+      entity_id: sensor.lobby_battery
       below: 10
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+    - trigger: numeric_state
+      entity_id: sensor.upstairs_battery
+      below: 10
+  conditions: []
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🔴 Ring Battery Critical"
-        message: "{{ trigger.to_state.name }} battery is critically low at {{ trigger.to_state.state }}%. Replace immediately."
-    - service: notify.mobile_app_lorettas_phone
-      data:
-        title: "🔴 Ring Battery Critical"
-        message: "{{ trigger.to_state.name }} battery is critically low at {{ trigger.to_state.state }}%. Replace immediately."
-    - service: notify.alexa_media
+        title: "🔋 Ring Battery Critical"
+        message: >
+          Ring doorbell battery critical:
+          Lobby: {{ states('sensor.lobby_battery') }}%,
+          Upstairs: {{ states('sensor.upstairs_battery') }}%
+    - action: notify.alexa_media
       data:
         target:
-          - media_player.lounge_echo_hub
-        message: "Alert: a Ring device battery is critically low. Please replace it."
+          - media_player.echo_show_15
+        message: "A Ring doorbell battery is critically low. Please charge it soon."
         data:
           type: announce

@@ -3,23 +3,23 @@
   alias: "Monitoring - Weekly Energy Report"
   description: "Send weekly energy usage report every Monday at 8am."
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "08:00:00"
-  condition:
+  conditions:
     - condition: time
       weekday:
         - mon
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "📊 Weekly Energy Report"
         message: >
-          This week's energy usage: {{ states('sensor.energy_weekly') | float | round(1) }} kWh
-          (approx. £{{ (states('sensor.energy_weekly') | float * 0.27) | round(2) }}).
-    - service: notify.mobile_app_lorettas_phone
+          This week's energy usage: {{ states('sensor.weekly_home_energy') | float | round(1) }} kWh
+          (approx. £{{ (states('sensor.weekly_home_energy') | float * 0.27) | round(2) }}).
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "📊 Weekly Energy Report"
         message: >
-          This week's energy usage: {{ states('sensor.energy_weekly') | float | round(1) }} kWh
-          (approx. £{{ (states('sensor.energy_weekly') | float * 0.27) | round(2) }}).
+          This week's energy usage: {{ states('sensor.weekly_home_energy') | float | round(1) }} kWh
+          (approx. £{{ (states('sensor.weekly_home_energy') | float * 0.27) | round(2) }}).

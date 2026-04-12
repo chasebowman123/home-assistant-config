@@ -1,28 +1,29 @@
-# Fridge/freezer power anomaly: unusual power draw triggers alert.
+# Alert if fridge/freezer temperature rises abnormally (suggests power failure).
 - id: fridge_freezer_power_alert
   alias: "Monitoring - Fridge/Freezer Power Alert"
-  description: "Alert if fridge/freezer power draw is unusually high."
+  description: "Alert if freezer temperature rises above -10°C, suggesting power loss."
   mode: single
-  trigger:
-    - platform: numeric_state
-      entity_id: sensor.fridge_freezer_power
-      above: 200
+  triggers:
+    - trigger: numeric_state
+      entity_id: number.refrigerator_freezer_temperature
+      above: -10
       for:
-        minutes: 30
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+        minutes: 15
+  conditions: []
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
-        title: "🧊 Fridge/Freezer Alert"
-        message: "Fridge/freezer power is unusually high at {{ states('sensor.fridge_freezer_power') }}W. Check for issues."
-    - service: notify.mobile_app_lorettas_phone
+        title: "🧊 Freezer Temperature Alert"
+        message: "Freezer temperature is {{ states('number.refrigerator_freezer_temperature') }}°C — possible power issue."
+    - action: notify.mobile_app_lorettas_phone
       data:
-        title: "🧊 Fridge/Freezer Alert"
-        message: "Fridge/freezer power is unusually high at {{ states('sensor.fridge_freezer_power') }}W. Check for issues."
-    - service: notify.alexa_media
+        title: "🧊 Freezer Temperature Alert"
+        message: "Freezer temperature is {{ states('number.refrigerator_freezer_temperature') }}°C — possible power issue."
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15
           - media_player.lounge_echo_hub
-        message: "Alert: the fridge freezer is drawing unusually high power. Please check."
+        message: "Warning: the freezer temperature is unusually high. Please check."
         data:
           type: announce
