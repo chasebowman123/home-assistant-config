@@ -20,7 +20,3 @@
       data:
         title: Low Battery Alert
         message: "{{ trigger.entity_id }} battery is {{ states(trigger.entity_id) }}%"
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: Low Battery Alert
-        message: "{{ trigger.entity_id }} battery is {{ states(trigger.entity_id) }}%"

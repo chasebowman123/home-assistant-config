@@ -14,7 +14,3 @@
       data:
         title: Oven
         message: Oven has finished preheating
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: Oven
-        message: Oven has finished preheating

@@ -32,7 +32,3 @@
           data:
             title: "Daily Health Check — Issues Found"
             message: "Offline: {{ offline_items }}"
-        - action: notify.mobile_app_lorettas_phone
-          data:
-            title: "Daily Health Check — Issues Found"
-            message: "Offline: {{ offline_items }}"

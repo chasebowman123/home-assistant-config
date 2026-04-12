@@ -14,7 +14,3 @@
       data:
         title: "🔧 Boiler Service Due"
         message: "Annual reminder: book the boiler service for this year."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🔧 Boiler Service Due"
-        message: "Annual reminder: book the boiler service for this year."

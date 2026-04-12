@@ -14,10 +14,6 @@
       data:
         title: "🍽️ Dishwasher Done"
         message: "Dishwasher is done! Time to unload."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🍽️ Dishwasher Done"
-        message: "Dishwasher is done! Time to unload."
     - action: notify.alexa_media
       data:
         target:

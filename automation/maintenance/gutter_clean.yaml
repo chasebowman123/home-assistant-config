@@ -14,7 +14,3 @@
       data:
         title: "🏠 Gutter Clean Reminder"
         message: "Time to arrange a gutter clean."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🏠 Gutter Clean Reminder"
-        message: "Time to arrange a gutter clean."

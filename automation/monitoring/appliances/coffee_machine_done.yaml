@@ -28,7 +28,3 @@
       data:
         title: "☕ Coffee Ready"
         message: "Coffee machine has finished."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "☕ Coffee Ready"
-        message: "Coffee machine has finished."

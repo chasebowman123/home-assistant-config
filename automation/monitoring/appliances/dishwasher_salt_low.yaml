@@ -12,7 +12,3 @@
       data:
         title: Dishwasher Salt
         message: Dishwasher salt is nearly empty. Please refill.
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: Dishwasher Salt
-        message: Dishwasher salt is nearly empty. Please refill.

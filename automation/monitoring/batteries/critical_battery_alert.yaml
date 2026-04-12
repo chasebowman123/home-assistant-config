@@ -20,7 +20,3 @@
       data:
         title: "CRITICAL: Battery Critically Low"
         message: "{{ trigger.entity_id }} battery is {{ states(trigger.entity_id) }}% - replace immediately"
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "CRITICAL: Battery Critically Low"
-        message: "{{ trigger.entity_id }} battery is {{ states(trigger.entity_id) }}% - replace immediately"

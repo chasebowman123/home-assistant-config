@@ -14,7 +14,3 @@
       data:
         title: "🌀 Air Purifier Deep Clean"
         message: "Monthly reminder: deep clean the air purifier filters and casing."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🌀 Air Purifier Deep Clean"
-        message: "Monthly reminder: deep clean the air purifier filters and casing."

@@ -12,10 +12,6 @@
       data:
         title: "🌀 Air Purifier Filter"
         message: "Air purifier filter is at {{ states('sensor.core_400s_filter_lifetime') }}% — order a replacement."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🌀 Air Purifier Filter"
-        message: "Air purifier filter is at {{ states('sensor.core_400s_filter_lifetime') }}% — order a replacement."
     - action: notify.alexa_media
       data:
         target:

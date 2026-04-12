@@ -14,7 +14,3 @@
       data:
         title: "🫧 Washing Machine Clean"
         message: "Monthly reminder: run a drum-clean cycle on the washing machine."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🫧 Washing Machine Clean"
-        message: "Monthly reminder: run a drum-clean cycle on the washing machine."

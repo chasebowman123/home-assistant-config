@@ -15,10 +15,6 @@
       data:
         title: "🔥 Oven Left On"
         message: "The oven has been on for over 3 hours. Was that intentional?"
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🔥 Oven Left On"
-        message: "The oven has been on for over 3 hours. Was that intentional?"
     - action: notify.alexa_media
       data:
         target:

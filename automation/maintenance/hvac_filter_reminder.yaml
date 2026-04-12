@@ -14,7 +14,3 @@
       data:
         title: "💨 HVAC Filter Check"
         message: "Quarterly reminder: check and replace HVAC filters if needed."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "💨 HVAC Filter Check"
-        message: "Quarterly reminder: check and replace HVAC filters if needed."

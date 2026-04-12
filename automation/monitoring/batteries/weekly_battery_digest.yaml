@@ -14,7 +14,3 @@
       data:
         title: Weekly Battery Status
         message: "Hallway: {{ states('sensor.hallway_temp_battery') }}% | Lounge: {{ states('sensor.lounge_temperature_and_humidity_sensor_battery') }}% | Bedroom: {{ states('sensor.edward_bedside_sensor_battery') }}% | Office: {{ states('sensor.office_temp_battery') }}%"
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: Weekly Battery Status
-        message: "Hallway: {{ states('sensor.hallway_temp_battery') }}% | Lounge: {{ states('sensor.lounge_temperature_and_humidity_sensor_battery') }}% | Bedroom: {{ states('sensor.edward_bedside_sensor_battery') }}% | Office: {{ states('sensor.office_temp_battery') }}%"

@@ -12,10 +12,6 @@
       data:
         title: Tumble Dryer
         message: Tumble dryer is done!
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: Tumble Dryer
-        message: Tumble dryer is done!
     - action: notify.alexa_media
       data:
         target:

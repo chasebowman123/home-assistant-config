@@ -30,10 +30,6 @@
       data:
         title: "🫧 Washing Machine Done"
         message: "Washing machine is done! Time to hang the laundry."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🫧 Washing Machine Done"
-        message: "Washing machine is done! Time to hang the laundry."
     - action: notify.alexa_media
       data:
         target:

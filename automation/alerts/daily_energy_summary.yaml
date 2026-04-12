@@ -13,9 +13,3 @@
         message: >
           Today's usage: {{ states('sensor.daily_home_energy') | float | round(2) }} kWh
           (£{{ (states('sensor.daily_home_energy') | float * 0.27) | round(2) }}).
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "⚡ Daily Energy Summary"
-        message: >
-          Today's usage: {{ states('sensor.daily_home_energy') | float | round(2) }} kWh
-          (£{{ (states('sensor.daily_home_energy') | float * 0.27) | round(2) }}).

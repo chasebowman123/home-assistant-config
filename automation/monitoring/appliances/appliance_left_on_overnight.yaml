@@ -27,14 +27,6 @@
           Oven: {{ states('sensor.oven') }},
           Washing Machine: {{ states('sensor.washing_machine_power') }}W,
           Dishwasher: {{ states('sensor.dishwasher_operation_state') }}
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "⚠️ Appliance Left On"
-        message: >
-          Appliance still on at midnight:
-          Oven: {{ states('sensor.oven') }},
-          Washing Machine: {{ states('sensor.washing_machine_power') }}W,
-          Dishwasher: {{ states('sensor.dishwasher_operation_state') }}
     - action: notify.alexa_media
       data:
         target:

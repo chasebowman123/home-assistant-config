@@ -14,7 +14,3 @@
       data:
         title: "🚨 Smoke Detector Test"
         message: "Monthly reminder: test all smoke detectors today."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🚨 Smoke Detector Test"
-        message: "Monthly reminder: test all smoke detectors today."

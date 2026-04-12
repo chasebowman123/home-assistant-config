@@ -16,9 +16,3 @@
         message: >
           Last month's energy usage: {{ states('sensor.monthly_home_energy') | float | round(1) }} kWh
           (approx. £{{ (states('sensor.monthly_home_energy') | float * 0.27) | round(2) }}).
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "📊 Monthly Energy Report"
-        message: >
-          Last month's energy usage: {{ states('sensor.monthly_home_energy') | float | round(1) }} kWh
-          (approx. £{{ (states('sensor.monthly_home_energy') | float * 0.27) | round(2) }}).

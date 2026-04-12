@@ -14,7 +14,3 @@
       data:
         title: "🧊 Fridge/Freezer Defrost"
         message: "Quarterly reminder: check if the fridge/freezer needs defrosting."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🧊 Fridge/Freezer Defrost"
-        message: "Quarterly reminder: check if the fridge/freezer needs defrosting."

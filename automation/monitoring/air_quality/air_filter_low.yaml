@@ -12,7 +12,3 @@
       data:
         title: Air Filter Replacement
         message: "Core 400S air filter has {{ states('sensor.core_400s_filter_lifetime') }}% life remaining. Order replacement."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: Air Filter Replacement
-        message: "Core 400S air filter has {{ states('sensor.core_400s_filter_lifetime') }}% life remaining. Order replacement."

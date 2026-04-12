@@ -14,7 +14,3 @@
       data:
         title: Refrigerator
         message: Fridge door has been open for 2 minutes!
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: Refrigerator
-        message: Fridge door has been open for 2 minutes!

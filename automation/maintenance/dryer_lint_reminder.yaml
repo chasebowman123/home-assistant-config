@@ -14,7 +14,3 @@
       data:
         title: "🧺 Dryer Lint Filter"
         message: "Monthly reminder: clean the tumble dryer lint filter."
-    - action: notify.mobile_app_lorettas_phone
-      data:
-        title: "🧺 Dryer Lint Filter"
-        message: "Monthly reminder: clean the tumble dryer lint filter."
