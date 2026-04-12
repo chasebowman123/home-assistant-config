@@ -3,44 +3,44 @@
   alias: "Disco Disco - Activate"
   description: "Disco lights on, colour cycling, party playlist, Alexa announcement."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_boolean.disco_disco
       to: "on"
-  action:
-    - service: light.turn_on
+  actions:
+    - action: light.turn_on
       target:
         entity_id: light.lounge_iris
       data:
         brightness_pct: 100
         color_name: purple
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_signe_light
       data:
         brightness_pct: 100
         color_name: blue
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_strip_light
       data:
         brightness_pct: 100
         color_name: red
-    - service: light.turn_off
+    - action: light.turn_off
       target:
         entity_id: light.lounge_spotlights
-    - service: media_player.volume_set
+    - action: media_player.volume_set
       target:
         entity_id: media_player.lounge
       data:
         volume_level: 0.5
-    - service: media_player.play_media
+    - action: media_player.play_media
       target:
         entity_id: media_player.lounge
       data:
         media_content_id: "Party Playlist"
         media_content_type: playlist
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15

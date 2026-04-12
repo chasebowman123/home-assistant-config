@@ -1,30 +1,28 @@
-# Ankii departs: calculate hours, create calendar event, notify both phones, Alexa goodbye.
-# Nanny Departure
-# Logs Ankii's departure, calculates hours worked, creates calendar event.
+# Ankii departs: calculate hours, create calendar event, notify both phones.
 # Uses a 10-minute buffer to avoid false departures from Wi-Fi drops.
 - id: nanny_departure
   alias: "Nanny - Departure"
   description: "Log Ankii's departure and create calendar event with hours worked."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: device_tracker.ankiis_phone
       to: "not_home"
       for:
         minutes: 10
-  condition:
+  conditions:
     - condition: state
       entity_id: input_boolean.nanny_present
       state: "on"
-  action:
-    - service: input_boolean.turn_off
+  actions:
+    - action: input_boolean.turn_off
       target:
         entity_id: input_boolean.nanny_present
     - variables:
         arrival: "{{ states('input_datetime.nanny_arrival_time') }}"
         departure: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
         hours: "{{ ((as_timestamp(now()) - as_timestamp(states('input_datetime.nanny_arrival_time'))) / 3600) | round(2) }}"
-    - service: calendar.create_event
+    - action: calendar.create_event
       target:
         entity_id: calendar.nanny_hours
       data:
@@ -32,31 +30,16 @@
         description: "Arrived: {{ as_timestamp(arrival) | timestamp_custom('%H:%M') }}, Left: {{ now().strftime('%H:%M') }}, Hours: {{ hours }}"
         start_date_time: "{{ arrival }}"
         end_date_time: "{{ departure }}"
-    - service: input_text.set_value
-      target:
-        entity_id: input_text.nanny_last_session
-      data:
-        value: "{{ as_timestamp(arrival) | timestamp_custom('%a %d %b') }}: {{ as_timestamp(arrival) | timestamp_custom('%H:%M') }}–{{ now().strftime('%H:%M') }} ({{ hours }}h)"
-    - service: counter.increment
-      target:
-        entity_id: counter.nanny_weekly_sessions
-    - service: input_number.set_value
+    - action: input_number.set_value
       target:
         entity_id: input_number.nanny_weekly_hours
       data:
         value: "{{ (states('input_number.nanny_weekly_hours') | float + hours | float) | round(2) }}"
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "👩‍👦 Ankii Departed"
         message: "Ankii left at {{ now().strftime('%H:%M') }}. Session: {{ hours }}h."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "👩‍👦 Ankii Departed"
         message: "Ankii left at {{ now().strftime('%H:%M') }}. Session: {{ hours }}h."
-    - service: notify.alexa_media
-      data:
-        target:
-          - media_player.lounge_echo_hub
-        message: "Ankii has left for today. Goodbye Ankii!"
-        data:
-          type: announce

@@ -3,12 +3,12 @@
   alias: "Office - Standard Evening"
   description: "Office evening mode: warm dim lighting."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.office
       to: "Standard Evening"
-  action:
-    - service: light.turn_on
+  actions:
+    - action: light.turn_on
       target:
         entity_id: light.office_spotlights
       data:

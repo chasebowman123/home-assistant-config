@@ -3,18 +3,18 @@
   alias: "Maintenance - Washing Machine Drum Clean"
   description: "Monthly reminder to run a drum-clean cycle on the washing machine."
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "09:00:00"
-  condition:
+  conditions:
     - condition: template
       value_template: "{{ now().day == 1 }}"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🫧 Washing Machine Clean"
         message: "Monthly reminder: run a drum-clean cycle on the washing machine."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🫧 Washing Machine Clean"
         message: "Monthly reminder: run a drum-clean cycle on the washing machine."

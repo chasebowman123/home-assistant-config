@@ -2,15 +2,15 @@
   alias: Hallway Signe Always On
   description: Turn Signe back on if anything switches it off.
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: light.hallway_signe_light
       to: "off"
       for:
         seconds: 5
   condition: []
-  action:
-    - service: light.turn_on
+  actions:
+    - action: light.turn_on
       target:
         entity_id: light.hallway_signe_light
       data:

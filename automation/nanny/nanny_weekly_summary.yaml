@@ -1,30 +1,28 @@
 # Weekly nanny summary every Sunday evening to both phones.
-# Nanny Weekly Summary
-# Sends a summary of the nanny's hours and sessions each Sunday at 7pm.
-# Resets counters and hours for the new week on Monday.
+# Reports total hours tracked this week via input_number.nanny_weekly_hours.
+# Resets hours for the new week.
 - id: nanny_weekly_summary
   alias: "Nanny - Weekly Summary"
-  description: "Send weekly nanny hours summary on Sunday and reset on Monday."
+  description: "Send weekly nanny hours summary on Sunday and reset hours."
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "19:00:00"
-  condition:
+  conditions:
     - condition: time
       weekday:
         - sun
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "📋 Nanny Weekly Summary"
-        message: >
-          This week: {{ states('input_number.nanny_weekly_hours') | float | round(2) }}h
-          across {{ states('counter.nanny_weekly_sessions') }} session(s).
-          Last session: {{ states('input_text.nanny_last_session') }}.
-    - service: notify.mobile_app_lorettas_phone
+        message: "This week: {{ states('input_number.nanny_weekly_hours') | float | round(2) }}h with Ankii."
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "📋 Nanny Weekly Summary"
-        message: >
-          This week: {{ states('input_number.nanny_weekly_hours') | float | round(2) }}h
-          across {{ states('counter.nanny_weekly_sessions') }} session(s).
-          Last session: {{ states('input_text.nanny_last_session') }}.
+        message: "This week: {{ states('input_number.nanny_weekly_hours') | float | round(2) }}h with Ankii."
+    - action: input_number.set_value
+      target:
+        entity_id: input_number.nanny_weekly_hours
+      data:
+        value: 0

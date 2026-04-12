@@ -3,22 +3,22 @@
   alias: "Lucas Room - Air Quality Poor"
   description: "Notify both phones and Alexa when Lucas room air quality is poor."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
-      entity_id: sensor.lucas_room_air_quality_index
+      entity_id: sensor.lucass_room_air_quality_monitor_air_quality_index
       above: 100
       for:
         minutes: 10
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🌬️ Lucas Room Air Quality"
-        message: "Air quality in Lucas's room is poor (AQI: {{ states('sensor.lucas_room_air_quality_index') }}). Consider ventilating."
-    - service: notify.mobile_app_lorettas_phone
+        message: "Air quality in Lucas's room is poor (AQI: {{ states('sensor.lucass_room_air_quality_monitor_air_quality_index') }}). Consider ventilating."
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🌬️ Lucas Room Air Quality"
-        message: "Air quality in Lucas's room is poor (AQI: {{ states('sensor.lucas_room_air_quality_index') }}). Consider ventilating."
-    - service: notify.alexa_media
+        message: "Air quality in Lucas's room is poor (AQI: {{ states('sensor.lucass_room_air_quality_monitor_air_quality_index') }}). Consider ventilating."
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15

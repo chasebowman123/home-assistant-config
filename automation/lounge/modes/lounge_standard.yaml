@@ -3,33 +3,33 @@
   alias: "Lounge - Standard"
   description: "Normal lighting, Sync Box off."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.lounge
       to: "Standard"
-  action:
-    - service: switch.turn_off
+  actions:
+    - action: switch.turn_off
       target:
-        entity_id: switch.lounge_hue_sync_box
-    - service: light.turn_on
+        entity_id: switch.unnamed_p304m_hue_sync_box
+    - action: light.turn_on
       target:
         entity_id: light.lounge_spotlights
       data:
         brightness_pct: 80
         color_temp_kelvin: 3000
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_signe_light
       data:
         brightness_pct: 50
         color_temp_kelvin: 3000
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_strip_light
       data:
         brightness_pct: 50
         color_temp_kelvin: 3000
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_piano_lamp
       data:

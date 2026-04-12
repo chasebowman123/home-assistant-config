@@ -1,28 +1,26 @@
-# Nanit baby monitor loses power: notify both phones + Alexa alert.
+# Nanit baby monitor loses power: notify both phones if wattage drops below 2W.
+# The Nanit is plugged into smart plug switch.lucas_strip_nanit
+# and its power is measured by sensor.unnamed_p304m_nanit_current_consumption.
 - id: lucas_nanit_power_lost
   alias: "Lucas Room - Nanit Power Lost"
-  description: "Alert if Nanit baby monitor loses power."
+  description: "Alert if Nanit baby monitor loses power (wattage drops below 2W for 2 minutes)."
   mode: single
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.lucas_nanit_power
-      to: "off"
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.unnamed_p304m_nanit_current_consumption
+      below: 2
       for:
         minutes: 2
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  conditions:
+    - condition: state
+      entity_id: switch.lucas_strip_nanit
+      state: "on"
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
+      data:
+        title: "📷 Nanit Offline"
+        message: "Lucas's Nanit baby monitor has lost power or gone offline (consumption {{ states('sensor.unnamed_p304m_nanit_current_consumption') }}W). Please check."
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "📷 Nanit Offline"
         message: "Lucas's Nanit baby monitor has lost power or gone offline. Please check."
-    - service: notify.mobile_app_lorettas_phone
-      data:
-        title: "📷 Nanit Offline"
-        message: "Lucas's Nanit baby monitor has lost power or gone offline. Please check."
-    - service: notify.alexa_media
-      data:
-        target:
-          - media_player.echo_show_15
-          - media_player.edward_s_echo_show_21
-        message: "Alert: Lucas's Nanit monitor has gone offline. Please check the power."
-        data:
-          type: announce

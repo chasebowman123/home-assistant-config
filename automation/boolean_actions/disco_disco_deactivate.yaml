@@ -3,18 +3,18 @@
   alias: "Disco Disco - Deactivate"
   description: "Restore normal lighting and stop party music."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_boolean.disco_disco
       to: "off"
-  action:
-    - service: light.turn_on
+  actions:
+    - action: light.turn_on
       target:
         entity_id: light.lounge_spotlights
       data:
         brightness_pct: 80
         color_temp_kelvin: 3000
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id:
           - light.lounge_iris
@@ -23,6 +23,6 @@
       data:
         brightness_pct: 50
         color_temp_kelvin: 3000
-    - service: media_player.media_stop
+    - action: media_player.media_stop
       target:
         entity_id: media_player.lounge

@@ -3,24 +3,24 @@
   alias: "Lucas Room - Standard"
   description: "Normal daytime lighting in Lucas's room."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.lucas_room
       to: "Standard"
-  action:
-    - service: light.turn_on
+  actions:
+    - action: light.turn_on
       target:
-        entity_id: light.lucass_room_spotlights
+        entity_id: light.lucass_room_spot_lights
       data:
         brightness_pct: 80
         color_temp_kelvin: 4000
         transition: 3
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lucass_room_pendant_light
       data:
         brightness_pct: 70
         color_temp_kelvin: 3500
-    - service: light.turn_off
+    - action: light.turn_off
       target:
-        entity_id: light.lucas_s_room_go
+        entity_id: light.lucass_room

@@ -3,19 +3,19 @@
   alias: "Lucas - Night Wake Alert"
   description: "Alert when Lucas wakes during the night. Notify both phones."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: binary_sensor.lucass_room_motion
       to: "on"
-  condition:
+  conditions:
     - condition: time
       after: "22:00:00"
       before: "05:00:00"
     - condition: state
       entity_id: input_boolean.lucas_sleeping
       state: "on"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🌙 Lucas Night Wake"
         message: "Lucas has woken up at {{ now().strftime('%H:%M') }}."
@@ -25,7 +25,7 @@
               name: default
               critical: 0
               volume: 0.8
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🌙 Lucas Night Wake"
         message: "Lucas has woken up at {{ now().strftime('%H:%M') }}."
@@ -35,7 +35,7 @@
               name: default
               critical: 0
               volume: 0.8
-    - service: media_player.play_media
+    - action: media_player.play_media
       target:
         entity_id:
           - media_player.echo_show_15

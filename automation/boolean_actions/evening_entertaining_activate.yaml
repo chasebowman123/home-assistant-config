@@ -3,47 +3,47 @@
   alias: "Evening Entertaining - Activate"
   description: "Mood lighting for guests, music-friendly ambiance, Alexa announcement."
   mode: single
-  trigger:
+  triggers:
     - platform: state
-      entity_id: input_boolean.evening_entertaining
+      entity_id: input_boolean.entertaining_guests
       to: "on"
-  action:
-    - service: light.turn_on
+  actions:
+    - action: light.turn_on
       target:
         entity_id: light.lounge_spotlights
       data:
         brightness_pct: 40
         color_temp_kelvin: 2500
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_piano_lamp
       data:
         brightness_pct: 50
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_strip_light
       data:
         brightness_pct: 40
         color_temp_kelvin: 2500
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_iris
       data:
         brightness_pct: 40
         color_temp_kelvin: 2500
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.hallway_spot_lights
       data:
         brightness_pct: 50
         color_temp_kelvin: 2700
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.kitchen_spotlights
       data:
         brightness_pct: 60
         color_temp_kelvin: 2700
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.lounge_echo_hub

@@ -2,15 +2,15 @@
   alias: Return Home Heating
   description: Restore daytime heating temperatures when Edward or Loretta arrives home.
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id:
         - person.edward_eidam
         - person.loretta_eidam
       to: home
   condition: []
-  action:
-    - service: climate.set_temperature
+  actions:
+    - action: climate.set_temperature
       target:
         entity_id:
           - climate.hallway
@@ -18,7 +18,7 @@
           - climate.kitchen
       data:
         temperature: 24
-    - service: climate.set_temperature
+    - action: climate.set_temperature
       target:
         entity_id: climate.lucas_s_room
       data:

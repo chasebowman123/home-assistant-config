@@ -2,24 +2,24 @@
   alias: Evening Scene
   description: "Evening Time — Lounge Chill scene + bar/banana lights, lamp post candle 100%, Samsung TV on."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.house
       to: Evening Time
   condition: []
-  action:
-    - service: scene.turn_on
+  actions:
+    - action: scene.turn_on
       target:
         entity_id: scene.lounge_rolling_hills
-    - service: scene.turn_on
+    - action: scene.turn_on
       target:
         entity_id: scene.hallway_evening
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.hallway_lamp_post
       data:
         brightness: 255
         effect: candle
-    - service: media_player.turn_on
+    - action: media_player.turn_on
       target:
         entity_id: media_player.lounge_tv_2

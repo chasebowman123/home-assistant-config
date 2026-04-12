@@ -3,19 +3,19 @@
   alias: "Doorbell - Silent Mode Off"
   description: "Re-enable doorbell ring when returning to normal modes."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.house
       to: "Day Time"
-  condition:
+  conditions:
     - condition: state
       entity_id: input_boolean.lucas_sleeping
       state: "off"
     - condition: state
       entity_id: input_boolean.important_meeting
       state: "off"
-  action:
-    - service: siren.turn_on
+  actions:
+    - action: siren.turn_on
       target:
         entity_id:
           - siren.basement_door_siren

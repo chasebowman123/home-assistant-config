@@ -3,23 +3,23 @@
   alias: "Lounge - Music"
   description: "Piano lamp + strip at 60%, Sync Box off."
   mode: single
-  trigger:
+  triggers:
     - platform: state
       entity_id: input_select.lounge
       to: "Music"
-  action:
-    - service: light.turn_off
+  actions:
+    - action: light.turn_off
       target:
         entity_id: light.lounge_spotlights
-    - service: switch.turn_off
+    - action: switch.turn_off
       target:
-        entity_id: switch.lounge_hue_sync_box
-    - service: light.turn_on
+        entity_id: switch.unnamed_p304m_hue_sync_box
+    - action: light.turn_on
       target:
         entity_id: light.lounge_piano_lamp
       data:
         brightness_pct: 60
-    - service: light.turn_on
+    - action: light.turn_on
       target:
         entity_id: light.lounge_strip_light
       data:

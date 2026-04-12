@@ -3,22 +3,22 @@
   alias: "Lucas Room - Too Cold"
   description: "Alert if Lucas room temperature drops below 18°C."
   mode: single
-  trigger:
+  triggers:
     - platform: numeric_state
       entity_id: sensor.lucas_room_temp_temperature
       below: 18
       for:
         minutes: 10
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🥶 Lucas Room Cold"
         message: "Lucas's room is {{ states('sensor.lucas_room_temp_temperature') }}°C — below 18°C. Check heating."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🥶 Lucas Room Cold"
         message: "Lucas's room is {{ states('sensor.lucas_room_temp_temperature') }}°C — below 18°C. Check heating."
-    - service: notify.alexa_media
+    - action: notify.alexa_media
       data:
         target:
           - media_player.echo_show_15

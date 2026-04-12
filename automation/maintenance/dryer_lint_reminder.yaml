@@ -3,18 +3,18 @@
   alias: "Maintenance - Dryer Lint Reminder"
   description: "Monthly reminder to clean the tumble dryer lint filter."
   mode: single
-  trigger:
+  triggers:
     - platform: time
       at: "09:00:00"
-  condition:
+  conditions:
     - condition: template
       value_template: "{{ now().day == 15 }}"
-  action:
-    - service: notify.mobile_app_ee_iphone_16_pro_max
+  actions:
+    - action: notify.mobile_app_ee_iphone_16_pro_max
       data:
         title: "🧺 Dryer Lint Filter"
         message: "Monthly reminder: clean the tumble dryer lint filter."
-    - service: notify.mobile_app_lorettas_phone
+    - action: notify.mobile_app_lorettas_phone
       data:
         title: "🧺 Dryer Lint Filter"
         message: "Monthly reminder: clean the tumble dryer lint filter."

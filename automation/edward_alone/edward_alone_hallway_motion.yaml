@@ -1,29 +1,29 @@
 - id: edward_alone_hallway_motion
   alias: "Edward Alone - Hallway Motion Lights"
   description: "Motion activates hallway lights when Edward is alone. Dim at night."
-  trigger:
+  triggers:
     - platform: state
-      entity_id: binary_sensor.hallway_kitchen_motion_sensor_occupancy
+      entity_id: binary_sensor.kitchen_motion_sensor_occupancy
       to: "on"
-  condition:
+  conditions:
     - condition: state
       entity_id: input_boolean.edward_alone
       state: "on"
-  action:
+  actions:
     - choose:
         - conditions:
             - condition: time
               after: "22:00:00"
               before: "07:00:00"
           sequence:
-            - service: light.turn_on
+            - action: light.turn_on
               target:
                 entity_id: light.hallway_spot_lights
               data:
                 brightness_pct: 20
                 color_temp_kelvin: 2200
       default:
-        - service: light.turn_on
+        - action: light.turn_on
           target:
             entity_id: light.hallway_spot_lights
           data:
@@ -31,11 +31,11 @@
             color_temp_kelvin: 3000
     - wait_for_trigger:
         - platform: state
-          entity_id: binary_sensor.hallway_kitchen_motion_sensor_occupancy
+          entity_id: binary_sensor.kitchen_motion_sensor_occupancy
           to: "off"
           for:
             minutes: 10
-    - service: light.turn_off
+    - action: light.turn_off
       target:
         entity_id: light.hallway_spot_lights
       data:
