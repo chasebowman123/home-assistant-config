@@ -47,3 +47,17 @@ ip_bans.yaml
 .vscode/
 .idea/
 .cursor/
+
+# Credentials — NEVER commit any of these. Use env vars / OS keychain instead.
+.env
+.env.*
+*.env
+secrets.env
+*_token
+*_token.txt
+*.token
+ha_token*
+ha_credentials*
+nabu_casa*
+bearer*.txt
+session-handoff*.md
