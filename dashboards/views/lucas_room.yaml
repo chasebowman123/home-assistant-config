@@ -196,8 +196,8 @@ views:
                     - color: rgba(255, 255, 255, 0.9)
                     - margin-top: 8px
                 tap_action:
-                  action: call-service
-                  service: script.lucas_morning_routine
+                  action: perform-action
+                  perform_action: script.lucas_morning_routine
 
               - type: custom:button-card
                 name: Bathtime
@@ -219,8 +219,8 @@ views:
                     - color: rgba(255, 255, 255, 0.9)
                     - margin-top: 8px
                 tap_action:
-                  action: call-service
-                  service: script.lucas_bathtime
+                  action: perform-action
+                  perform_action: script.lucas_bathtime
 
               - type: custom:button-card
                 name: Wind Down
@@ -242,8 +242,8 @@ views:
                     - color: rgba(255, 255, 255, 0.9)
                     - margin-top: 8px
                 tap_action:
-                  action: call-service
-                  service: script.lucas_wind_down
+                  action: perform-action
+                  perform_action: script.lucas_wind_down
 
               - type: custom:button-card
                 name: Bedtime
@@ -265,8 +265,8 @@ views:
                     - color: rgba(255, 255, 255, 0.9)
                     - margin-top: 8px
                 tap_action:
-                  action: call-service
-                  service: script.lucas_bedtime
+                  action: perform-action
+                  perform_action: script.lucas_bedtime
 
               - type: custom:button-card
                 name: Nightlight
@@ -287,8 +287,8 @@ views:
                     - color: rgba(255, 255, 255, 0.9)
                     - margin-top: 8px
                 tap_action:
-                  action: call-service
-                  service: script.lucas_nightlight
+                  action: perform-action
+                  perform_action: script.lucas_nightlight
       # =====================================================================
       # SCENES — Light presets
       # =====================================================================
@@ -314,9 +314,9 @@ views:
                     - font-weight: 500
                     - margin-top: 6px
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
-                  service_data:
+                  action: perform-action
+                  perform_action: scene.turn_on
+                  data:
                     entity_id: scene.lucass_room_arise
 
               - type: custom:button-card
@@ -336,9 +336,9 @@ views:
                     - font-weight: 500
                     - margin-top: 6px
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
-                  service_data:
+                  action: perform-action
+                  perform_action: scene.turn_on
+                  data:
                     entity_id: scene.lucass_room_storybook
 
               - type: custom:button-card
@@ -358,9 +358,9 @@ views:
                     - font-weight: 500
                     - margin-top: 6px
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
-                  service_data:
+                  action: perform-action
+                  perform_action: scene.turn_on
+                  data:
                     entity_id: scene.lucass_room_nebula
 
               - type: custom:button-card
@@ -380,9 +380,9 @@ views:
                     - font-weight: 500
                     - margin-top: 6px
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
-                  service_data:
+                  action: perform-action
+                  perform_action: scene.turn_on
+                  data:
                     entity_id: scene.lucass_room_starlight
 
               - type: custom:button-card
@@ -402,9 +402,9 @@ views:
                     - font-weight: 500
                     - margin-top: 6px
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
-                  service_data:
+                  action: perform-action
+                  perform_action: scene.turn_on
+                  data:
                     entity_id: scene.lucass_room_sleepy
 
               - type: custom:button-card
@@ -424,9 +424,9 @@ views:
                     - font-weight: 500
                     - margin-top: 6px
                 tap_action:
-                  action: call-service
-                  service: light.turn_off
-                  service_data:
+                  action: perform-action
+                  perform_action: light.turn_off
+                  data:
                     entity_id: light.lucass_room
 
       # =====================================================================

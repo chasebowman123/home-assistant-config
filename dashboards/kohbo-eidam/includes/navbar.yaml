@@ -62,7 +62,7 @@ routes:
         tap_action:
           action: fire-dom-event
           browser_mod:
-            service: browser_mod.javascript
+            perform_action: browser_mod.javascript
             data:
               browser_id: THIS
               code: |

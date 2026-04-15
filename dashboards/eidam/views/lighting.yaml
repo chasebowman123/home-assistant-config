@@ -45,8 +45,8 @@ views:
                 icon_color: amber
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: script.morning_routine
+                  action: perform-action
+                  perform_action: script.morning_routine
                 card_mod:
                   style: "ha-card { background: rgba(245, 158, 11, 0.15); }"
 
@@ -56,8 +56,8 @@ views:
                 icon_color: orange
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: script.sunset_routine
+                  action: perform-action
+                  perform_action: script.sunset_routine
                 card_mod:
                   style: "ha-card { background: rgba(249, 115, 22, 0.15); }"
 
@@ -67,8 +67,8 @@ views:
                 icon_color: indigo
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: script.goodnight_routine
+                  action: perform-action
+                  perform_action: script.goodnight_routine
                 card_mod:
                   style: "ha-card { background: rgba(99, 102, 241, 0.15); }"
 
@@ -78,8 +78,8 @@ views:
                 icon_color: grey
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: script.all_lights_off
+                  action: perform-action
+                  perform_action: script.all_lights_off
                 card_mod:
                   style: "ha-card { background: rgba(100, 100, 100, 0.15); }"
 
@@ -118,8 +118,8 @@ views:
                 primary: Relax
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.lounge_relax
 
@@ -128,8 +128,8 @@ views:
                 primary: TV
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.lounge_tv_tokyo
 
@@ -138,8 +138,8 @@ views:
                 primary: Hills
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.lounge_rolling_hills
 
@@ -148,8 +148,8 @@ views:
                 primary: Party
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.lounge_energise
 
@@ -188,8 +188,8 @@ views:
                 primary: Relax
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.bedroom_relax
 
@@ -198,8 +198,8 @@ views:
                 primary: Sleepy
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.bedroom_sleepy
 
@@ -208,8 +208,8 @@ views:
                 primary: Arise
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.bedroom_arise
 
@@ -218,8 +218,8 @@ views:
                 primary: Hills
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.bedroom_rolling_hills
 
@@ -258,8 +258,8 @@ views:
                 primary: Arise
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.lucass_room_arise
 
@@ -268,8 +268,8 @@ views:
                 primary: Story
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.lucass_room_storybook
 
@@ -278,8 +278,8 @@ views:
                 primary: Sleepy
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.lucass_room_sleepy
 
@@ -288,8 +288,8 @@ views:
                 primary: Night
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: script.lucas_nightlight
+                  action: perform-action
+                  perform_action: script.lucas_nightlight
 
       # ===========================================================================
       # HALLWAY

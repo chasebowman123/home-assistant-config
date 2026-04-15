@@ -19,9 +19,9 @@ scene_button:
         - min-width: 100%
     haptic: light
     tap_action:
-      action: call-service
-      service: scene_presets.apply_preset 
-      service_data:
+      action: perform-action
+      perform_action: scene_presets.apply_preset
+      data:
         preset_id: '[[scene_id]]'
         targets:
           entity_id: '[[entity_id]]'

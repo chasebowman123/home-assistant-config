@@ -84,9 +84,9 @@ camera_popup:
                   content: Snooze
                   icon_color: "#ADB5BD"
                   tap_action:
-                    action: call-service
-                    service: timer.start
-                    service_data:
+                    action: perform-action
+                    perform_action: timer.start
+                    data:
                       entity_id: '[[timer_entity]]'
 
 

@@ -99,8 +99,8 @@ thermostat_popup:
               - color: var(--state-climate-heat-color)
                 value: 'heat'
             tap_action:
-              action: call-service
-              service: climate.set_hvac_mode
+              action: perform-action
+              perform_action: climate.set_hvac_mode
               haptic: heavy
               target:
                 entity_id: '[[entity]]'
@@ -123,8 +123,8 @@ thermostat_popup:
               - color: var(--state-climate-cool-color)
                 value: 'cool'
             tap_action:
-              action: call-service
-              service: climate.set_hvac_mode
+              action: perform-action
+              perform_action: climate.set_hvac_mode
               haptic: heavy
               target:
                 entity_id: '[[entity]]'
@@ -146,8 +146,8 @@ thermostat_popup:
                 operator: template
                 value: "[[[ return entity.state != 'heat_cool' || entity.attributes.preset_mode === 'eco' ]]]"
             tap_action:
-              action: call-service
-              service: climate.set_hvac_mode
+              action: perform-action
+              perform_action: climate.set_hvac_mode
               haptic: heavy
               target:
                 entity_id: '[[entity]]'
@@ -169,8 +169,8 @@ thermostat_popup:
               - color: var(--light-grey-color)
                 operator: default
             tap_action:
-              action: call-service
-              service: climate.set_preset_mode
+              action: perform-action
+              perform_action: climate.set_preset_mode
               haptic: heavy
               target:
                 entity_id: '[[entity]]'
