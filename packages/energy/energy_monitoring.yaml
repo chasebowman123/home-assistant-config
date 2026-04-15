@@ -8,7 +8,7 @@ template:
         unit_of_measurement: "W"
         device_class: power
         state: >
-          {% set lounge = states('sensor.lounge_usage') | float(0) %}
+          {% set lounge = states('sensor.lounge_total_power') | float(0) %}
           {% set bedroom = states('sensor.bedroom_usage') | float(0) %}
           {% set lucas_nanit = states('sensor.unnamed_p304m_nanit_current_consumption') | float(0) %}
           {% set lucas_echo = states('sensor.unnamed_p304m_echo_hub_current_consumption') | float(0) %}
@@ -24,7 +24,17 @@ template:
         unique_id: lounge_total_power
         unit_of_measurement: "W"
         device_class: power
-        state: "{{ states('sensor.lounge_usage') | float(0) | round(1) }}"
+        state: >
+          {% set sonos_arc = states('sensor.unnamed_p304m_sonos_arc_current_consumption') | float(0) %}
+          {% set samsung_tv = states('sensor.unnamed_p304m_samsung_tv_current_consumption') | float(0) %}
+          {% set sub_mini = states('sensor.unnamed_p304m_sonos_sub_mini_current_consumption') | float(0) %}
+          {% set ps5 = states('sensor.unnamed_p304m_playstation_5_current_consumption') | float(0) %}
+          {% set hue_tv = states('sensor.unnamed_p304m_hue_tv_lights_current_consumption') | float(0) %}
+          {% set echo_hub = states('sensor.unnamed_p304m_echo_hub_current_consumption') | float(0) %}
+          {% set usbc = states('sensor.unnamed_p304m_multi_usb_c_charger_current_consumption') | float(0) %}
+          {% set macbook = states('sensor.unnamed_p304m_macbook_charger_current_consumption') | float(0) %}
+          {% set sonos_spk = states('sensor.unnamed_p304m_sonos_speaker_current_consumption') | float(0) %}
+          {{ (sonos_arc + samsung_tv + sub_mini + ps5 + hue_tv + echo_hub + usbc + macbook + sonos_spk) | round(1) }}
 
       - name: "Bedroom Total Power"
         unique_id: bedroom_total_power

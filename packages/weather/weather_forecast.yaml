@@ -11,7 +11,7 @@ template:
       - platform: homeassistant
         event: start
     action:
-      - service: weather.get_forecasts
+      - action: weather.get_forecasts
         data:
           type: daily
         target:
