@@ -1,7 +1,7 @@
-# Motion activates office lights when Edward is alone. 15-min timeout.
+# Motion activates office lights when Edward is alone and lights are off. 15-min timeout.
 - id: edward_alone_office_motion
   alias: "Edward Alone - Office Motion Lights"
-  description: "Motion activates office spots when Edward is alone. 15 min timeout."
+  description: "Motion activates office spots when Edward is alone and lights are off. 15 min timeout."
   mode: restart
   triggers:
     - platform: state
@@ -11,6 +11,9 @@
     - condition: state
       entity_id: input_boolean.edward_alone
       state: "on"
+    - condition: state
+      entity_id: light.office_spotlights
+      state: "off"
   actions:
     - action: light.turn_on
       target:

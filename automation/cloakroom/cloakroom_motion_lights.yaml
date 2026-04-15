@@ -1,6 +1,6 @@
 - id: cloakroom_motion_lights
   alias: "Cloakroom - Motion Lights"
-  description: "Motion activates cloakroom light, off after 5 minutes of no motion."
+  description: "Motion activates cloakroom light if off, auto-off after 5 min no motion. Skips if lights already on."
   triggers:
     - platform: state
       entity_id: binary_sensor.cloakroom_sensor_contact
@@ -14,6 +14,9 @@
         - condition: state
           entity_id: input_select.house
           state: "All Out"
+    - condition: state
+      entity_id: light.cloakroom_spotlights
+      state: "off"
   actions:
     - action: light.turn_on
       target:

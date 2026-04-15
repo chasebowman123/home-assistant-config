@@ -1,6 +1,6 @@
 - id: edward_alone_hallway_motion
   alias: "Edward Alone - Hallway Motion Lights"
-  description: "Motion activates hallway lights when Edward is alone. Dim at night."
+  description: "Motion activates hallway lights when Edward is alone and lights are off. Dim at night."
   triggers:
     - platform: state
       entity_id: binary_sensor.kitchen_motion_sensor_occupancy
@@ -9,6 +9,9 @@
     - condition: state
       entity_id: input_boolean.edward_alone
       state: "on"
+    - condition: state
+      entity_id: light.hallway_spot_lights
+      state: "off"
   actions:
     - choose:
         - conditions:

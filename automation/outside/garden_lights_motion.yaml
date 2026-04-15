@@ -1,12 +1,15 @@
 - id: outside_garden_lights_motion
   alias: Outside - Garden Lights Motion
-  description: "Ring camera motion: garden lights on at 50% with smooth transition, auto-off after 5 minutes."
+  description: "Ring camera motion: garden lights on at 50% if off, auto-off after 5 min. Skips if lights already on."
   mode: restart
   triggers:
     - platform: state
       entity_id: binary_sensor.garden_motion
       to: "on"
-  condition: []
+  conditions:
+    - condition: state
+      entity_id: light.garden_lights
+      state: "off"
   actions:
     - action: light.turn_on
       target:

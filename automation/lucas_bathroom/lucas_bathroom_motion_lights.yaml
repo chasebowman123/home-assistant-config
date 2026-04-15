@@ -1,7 +1,7 @@
-# Motion in Lucas bathroom: lights on, auto-off 5 min after motion clears.
+# Motion in Lucas bathroom: lights on if off, auto-off 5 min after motion clears.
 - id: lucas_bathroom_motion_lights
   alias: "Lucas Bathroom - Motion Lights"
-  description: "Motion activates bathroom lights, off 5 min after motion clears."
+  description: "Motion activates bathroom lights if off, off 5 min after motion clears. Skips if lights already on."
   mode: restart
   triggers:
     - platform: state
@@ -16,6 +16,9 @@
         - condition: state
           entity_id: input_select.house
           state: "All Out"
+    - condition: state
+      entity_id: light.lucass_bathroom_spotlights
+      state: "off"
   actions:
     - action: light.turn_on
       target:
