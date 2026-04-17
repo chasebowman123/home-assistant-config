@@ -56,18 +56,6 @@ routes:
     tap_action:
       action: open-popup
     popup:
-      # Reload Page
-      - icon: mdi:refresh
-        name: Reload Dashboard
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            service: browser_mod.javascript
-            data:
-              browser_id: THIS
-              code: |
-                lovelace_reload();
-
       # Energy
       - icon: mdi:lightning-bolt
         url: /dashboard-kohbo-eidam/energy

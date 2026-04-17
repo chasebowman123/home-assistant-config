@@ -44,12 +44,12 @@ cards:
   # 
   # Front Door Lock
   # 
-  - !include /config/dashboards/kohbo/security/components/front_door_lock_component.yaml
+  - !include /config/dashboards/kohbo-eidam/security/components/front_door_lock_component.yaml
 
   # 
   # Garage Entry Door Lock
   # 
-  - !include /config/dashboards/kohbo/security/components/garage_entry_door_lock_component.yaml
+  - !include /config/dashboards/kohbo-eidam/security/components/garage_entry_door_lock_component.yaml
 
 
   - type: logbook
@@ -61,8 +61,8 @@ cards:
     card_mod: !include /config/dashboards/templates/includes/card_mod/logbook_card_mod.yaml
 
   # Popups
-  - !include /config/dashboards/kohbo/security/front_door_lock_popup.yaml
-  - !include /config/dashboards/kohbo/security/garage_entry_lock_popup.yaml
+  - !include /config/dashboards/kohbo-eidam/security/front_door_lock_popup.yaml
+  - !include /config/dashboards/kohbo-eidam/security/garage_entry_lock_popup.yaml
 
   - !include /config/dashboards/templates/includes/navbar.yaml
   

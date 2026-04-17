@@ -373,7 +373,7 @@ cards:
   # People
   # 
   - type: vertical-stack
-    cards: !include /config/dashboards/kohbo/shared/people.yaml
+    cards: !include /config/dashboards/kohbo-eidam/shared/people.yaml
 
   # 
   # Navbar

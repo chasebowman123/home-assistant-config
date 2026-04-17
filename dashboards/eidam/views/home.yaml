@@ -248,8 +248,8 @@ views:
                 icon_color: amber
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: script.morning_routine
+                  action: perform-action
+                  perform_action: script.morning_routine
                 card_mod:
                   style: "ha-card { background: rgba(245, 158, 11, 0.15); }"
 
@@ -259,8 +259,8 @@ views:
                 icon_color: purple
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: script.sunset_routine
+                  action: perform-action
+                  perform_action: script.sunset_routine
                 card_mod:
                   style: "ha-card { background: rgba(147, 51, 234, 0.15); }"
 
@@ -270,8 +270,8 @@ views:
                 icon_color: blue
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.lounge_tv_tokyo
                 card_mod:
@@ -283,8 +283,8 @@ views:
                 icon_color: indigo
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: script.goodnight_routine
+                  action: perform-action
+                  perform_action: script.goodnight_routine
                 card_mod:
                   style: "ha-card { background: rgba(99, 102, 241, 0.15); }"
 
@@ -294,8 +294,8 @@ views:
                 icon_color: grey
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: script.all_lights_off
+                  action: perform-action
+                  perform_action: script.all_lights_off
                 card_mod:
                   style: "ha-card { background: rgba(100, 100, 100, 0.15); }"
 

@@ -114,8 +114,8 @@ views:
             icon: mdi:bathtub
             icon_color: cyan
             tap_action:
-              action: call-service
-              service: script.lucas_bathtime
+              action: perform-action
+              perform_action: script.lucas_bathtime
             card_mod:
               style: "ha-card { background: rgba(6, 182, 212, 0.2); }"
 
@@ -164,8 +164,8 @@ views:
                 icon_color: yellow
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: light.turn_on
+                  action: perform-action
+                  perform_action: light.turn_on
                   target:
                     entity_id:
                       - light.bathroom_spotlights
@@ -178,8 +178,8 @@ views:
                 icon_color: grey
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: light.turn_off
+                  action: perform-action
+                  perform_action: light.turn_off
                   target:
                     entity_id:
                       - light.bathroom_spotlights
@@ -192,8 +192,8 @@ views:
                 icon_color: orange
                 layout: vertical
                 tap_action:
-                  action: call-service
-                  service: scene.turn_on
+                  action: perform-action
+                  perform_action: scene.turn_on
                   target:
                     entity_id: scene.lucass_bathroom_relax
 

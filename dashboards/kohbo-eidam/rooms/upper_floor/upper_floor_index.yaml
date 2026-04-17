@@ -53,22 +53,22 @@ cards:
       # 
       # Main Bedroom
       # 
-      - !include /config/dashboards/kohbo/rooms/upper_floor/partials/main_bedroom_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/upper_floor/partials/main_bedroom_card.yaml
 
       # 
       # Nino's Bedroom
       # 
-      - !include /config/dashboards/kohbo/rooms/upper_floor/partials/ninos_bedroom_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/upper_floor/partials/ninos_bedroom_card.yaml
 
       # 
       # Gianluca's Bedroom
       # 
-      - !include /config/dashboards/kohbo/rooms/upper_floor/partials/gianlucas_bedroom_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/upper_floor/partials/gianlucas_bedroom_card.yaml
 
       # 
       # Upstairs Hallway
       # 
-      - !include /config/dashboards/kohbo/rooms/upper_floor/partials/upstairs_hallway_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/upper_floor/partials/upstairs_hallway_card.yaml
 
 
   # 

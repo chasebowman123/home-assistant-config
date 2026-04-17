@@ -137,4 +137,4 @@ cards:
   # 
   # Security Settings
   # 
-  - !include /config/dashboards/kohbo/security/components/security_settings_popup.yaml
+  - !include /config/dashboards/kohbo-eidam/security/components/security_settings_popup.yaml

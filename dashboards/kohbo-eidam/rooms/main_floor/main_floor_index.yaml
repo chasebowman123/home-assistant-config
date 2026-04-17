@@ -56,47 +56,47 @@ cards:
       # 
       # Office
       # 
-      - !include /config/dashboards/kohbo/rooms/main_floor/partials/office_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/main_floor/partials/office_card.yaml
 
       # 
       # Family Room
       # 
-      - !include /config/dashboards/kohbo/rooms/main_floor/partials/family_room_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/main_floor/partials/family_room_card.yaml
             
             
       # 
       # Kitchen
       # 
-      - !include /config/dashboards/kohbo/rooms/main_floor/partials/kitchen_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/main_floor/partials/kitchen_card.yaml
 
 
 
       # 
       # Playroom
       # 
-      - !include /config/dashboards/kohbo/rooms/main_floor/partials/playroom_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/main_floor/partials/playroom_card.yaml
 
 
       #
       # Dining Room
       # 
-      - !include /config/dashboards/kohbo/rooms/main_floor/partials/dining_room_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/main_floor/partials/dining_room_card.yaml
 
 
       #
       # Jr. Suite
       # 
-      - !include /config/dashboards/kohbo/rooms/main_floor/partials/jr_suite_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/main_floor/partials/jr_suite_card.yaml
 
       #
       # Foyer
       # 
-      - !include /config/dashboards/kohbo/rooms/main_floor/partials/foyer_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/main_floor/partials/foyer_card.yaml
 
       #
       # Mudroom
       # 
-      - !include /config/dashboards/kohbo/rooms/main_floor/partials/mudroom_card.yaml
+      - !include /config/dashboards/kohbo-eidam/rooms/main_floor/partials/mudroom_card.yaml
 
 
   # 

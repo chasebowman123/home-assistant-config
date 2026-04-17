@@ -32,13 +32,13 @@ cards:
   #===========================================================================
   # TODAY'S ENERGY OVERVIEW
   #===========================================================================
-  - !include /config/dashboards/kohbo/energy/partials/todays_overview.yaml
+  - !include /config/dashboards/kohbo-eidam/energy/partials/todays_overview.yaml
 
 
   #===========================================================================
   # ENERGY HISTORY
   #===========================================================================
-  - !include /config/dashboards/kohbo/energy/partials/energy_history.yaml
+  - !include /config/dashboards/kohbo-eidam/energy/partials/energy_history.yaml
 
 
   #===========================================================================
@@ -206,4 +206,4 @@ cards:
   #===========================================================================
   # Energy Settings Popup
   #===========================================================================
-  - !include /config/dashboards/kohbo/energy/partials/settings_popup.yaml
+  - !include /config/dashboards/kohbo-eidam/energy/partials/settings_popup.yaml

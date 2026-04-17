@@ -128,9 +128,9 @@ views:
             icon: mdi:weather-sunny
             icon_color: amber
             tap_action:
-              action: call-service
-              service: script.turn_on
-              service_data:
+              action: perform-action
+              perform_action: script.turn_on
+              data:
                 entity_id: script.morning_routine
             card_mod:
               style: |
@@ -145,9 +145,9 @@ views:
             icon: mdi:power-sleep
             icon_color: blue
             tap_action:
-              action: call-service
-              service: script.turn_on
-              service_data:
+              action: perform-action
+              perform_action: script.turn_on
+              data:
                 entity_id: script.goodnight_routine
             card_mod:
               style: |
@@ -162,9 +162,9 @@ views:
             icon: mdi:power-off
             icon_color: red
             tap_action:
-              action: call-service
-              service: script.turn_on
-              service_data:
+              action: perform-action
+              perform_action: script.turn_on
+              data:
                 entity_id: script.all_lights_off
             card_mod:
               style: |
@@ -186,9 +186,9 @@ views:
             badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'Day Time') else '' }}"
             badge_color: amber
             tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
+              action: perform-action
+              perform_action: input_select.select_option
+              data:
                 entity_id: input_select.house
                 option: Day Time
             card_mod:
@@ -205,9 +205,9 @@ views:
             badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'Evening Time') else '' }}"
             badge_color: purple
             tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
+              action: perform-action
+              perform_action: input_select.select_option
+              data:
                 entity_id: input_select.house
                 option: Evening Time
             card_mod:
@@ -224,9 +224,9 @@ views:
             badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'Night Time') else '' }}"
             badge_color: blue
             tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
+              action: perform-action
+              perform_action: input_select.select_option
+              data:
                 entity_id: input_select.house
                 option: Night Time
             card_mod:
@@ -243,9 +243,9 @@ views:
             badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'Away') else '' }}"
             badge_color: red
             tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
+              action: perform-action
+              perform_action: input_select.select_option
+              data:
                 entity_id: input_select.house
                 option: Away
             card_mod:
@@ -262,9 +262,9 @@ views:
             badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'All Out') else '' }}"
             badge_color: orange
             tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
+              action: perform-action
+              perform_action: input_select.select_option
+              data:
                 entity_id: input_select.house
                 option: All Out
             card_mod:
@@ -281,9 +281,9 @@ views:
             badge_icon: "{{ 'mdi:check-circle' if is_state('input_select.house', 'Dogs Alone') else '' }}"
             badge_color: teal
             tap_action:
-              action: call-service
-              service: input_select.select_option
-              service_data:
+              action: perform-action
+              perform_action: input_select.select_option
+              data:
                 entity_id: input_select.house
                 option: Dogs Alone
             card_mod:
@@ -988,7 +988,7 @@ views:
         square: false
         cards:
           - type: custom:mushroom-light-card
-            entity: light.lucass_room_spot_lights
+            entity: light.lucass_room_spotlights
             name: Spotlights
             show_brightness_control: true
             collapsible_controls: true

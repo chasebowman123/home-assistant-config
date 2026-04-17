@@ -90,8 +90,8 @@ thermostat_radiant_floor_popup:
               - color: var(--state-climate-heat-color)
                 value: "heat"
             tap_action:
-              action: call-service
-              service: climate.set_hvac_mode
+              action: perform-action
+              perform_action: climate.set_hvac_mode
               target:
                 entity_id: '[[entity]]'
               data:
@@ -108,8 +108,8 @@ thermostat_radiant_floor_popup:
               - color: var(--light-grey-color)
                 value: "heat"
             tap_action:
-              action: call-service
-              service: climate.set_hvac_mode
+              action: perform-action
+              perform_action: climate.set_hvac_mode
               target:
                 entity_id: '[[entity]]'
               data:

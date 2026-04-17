@@ -433,7 +433,7 @@ Add room card include to `{floor}_index.yaml`:
 # 
 # {Room Name}
 # 
-- !include /config/dashboards/kohbo/rooms/{floor}/partials/{room}_card.yaml
+- !include /config/dashboards/kohbo-eidam/rooms/{floor}/partials/{room}_card.yaml
 ```
 
 ### Step 3: Add to Active Rooms
@@ -450,7 +450,7 @@ Add conditional card to `active_rooms.yaml`:
       entity: input_boolean.{room}_occupied
       state: 'on'
   card:
-    !include /config/dashboards/kohbo/rooms/{floor}/partials/{room}_card.yaml
+    !include /config/dashboards/kohbo-eidam/rooms/{floor}/partials/{room}_card.yaml
 ```
 
 ### Step 4: Create Room Detail Page

@@ -108,9 +108,9 @@ cards:
                   return isActive ? 'var(--dark-primary-color)' : 'var(--secondary-text-color)';
                 ]]]
         tap_action:
-          action: call-service
-          service: input_select.select_option
-          service_data:
+          action: perform-action
+          perform_action: input_select.select_option
+          data:
             entity_id: input_select.energy_history_timeframe
             option: This Week
 
@@ -138,9 +138,9 @@ cards:
                   return state === 'Past 30 Days' ? 'var(--dark-primary-color)' : 'var(--secondary-text-color)';
                 ]]]
         tap_action:
-          action: call-service
-          service: input_select.select_option
-          service_data:
+          action: perform-action
+          perform_action: input_select.select_option
+          data:
             entity_id: input_select.energy_history_timeframe
             option: Past 30 Days
 
@@ -168,9 +168,9 @@ cards:
                   return state === 'Weekly' ? 'var(--dark-primary-color)' : 'var(--secondary-text-color)';
                 ]]]
         tap_action:
-          action: call-service
-          service: input_select.select_option
-          service_data:
+          action: perform-action
+          perform_action: input_select.select_option
+          data:
             entity_id: input_select.energy_history_timeframe
             option: Weekly
 
@@ -198,9 +198,9 @@ cards:
                   return state === 'Monthly' ? 'var(--dark-primary-color)' : 'var(--secondary-text-color)';
                 ]]]
         tap_action:
-          action: call-service
-          service: input_select.select_option
-          service_data:
+          action: perform-action
+          perform_action: input_select.select_option
+          data:
             entity_id: input_select.energy_history_timeframe
             option: Monthly
 

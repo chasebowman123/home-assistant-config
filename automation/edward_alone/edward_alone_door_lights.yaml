@@ -39,7 +39,7 @@
               target:
                 entity_id:
                   - light.hallway_spot_lights
-                  - light.lucass_room_spot_lights
+                  - light.lucass_room_spotlights
               data:
                 brightness_pct: 50
         - conditions:

@@ -642,7 +642,7 @@ cards:
   # 
   # Main Floor Vacuum Popup
   # 
-  - !include /config/dashboards/kohbo/shared/main_floor_vacuum_popup.yaml
+  - !include /config/dashboards/kohbo-eidam/shared/main_floor_vacuum_popup.yaml
 
 
 #xxx filter life

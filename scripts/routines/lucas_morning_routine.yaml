@@ -14,7 +14,7 @@ lucas_morning_routine:
         entity_id: input_boolean.lucas_sleeping
     - action: light.turn_on
       target:
-        entity_id: light.lucass_room_spot_lights
+        entity_id: light.lucass_room_spotlights
       data:
         brightness_pct: 60
         color_temp_kelvin: 3500
